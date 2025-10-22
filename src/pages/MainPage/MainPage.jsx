@@ -3,7 +3,7 @@ import Header from "../../components/Header/Header.jsx";
 import plusIcon from "../../assets/images/plus.svg";
 import styles from "../MainPage/MainPage.module.scss";
 import Card from "../../components/Card/Card.jsx";
-
+import {tests} from "../../mocks/tests.js";
 
 const MainPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
