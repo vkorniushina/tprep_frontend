@@ -1,0 +1,42 @@
+.answerSection{
+  padding-right: 50px;
+}
+
+.label {
+  font-weight: 400;
+  font-size: 16px;
+  color: #6c6c6c;
+  margin-bottom: 15px;
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.answer {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 16px;
+  font-weight: 400;
+  color: #333;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.correct {
+  background: rgba(255, 221, 45, 0.1);
+  border: 1px solid #ffdd2d;
+  border-left: 4px solid #ffdd2d;
+}
+
+.check {
+  color: #ffdd2d;
+  font-weight: bold;
+  font-size: 18px;
+}
