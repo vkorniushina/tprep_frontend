@@ -1,0 +1,26 @@
+.wrapper{
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.track {
+  flex: 1;
+  height: 10px;
+  background: #e1e1e1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 10px;
+  background: #ffdd2d;
+  border-radius: 8px;
+  transition: width 0.3s ease;
+}
+
+.text {
+  font-weight: 500;
+  font-size: 16px;
+  color: #6c6c6c;
+}
