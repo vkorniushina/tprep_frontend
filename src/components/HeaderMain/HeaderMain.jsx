@@ -1,8 +1,8 @@
 import React from "react";
-import styles from "./Header.module.scss";
+import styles from "./HeaderMain.module.scss";
 import searchIcon from "../../assets/images/search.svg";
 
-const Header = ({ searchQuery, setSearchQuery }) => {
+const HeaderMain = ({ searchQuery, setSearchQuery }) => {
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
@@ -29,4 +29,4 @@ const Header = ({ searchQuery, setSearchQuery }) => {
     )
 }
 
-export default Header;
+export default HeaderMain;
