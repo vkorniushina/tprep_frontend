@@ -29,7 +29,7 @@
   transition: background-color 0.3s ease;
 
   &:hover {
-    background: #FFCD32;
+    background: #ffcd32;
   }
 
   img{
@@ -55,11 +55,16 @@
 .emptyMessage {
   font-size: 20px;
   font-weight: 500;
-  color: #333333;
+  color: #333;
   margin-bottom: 25px;
 }
 
 .emptySubMessage {
   font-size: 16px;
-  color: #6C6C6C;
+  color: #6c6c6c;
+}
+
+.loadingEmptyState{
+  display: flex;
+  justify-content: center;
 }
