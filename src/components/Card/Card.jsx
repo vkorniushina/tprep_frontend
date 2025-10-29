@@ -1,8 +1,14 @@
 import styles from './Card.module.scss'
 import fileIcon from "../../assets/images/file.svg";
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 
 const Card = ({id, name, description, questionsCount, progress}) => {
+    const navigate = useNavigate();
+
+    const handleOpenTest = () => {
+        navigate(`/test/${id}`);
+    };
 
     const percent = questionsCount === 0 ? 0 : (progress / questionsCount) * 100;
     const displayPercent = Math.round(percent);
@@ -24,10 +30,9 @@ const Card = ({id, name, description, questionsCount, progress}) => {
                     </div>
                     <span>{displayPercent}%</span>
                 </div>
-                <button className={styles.openBtn}>Открыть тест</button>
+                <button className={styles.openBtn} onClick={handleOpenTest}>Открыть тест</button>
             </div>
         </div>
-
     )
 }
 
