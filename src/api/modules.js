@@ -19,3 +19,13 @@ export const getModuleById = async (id) => {
         throw error;
     }
 };
+
+export const getModuleQuestions = async (id) => {
+    try {
+        const response = await apiClient.get(`/modules/${id}/questions`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching questions for module ${id}:`, error);
+        throw error;
+    }
+};
