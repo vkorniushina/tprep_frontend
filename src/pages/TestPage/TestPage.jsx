@@ -3,13 +3,17 @@ import { useParams } from 'react-router-dom';
 import HeaderTest from "../../components/HeaderTest/HeaderTest";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import styles from "./TestPage.module.scss";
-import { getModuleById } from "../../api/modules.js";
+import { getModuleById, getModuleQuestions } from "../../api/modules.js";
 import QuestionBlock from "../../components/QuestionBlock/QuestionBlock.jsx";
 
 const TestPage = () => {
     const [showQuestions, setShowQuestions] = useState(false);
     const [testData, setTestData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [questions, setQuestions] = useState([]);
+    const [loading, setLoading] = useState({
+        test: true,
+        questions: false
+    });
     const [error, setError] = useState(null);
     const { id } = useParams();
 
@@ -33,7 +37,27 @@ const TestPage = () => {
         }
     }, [id]);
 
-    if (loading) {
+    const fetchQuestions = async () => {
+        try {
+            setLoading(prev => ({...prev, questions: true}));
+            const questionsData = await getModuleQuestions(Number(id));
+            setQuestions(questionsData.questions);
+        } catch (err) {
+            setError('Не удалось загрузить вопросы теста');
+            console.error('Error fetching questions:', err);
+        } finally {
+            setLoading(prev => ({...prev, questions: false}));
+        }
+    };
+
+    const handleToggleQuestions = () => {
+        if (!showQuestions && questions.length === 0) {
+            fetchQuestions();
+        }
+        setShowQuestions(!showQuestions);
+    };
+
+    if (loading.test) {
         return (
             <>
                 <HeaderTest name="Загрузка..." />
@@ -44,7 +68,6 @@ const TestPage = () => {
         );
     }
 
-    
     if (error || !testData) {
         return (
             <>
@@ -58,7 +81,7 @@ const TestPage = () => {
         );
     }
 
-    const { name, description, lastUse, progress, questions } = testData;
+    const { name, description, lastUse, progress, questionsCount } = testData;
 
     return (
         <>
@@ -73,13 +96,14 @@ const TestPage = () => {
                         Последнее прохождение: {lastUse}
                     </div>
 
-                    <ProgressBar value={progress || 0} total={questions ? questions.length : 0} />
+                    <ProgressBar value={progress || 0} total={questionsCount || 0} />
                 </section>
 
                 <div className={styles.toggle}>
                     <button
                         className={styles.toggleBtn}
-                        onClick={() => setShowQuestions(!showQuestions)}
+                        onClick={handleToggleQuestions}
+                        disabled={loading.questions}
                     >
                         {showQuestions ? "Скрыть вопросы" : "Показать вопросы"}
                     </button>
@@ -88,13 +112,19 @@ const TestPage = () => {
                 {showQuestions && (
                     <section className={styles.questions}>
                         <h2>Вопросы теста</h2>
-                        {questions.map((question, index) => (
-                            <QuestionBlock
-                                key={index}
-                                question={question}
-                                index={index}
-                            />
-                        ))}
+                        {loading.questions ? (
+                            <div className={styles.loadingState}>Загрузка вопросов...</div>
+                        ) : questions.length > 0 ? (
+                            questions.map((question, index) => (
+                                <QuestionBlock
+                                    key={question.id}
+                                    question={question}
+                                    index={index}
+                                />
+                            ))
+                        ) : (
+                            <div className={styles.emptyState}>Вопросов пока нет</div>
+                        )}
                     </section>
                 )}
             </main>

@@ -1,27 +1,27 @@
-.main{
+.main {
   padding-bottom: 60px;
 }
 
-.info{
+.info {
   background: #fff;
   border-radius: 15px;
   padding: 45px 40px;
 
-  h2{
+  h2 {
     font-weight: 500;
     font-size: 20px;
     color: #333;
     margin-bottom: 25px;
   }
 
-  .description{
+  .description {
     font-weight: 400;
     font-size: 16px;
     line-height: 131%;
     margin-bottom: 60px;
   }
 
-  .lastUse{
+  .lastUse {
     font-weight: 400;
     font-size: 16px;
     margin-bottom: 18px;
@@ -53,7 +53,7 @@
   background: #fff;
   border-radius: 15px;
 
-  h2{
+  h2 {
     font-weight: 500;
     font-size: 20px;
     color: #333;
@@ -62,7 +62,7 @@
 }
 
 
-.loadingState {
+.loadingState, .emptyState {
   text-align: center;
   padding: 30px;
   font-size: 18px;
@@ -71,10 +71,7 @@
 
 .errorState {
   text-align: center;
-  padding: 30px;
   font-size: 18px;
-  color: #e53935;
-  background-color: rgba(229, 57, 53, 0.05);
-  border-radius: 8px;
+  color: #333;
   margin: 20px 0;
 }

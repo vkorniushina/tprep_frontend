@@ -19,7 +19,7 @@ const QuestionAnswers = ({ question }) => {
                 <div className={styles.answers}>
                     {question.answers.map((answer, i) => (
                         <div
-                            key={i}
+                            key={answer.id}
                             className={`${styles.answer} ${
                                 answer.isCorrect ? styles.correct : ""
                             }`}
