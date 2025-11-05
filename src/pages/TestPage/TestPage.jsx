@@ -20,7 +20,7 @@ const TestPage = () => {
     useEffect(() => {
         const fetchTestData = async () => {
             try {
-                setLoading(true);
+                setLoading(prev => ({...prev, test: true}));
                 const data = await getModuleById(Number(id));
                 setTestData(data);
                 setError(null);
@@ -28,7 +28,7 @@ const TestPage = () => {
                 setError('Не удалось загрузить информацию о тесте');
                 console.error('Error fetching test data:', err);
             } finally {
-                setLoading(false);
+                setLoading(prev => ({...prev, test: false}));
             }
         };
 
