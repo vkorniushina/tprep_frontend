@@ -29,7 +29,6 @@ const MainPage = () => {
         fetchTests();
     }, []);
 
-
     const filteredTests = searchQuery.trim()
         ? tests.filter(test => test.name.toLowerCase().includes(searchQuery.toLowerCase()))
         : tests;
