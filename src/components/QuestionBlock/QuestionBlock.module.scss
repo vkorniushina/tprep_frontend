@@ -1,9 +1,11 @@
+@use '../../assets/styles/variables' as *;
+
 .questionBlock {
   display: flex;
   gap: 15px;
   margin-bottom: 40px;
   padding-bottom: 35px;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid $color-border;
 
   &:last-child {
     margin-bottom: 0;
@@ -20,10 +22,10 @@
     align-items: center;
     justify-content: center;
     font-weight: 500;
-    font-size: 20px;
-    color: #333;
-    border-radius: 8px;
-    background: #f5f5f5;
+    font-size: $font-lg;
+    color: $color-text;
+    border-radius: $radius-sm;
+    background: $color-bg-gray;
     max-height: 40px;
     max-width: 40px;
     width: 100%;
@@ -31,7 +33,7 @@
 
   .questionText{
     font-weight: 500;
-    font-size: 16px;
+    font-size: $font-sm;
     margin-bottom: 20px;
   }
 }

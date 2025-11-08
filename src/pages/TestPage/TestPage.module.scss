@@ -1,29 +1,31 @@
+@use '../../assets/styles/variables' as *;
+
 .main {
   padding-bottom: 60px;
 }
 
 .info {
-  background: #fff;
-  border-radius: 15px;
+  background: $color-bg-base;
+  border-radius: $radius-lg;
   padding: 45px 40px;
 
   h2 {
     font-weight: 500;
-    font-size: 20px;
-    color: #333;
+    font-size: $font-lg;
+    color: $color-text;
     margin-bottom: 25px;
   }
 
   .description {
     font-weight: 400;
-    font-size: 16px;
+    font-size: $font-sm;
     line-height: 131%;
     margin-bottom: 60px;
   }
 
   .lastUse {
     font-weight: 400;
-    font-size: 16px;
+    font-size: $font-sm;
     margin-bottom: 18px;
   }
 }
@@ -33,45 +35,45 @@
   margin: 50px;
 
   &Btn {
-    background: #333;
-    color: #fff;
+    background: $color-dark;
+    color: $color-white;
     border: none;
-    border-radius: 10px;
+    border-radius: $radius-md;
     padding: 13px 30px;
     cursor: pointer;
     font-weight: 500;
-    font-size: 16px;
+    font-size: $font-sm;
+    transition: $transition-base;
 
     &:hover {
-      background: #3f3f3f;
+      background: $color-dark-hover;
     }
   }
 }
 
 .questions {
   padding: 45px;
-  background: #fff;
-  border-radius: 15px;
+  background: $color-bg-base;
+  border-radius: $radius-lg;
 
   h2 {
     font-weight: 500;
-    font-size: 20px;
-    color: #333;
+    font-size: $font-lg;
+    color: $color-text;
     margin-bottom: 28px;
   }
 }
 
-
 .loadingState, .emptyState {
   text-align: center;
   padding: 30px;
-  font-size: 18px;
-  color: #666;
+  font-size: $font-md;
+  color: $color-text-secondary;
 }
 
 .errorState {
   text-align: center;
-  font-size: 18px;
-  color: #333;
+  font-size: $font-md;
+  color: $color-text;
   margin: 20px 0;
 }

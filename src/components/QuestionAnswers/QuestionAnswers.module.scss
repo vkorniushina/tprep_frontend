@@ -1,11 +1,13 @@
+@use '../../assets/styles/variables' as *;
+
 .answerSection{
   padding-right: 50px;
 }
 
 .label {
   font-weight: 400;
-  font-size: 16px;
-  color: #6c6c6c;
+  font-size: $font-sm;
+  color: $color-text-secondary;
   margin-bottom: 15px;
 }
 
@@ -17,13 +19,13 @@
 }
 
 .answer {
-  background: #f5f5f5;
+  background: $color-bg-gray;
   padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  font-size: 16px;
+  border-radius: $radius-sm;
+  border: 1px solid $color-border;
+  font-size: $font-sm;
   font-weight: 400;
-  color: #333;
+  color: $color-text;
   display: flex;
   gap: 10px;
   align-items: center;
@@ -31,12 +33,12 @@
 
 .correct {
   background: rgba(255, 221, 45, 0.1);
-  border: 1px solid #ffdd2d;
-  border-left: 4px solid #ffdd2d;
+  border: 1px solid $color-primary;
+  border-left: 4px solid $color-primary;
 }
 
 .check {
-  color: #ffdd2d;
+  color: $color-primary;
   font-weight: bold;
-  font-size: 18px;
+  font-size: $font-md;
 }

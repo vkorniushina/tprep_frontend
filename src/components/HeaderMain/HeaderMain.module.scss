@@ -65,7 +65,7 @@
   padding: 12px 12px;
   border-radius: $radius-md;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: $transition-base;
 
   &:hover {
     background-color: #ebeff3;
