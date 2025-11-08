@@ -12,7 +12,7 @@ const Card = ({id, name, description, questionsCount, progress}) => {
             <div className={styles.topContent}>
                 <h3 className={styles.name}>{name}</h3>
                 {description ? <p className={styles.description}>{description}</p> :
-                    <p className={styles.description} style={{color: '#a6a6a6'}}>Здесь могло быть описание...</p>}
+                    <p className={`${styles.description} ${styles.descriptionEmpty}`} >Здесь могло быть описание...</p>}
             </div>
             <div className={styles.bottomContent}>
                 <div className={styles.amount}>
@@ -32,4 +32,3 @@ const Card = ({id, name, description, questionsCount, progress}) => {
 }
 
 export default Card;
-
