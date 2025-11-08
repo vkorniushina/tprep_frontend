@@ -1,0 +1,72 @@
+@use '../../assets/styles/variables' as *;
+
+.main{
+  padding-bottom: 60px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 45px 0;
+}
+
+.title {
+  font-weight: 700;
+  font-size: $font-xxl;
+  color: $color-text
+}
+
+.createBtn {
+  display: flex;
+  align-items: center;
+  background: $color-primary;
+  border: none;
+  border-radius: $radius-md;
+  padding: 15px 25px 15px 15px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: $font-lg;
+  color: $color-text;
+  transition: $transition-base;
+
+  &:hover {
+    background: $color-primary-hover;
+  }
+
+  img{
+    margin-right: 15px;
+  }
+}
+
+.cards{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+}
+
+.emptyMessage {
+  font-size: $font-lg;
+  font-weight: 500;
+  color: $color-text;
+  margin-bottom: 25px;
+}
+
+.emptySubMessage {
+  font-size: 16px;
+  color: $color-text-secondary;
+}
+
+.loadingEmptyState{
+  display: flex;
+  justify-content: center;
+}

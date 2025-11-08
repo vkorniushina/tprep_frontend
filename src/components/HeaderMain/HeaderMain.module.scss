@@ -1,0 +1,73 @@
+@use '../../assets/styles/variables' as *;
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background-color: $color-white;
+  border-bottom: 1px solid $color-border;
+  height: 80px;
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: $font-xxl;
+  color: $color-text;
+  cursor: pointer;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  padding: 11px;
+  max-width: 565px;
+  width: 100%;
+  transition: $transition-base;
+
+  &:focus-within {
+    border-color: $color-border-hover;
+  }
+}
+
+.searchIcon {
+  margin-right: 13px;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: $font-xs;
+  color: $color-text;
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
+.profileBtn {
+  background: $color-bg-gray;
+  border: none;
+  color: #126df7;
+  font-weight: 400;
+  font-size: $font-xs;
+  padding: 12px 12px;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #ebeff3;
+  }
+}

@@ -1,0 +1,18 @@
+@use './variables' as *;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  background-color: $color-bg-gray;
+  color: $color-text;
+}
+
+.container {
+  max-width: 1104px;
+  margin: 0 auto;
+}
