@@ -1,9 +1,11 @@
+@use '../../assets/styles/variables' as *;
+
 .header {
   display: flex;
   align-items: center;
   padding: 0 20px;
-  background-color: #fff;
-  border-bottom: 1px solid #e1e1e1;
+  background-color: $color-white;
+  border-bottom: 1px solid $color-border;
   height: 80px;
 }
 
@@ -15,8 +17,8 @@
 
 .logo {
   font-weight: 700;
-  font-size: 32px;
-  color: #333;
+  font-size: $font-xxl;
+  color: $color-text;
   cursor: pointer;
 }
 
@@ -24,16 +26,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
+  background-color: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
   padding: 11px;
   max-width: 565px;
   width: 100%;
-  transition: border-color 0.2s;
+  transition: $transition-base;
 
   &:focus-within {
-    border-color: #c4c4c4;
+    border-color: $color-border-hover;
   }
 }
 
@@ -46,22 +48,22 @@
   border: none;
   background: transparent;
   outline: none;
-  font-size: 15px;
-  color: #333;
+  font-size: $font-xs;
+  color: $color-text;
 
   &::placeholder {
-    color: #a6a6a6;
+    color: $color-text-muted;
   }
 }
 
 .profileBtn {
-  background: #f3f4f7;
+  background: $color-bg-gray;
   border: none;
   color: #126df7;
   font-weight: 400;
-  font-size: 15px;
+  font-size: $font-xs;
   padding: 12px 12px;
-  border-radius: 10px;
+  border-radius: $radius-md;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
@@ -69,4 +71,3 @@
     background-color: #ebeff3;
   }
 }
-

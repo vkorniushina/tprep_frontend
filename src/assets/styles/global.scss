@@ -1,3 +1,5 @@
+@use './variables' as *;
+
 * {
   margin: 0;
   padding: 0;
@@ -6,8 +8,8 @@
 }
 
 body {
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: $color-bg-gray;
+  color: $color-text;
 }
 
 .container {

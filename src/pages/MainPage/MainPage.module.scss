@@ -1,3 +1,5 @@
+@use '../../assets/styles/variables' as *;
+
 .main{
   padding-bottom: 60px;
 }
@@ -11,25 +13,25 @@
 
 .title {
   font-weight: 700;
-  font-size: 32px;
-  color: #333
+  font-size: $font-xxl;
+  color: $color-text
 }
 
 .createBtn {
   display: flex;
   align-items: center;
-  background: #ffdd2d;
+  background: $color-primary;
   border: none;
-  border-radius: 12px;
+  border-radius: $radius-md;
   padding: 15px 25px 15px 15px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 20px;
-  color: #333;
-  transition: background-color 0.3s ease;
+  font-size: $font-lg;
+  color: $color-text;
+  transition: $transition-base;
 
   &:hover {
-    background: #ffcd32;
+    background: $color-primary-hover;
   }
 
   img{
@@ -53,15 +55,15 @@
 }
 
 .emptyMessage {
-  font-size: 20px;
+  font-size: $font-lg;
   font-weight: 500;
-  color: #333;
+  color: $color-text;
   margin-bottom: 25px;
 }
 
 .emptySubMessage {
   font-size: 16px;
-  color: #6c6c6c;
+  color: $color-text-secondary;
 }
 
 .loadingEmptyState{
