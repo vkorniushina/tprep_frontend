@@ -1,7 +1,9 @@
 import styles from './QuestionAnswers.module.scss';
+import {QUESTION_TYPES} from "../../constants/questionTypes.js";
 
 const QuestionAnswers = ({ question }) => {
-    if (question.type === 'INPUT') {
+
+    if (question.type === QUESTION_TYPES.INPUT) {
         return (
             <div className={styles.answerSection}>
                 <p className={styles.label}>Правильный ответ:</p>
@@ -12,7 +14,7 @@ const QuestionAnswers = ({ question }) => {
         );
     }
 
-    if (question.type === 'CHOICE') {
+    if (question.type === QUESTION_TYPES.CHOICE) {
         return (
             <div className={styles.answerSection}>
                 <p className={styles.label}>Варианты ответов:</p>
