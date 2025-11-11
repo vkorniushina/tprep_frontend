@@ -1,0 +1,28 @@
+@use '../../assets/styles/variables' as *;
+
+.wrapper{
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.track {
+  flex: 1;
+  height: 10px;
+  background: $color-border;
+  border-radius: $radius-sm;
+  overflow: hidden;
+}
+
+.fill {
+  height: 10px;
+  background: $color-primary;
+  border-radius: $radius-sm;
+  transition: width 0.3s ease;
+}
+
+.text {
+  font-weight: 500;
+  font-size: $font-sm;
+  color: $color-text-secondary;
+}

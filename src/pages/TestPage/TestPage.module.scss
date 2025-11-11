@@ -1,0 +1,76 @@
+@use '../../assets/styles/variables' as *;
+
+.main {
+  padding-bottom: 60px;
+}
+
+.info {
+  background: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 45px 40px;
+
+  h2 {
+    font-weight: 500;
+    font-size: $font-lg;
+    color: $color-text;
+    margin-bottom: 25px;
+  }
+
+  .description {
+    font-weight: 400;
+    font-size: $font-sm;
+    line-height: 131%;
+    margin-bottom: 60px;
+
+    &Empty{
+      color: $color-text-muted;
+    }
+  }
+
+  .lastUse {
+    font-weight: 400;
+    font-size: $font-sm;
+    margin-bottom: 18px;
+  }
+}
+
+.toggle {
+  text-align: center;
+  margin: 50px;
+
+  &Btn {
+    background: $color-dark;
+    color: $color-white;
+    border: none;
+    border-radius: $radius-md;
+    padding: 13px 30px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: $font-sm;
+    transition: $transition-base;
+
+    &:hover {
+      background: $color-dark-hover;
+    }
+  }
+}
+
+.questions {
+  padding: 45px;
+  background: $color-bg-base;
+  border-radius: $radius-lg;
+
+  h2 {
+    font-weight: 500;
+    font-size: $font-lg;
+    color: $color-text;
+    margin-bottom: 28px;
+  }
+}
+
+.loadingState, .emptyState, .errorState {
+  text-align: center;
+  padding: 30px;
+  font-size: $font-md;
+  color: $color-text-secondary;
+}

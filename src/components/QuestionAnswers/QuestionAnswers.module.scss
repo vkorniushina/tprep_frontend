@@ -1,0 +1,44 @@
+@use '../../assets/styles/variables' as *;
+
+.answerSection{
+  padding-right: 50px;
+}
+
+.label {
+  font-weight: 400;
+  font-size: $font-sm;
+  color: $color-text-secondary;
+  margin-bottom: 15px;
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.answer {
+  background: $color-bg-gray;
+  padding: 15px;
+  border-radius: $radius-sm;
+  border: 1px solid $color-border;
+  font-size: $font-sm;
+  font-weight: 400;
+  color: $color-text;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.correct {
+  background: rgba(255, 221, 45, 0.1);
+  border: 1px solid $color-primary;
+  border-left: 4px solid $color-primary;
+}
+
+.check {
+  color: $color-primary;
+  font-weight: bold;
+  font-size: $font-md;
+}
