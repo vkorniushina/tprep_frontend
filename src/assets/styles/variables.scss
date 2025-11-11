@@ -19,6 +19,16 @@ $color-border-hover: #c4c4c4;
 $color-backdrop: rgba(0, 0, 0, 0.5);
 $shadow-base: 0 10px 30px rgba(0, 0, 0, 0.15);
 
+// status colors
+$color-success-base: #56d174;
+$color-success-dark: #229536;
+$color-error-base: #eb5757;
+
+$color-success-border: rgba(45, 191, 71, 0.9);
+$color-success-bg-light: rgba(86, 209, 116, 0.1);
+$color-error-border: rgba(235, 87, 87, 0.9);
+$color-error-bg-light: rgba(235, 87, 87, 0.1);
+
 // typography
 $font-xxl: 32px;
 $font-lg: 20px;

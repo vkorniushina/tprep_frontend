@@ -1,0 +1,82 @@
+@use '../../assets/styles/variables' as *;
+
+.labelContainer {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-weight: 400;
+  font-size: $font-sm;
+}
+
+.correctLabel, .incorrectLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: $font-sm;
+  font-weight: 400;
+}
+
+.correctLabel {
+  color: $color-success-dark;
+}
+
+.incorrectLabel {
+  color: $color-error-base;
+}
+
+.input {
+  width: 100%;
+  min-height: 148px;
+  padding: 22px;
+  font-weight: 400;
+  font-size: $font-md;
+  background: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  resize: none;
+
+  &:focus {
+    outline: none;
+    border-color: $color-border-hover;
+  }
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+
+  &:disabled {
+    color: $color-text;
+  }
+
+  &.correct {
+    border: 1px solid $color-success-border;
+    background: $color-success-bg-light;
+  }
+
+  &.incorrect {
+    border: 1px solid $color-error-base;
+    background: $color-error-bg-light;
+  }
+}
+
+.correctAnswerSection {
+  margin-top: 38px;
+}
+
+.correctAnswerLabel {
+  font-size: $font-sm;
+  color: $color-success-dark;
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+
+.correctAnswerBox {
+  width: 100%;
+  min-height: 148px;
+  padding: 22px;
+  font-size: $font-md;
+  border-radius: $radius-md;
+  border: 1px solid $color-success-border;
+  background: $color-success-bg-light;
+}
