@@ -75,7 +75,10 @@ const TestPage = () => {
 
     return (
         <>
-            <HeaderTest name={name}/>
+            <HeaderTest
+                name={name}
+                disabledStart={questionsCount === 0}
+            />
             <main className={`container ${styles.main}`}>
                 <section className={styles.info}>
                     <h2>Описание теста</h2>
