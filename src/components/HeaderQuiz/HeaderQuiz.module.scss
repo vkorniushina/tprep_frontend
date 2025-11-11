@@ -101,7 +101,7 @@
 
   .cancelButton {
     background-color: $color-bg-base;
-    color: $radius-md;
+    color: $color-text;
     border: 1px solid $color-border;
     border-radius: $radius-md;
 
@@ -111,7 +111,7 @@
   }
 
   .confirmButton {
-    background-color: $color-bg-base;
+    background-color: $color-dark;
     color: $color-white;
 
     &:hover {
