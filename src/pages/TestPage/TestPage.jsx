@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import { useParams } from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import HeaderTest from "../../components/HeaderTest/HeaderTest";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import styles from "./TestPage.module.scss";
-import { getModuleById, getModuleQuestions } from "../../api/modules.js";
+import {getModuleById, getModuleQuestions} from "../../api/modules.js";
 import QuestionBlock from "../../components/QuestionBlock/QuestionBlock.jsx";
+import TestState from "../../components/TestState/TestState.jsx";
 
 const TestPage = () => {
     const [showQuestions, setShowQuestions] = useState(false);
@@ -14,8 +15,13 @@ const TestPage = () => {
         test: true,
         questions: false
     });
-    const [error, setError] = useState(null);
-    const { id } = useParams();
+
+    const [error, setError] = useState({
+        test: null,
+        questions: null,
+    });
+
+    const {id} = useParams();
 
     useEffect(() => {
         const fetchTestData = async () => {
@@ -23,9 +29,11 @@ const TestPage = () => {
                 setLoading(prev => ({...prev, test: true}));
                 const data = await getModuleById(Number(id));
                 setTestData(data);
-                setError(null);
+                setError((prev) => ({...prev, test: null}));
             } catch (err) {
-                setError('Не удалось загрузить информацию о тесте');
+                setError((prev) => ({
+                    ...prev, test: "Не удалось загрузить информацию о тесте"
+                }));
                 console.error('Error fetching test data:', err);
             } finally {
                 setLoading(prev => ({...prev, test: false}));
@@ -42,8 +50,11 @@ const TestPage = () => {
             setLoading(prev => ({...prev, questions: true}));
             const questionsData = await getModuleQuestions(Number(id));
             setQuestions(questionsData.questions);
+            setError((prev) => ({...prev, questions: null}));
         } catch (err) {
-            setError('Не удалось загрузить вопросы теста');
+            setError((prev) => ({
+                ...prev, questions: "Не удалось загрузить вопросы теста"
+            }));
             console.error('Error fetching questions:', err);
         } finally {
             setLoading(prev => ({...prev, questions: false}));
@@ -57,31 +68,10 @@ const TestPage = () => {
         setShowQuestions(!showQuestions);
     };
 
-    if (loading.test) {
-        return (
-            <>
-                <HeaderTest name="Загрузка..." />
-                <div className={`container ${styles.main}`}>
-                    <div className={styles.loadingState}>Загрузка данных теста...</div>
-                </div>
-            </>
-        );
-    }
+    if (loading.test) return <TestState type="loading"/>;
+    if (error.test || !testData) return <TestState type="error" message={error}/>;
 
-    if (error || !testData) {
-        return (
-            <>
-                <HeaderTest name="Ошибка" />
-                <div className={`container ${styles.main}`}>
-                    <div className={styles.errorState}>
-                        {error || 'Тест не найден'}
-                    </div>
-                </div>
-            </>
-        );
-    }
-
-    const { name, description, lastUse, progress, questionsCount } = testData;
+    const {name, description, lastUse, progress, questionsCount} = testData;
 
     return (
         <>
@@ -90,13 +80,13 @@ const TestPage = () => {
                 <section className={styles.info}>
                     <h2>Описание теста</h2>
                     {description ? <p className={styles.description}>{description}</p> :
-                        <p className={styles.description} style={{color: '#a6a6a6'}}>Здесь могло быть описание...</p>}
-
+                        <p className={`${styles.description} ${styles.descriptionEmpty}`}>Здесь могло быть
+                            описание...</p>}
                     <div className={styles.lastUse}>
                         Последнее прохождение: {lastUse}
                     </div>
 
-                    <ProgressBar value={progress || 0} total={questionsCount || 0} />
+                    <ProgressBar value={progress || 0} total={questionsCount || 0}/>
                 </section>
 
                 <div className={styles.toggle}>
@@ -114,7 +104,11 @@ const TestPage = () => {
                         <h2>Вопросы теста</h2>
                         {loading.questions ? (
                             <div className={styles.loadingState}>Загрузка вопросов...</div>
-                        ) : questions.length > 0 ? (
+                        ) : error.questions ? (
+                            <div className={styles.errorState}>
+                                {error.questions}
+                            </div>
+                        ) : questions.length > 0? (
                             questions.map((question, index) => (
                                 <QuestionBlock
                                     key={question.id}

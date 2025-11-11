@@ -1,0 +1,12 @@
+@use '../../assets/styles/variables' as *;
+
+.main {
+  padding-bottom: 60px;
+}
+
+.loadingState, .errorState {
+  text-align: center;
+  padding: 30px;
+  font-size: $font-md;
+  color: $color-text-secondary;
+}

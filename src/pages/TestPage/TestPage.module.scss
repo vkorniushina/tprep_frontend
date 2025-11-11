@@ -21,6 +21,10 @@
     font-size: $font-sm;
     line-height: 131%;
     margin-bottom: 60px;
+
+    &Empty{
+      color: $color-text-muted;
+    }
   }
 
   .lastUse {
@@ -64,16 +68,9 @@
   }
 }
 
-.loadingState, .emptyState {
+.loadingState, .emptyState, .errorState {
   text-align: center;
   padding: 30px;
   font-size: $font-md;
   color: $color-text-secondary;
-}
-
-.errorState {
-  text-align: center;
-  font-size: $font-md;
-  color: $color-text;
-  margin: 20px 0;
 }
