@@ -31,7 +31,6 @@ const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, c
 
     const hasErrors = isChecked && (hasSelectedIncorrect || notAllCorrectSelected);
 
-
     return (
         <div>
             <div className={styles.labelContainer}>
