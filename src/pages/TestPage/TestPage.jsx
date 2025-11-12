@@ -77,6 +77,7 @@ const TestPage = () => {
         <>
             <HeaderTest
                 name={name}
+                id={id}
                 disabledStart={questionsCount === 0}
             />
             <main className={`container ${styles.main}`}>

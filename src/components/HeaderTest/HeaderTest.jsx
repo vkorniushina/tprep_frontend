@@ -5,9 +5,8 @@ import arrowLeft from "../../assets/images/arrow_left.svg";
 import editIcon from "../../assets/images/edit.svg";
 import playIcon from "../../assets/images/play.svg";
 
-const HeaderTest = ({name, disabledStart = false}) => {
+const HeaderTest = ({name, id, disabledStart = false}) => {
     const navigate = useNavigate();
-    const { id } = useParams();
 
     const handleBackClick = () => {
         navigate('/');
