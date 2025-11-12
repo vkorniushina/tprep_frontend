@@ -29,3 +29,13 @@ export const getModuleQuestions = async (id) => {
         throw error;
     }
 };
+
+export const getModuleQuestionsLight = async (id) => {
+    try {
+        const response = await apiClient.get(`/modules/${id}/questions?light=true`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching light questions for module ${id}:`, error);
+        throw error;
+    }
+};
