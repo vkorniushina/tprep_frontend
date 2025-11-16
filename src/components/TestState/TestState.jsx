@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./TestState.module.scss";
+import arrowLeft from "../../assets/images/arrow_left.svg";
 import {useNavigate, useParams} from "react-router-dom";
 
 const TestState = ({ type, message }) => {
