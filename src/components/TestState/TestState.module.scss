@@ -1,5 +1,30 @@
 @use '../../assets/styles/variables' as *;
 
+.header {
+  display: flex;
+  padding: 0 20px;
+  background-color: $color-bg-base;
+  border-bottom: 1px solid $color-border;
+  height: 80px;
+  margin-bottom: 50px;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 30px;
+}
+
+.backIcon {
+  cursor: pointer;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 24px;
+}
+
 .main {
   padding-bottom: 60px;
 }
