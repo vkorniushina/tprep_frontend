@@ -31,7 +31,7 @@ const QuizPage = () => {
     const [isCorrect, setIsCorrect] = useState(false);
     const [isAnswered, setIsAnswered] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState(null);
-    const [correctAnswersIndices, setCorrectAnswersIndices] = useState([]);
+    const [correctAnswerIds, setCorrectAnswerIds] = useState([]);
 
     const STORAGE_KEY = `quizState_${id}`;
 
@@ -96,7 +96,7 @@ const QuizPage = () => {
                 setIsChecked(true);
                 setIsCorrect(saved.isCorrect);
                 setCorrectAnswer(saved.correctAnswer || null);
-                setCorrectAnswersIndices(saved.correctAnswersIndices || []);
+                setCorrectAnswerIds(saved.correctAnswersIndices || []);
                 setIsAnswered(true);
             } else {
                 resetQuestionState();
@@ -133,9 +133,9 @@ const QuizPage = () => {
         setIsAnswered(value.trim().length > 0);
     };
 
-    const handleChoiceSelect = (selectedIndices) => {
-        setSelectedAnswers(selectedIndices);
-        setIsAnswered(selectedIndices.length > 0);
+    const handleChoiceSelect = (selectedIds) => {
+        setSelectedAnswers(selectedIds);
+        setIsAnswered(selectedIds.length > 0);
     };
 
     const handleCheckAnswer = async () => {
@@ -145,8 +145,8 @@ const QuizPage = () => {
             const result = await submitAnswer(sessionId, {
                 questionId: currentQuestion.id,
                 userAnswer: currentQuestion.type === QUESTION_TYPES.INPUT
-                    ? userAnswer
-                    : selectedAnswers.map(String),
+                    ? [userAnswer]
+                    : selectedAnswers.map(Number),
             });
             const { isCorrect, correctAnswer } = result;
             setIsCorrect(isCorrect);
@@ -155,14 +155,14 @@ const QuizPage = () => {
             if (!isCorrect) {
                 if (currentQuestion.type === QUESTION_TYPES.INPUT) {
                     setCorrectAnswer(correctAnswer);
-                    setCorrectAnswersIndices([]);
+                    setCorrectAnswerIds([]);
                 } else {
                     setCorrectAnswer(null);
-                    setCorrectAnswersIndices(correctAnswer);
+                    setCorrectAnswerIds(correctAnswer);
                 }
             } else {
                 setCorrectAnswer(null);
-                setCorrectAnswersIndices([]);
+                setCorrectAnswerIds([]);
             }
 
             setUserAnswers(prev => ({
@@ -173,7 +173,7 @@ const QuizPage = () => {
                     isCorrect: isCorrect,
                     type: currentQuestion.type,
                     correctAnswer: correctAnswer,
-                    correctAnswersIndices: currentQuestion.type === QUESTION_TYPES.INPUT ? [] : correctAnswer,
+                    correctAnswerIds: currentQuestion.type === QUESTION_TYPES.INPUT ? [] : correctAnswer,
                 },
             }));
 
@@ -197,7 +197,7 @@ const QuizPage = () => {
         setIsChecked(false);
         setIsCorrect(false);
         setCorrectAnswer(null);
-        setCorrectAnswersIndices([]);
+        setCorrectAnswerIds([]);
         setIsAnswered(false);
     };
 
@@ -242,7 +242,7 @@ const QuizPage = () => {
                                 onSelect={handleChoiceSelect}
                                 disabled={isChecked}
                                 isChecked={isChecked}
-                                correctAnswers={correctAnswersIndices}
+                                correctAnswers={correctAnswerIds}
                             />
                         )}
                     </div>

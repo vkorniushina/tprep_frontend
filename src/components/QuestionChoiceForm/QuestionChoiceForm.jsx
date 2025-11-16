@@ -7,27 +7,32 @@ import incorrectIcon from "../../assets/images/incorrect.svg";
 
 const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, correctAnswers = []}) => {
 
-    const handleSelect = (index) => {
+    const handleSelect = (answerId) => {
         if (disabled) return;
         const newSelected = [...selected];
-        const position = newSelected.indexOf(index);
 
-        if (position !== -1) {
-            newSelected.splice(position, 1);
+        if (newSelected.includes(answerId)) {
+            onSelect(newSelected.filter(id => id !== answerId));
         } else {
-            newSelected.push(index);
+            onSelect([...newSelected, answerId]);
         }
-        onSelect(newSelected);
     };
 
-    const hasSelectedIncorrect = isChecked && selected.some(index => !answers[index].isCorrect);
+    const hasSelectedIncorrect =
+        isChecked &&
+        selected.some(id => {
+            const ans = answers.find(a => a.id === id);
+            return ans && !ans.isCorrect;
+        });
 
-    const allCorrectSelected = isChecked &&
-        correctAnswers.every(index => selected.includes(index)) &&
+    const allCorrectSelected =
+        isChecked &&
+        correctAnswers.every(id => selected.includes(id)) &&
         selected.length === correctAnswers.length;
 
-    const notAllCorrectSelected = isChecked &&
-        correctAnswers.some(index => !selected.includes(index));
+    const notAllCorrectSelected =
+        isChecked &&
+        correctAnswers.some(id => !selected.includes(id));
 
     const hasErrors = isChecked && (hasSelectedIncorrect || notAllCorrectSelected);
 
@@ -61,41 +66,37 @@ const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, c
             </div>
 
             <div className={styles.answers}>
-                {answers.map((answer, index) => {
+                {answers.map((answer) => {
+                    const isSelected = selected.includes(answer.id);
+
                     let optionClasses = [styles.option];
+
                     if (isChecked) {
-                        if (selected.includes(index)) {
+                        if (isSelected) {
                             optionClasses.push(styles.selected);
-                            if (answer.isCorrect) {
-                                optionClasses.push(styles.correct);
-                            }
-                            else {
-                                optionClasses.push(styles.incorrect);
-                            }
-                        }
-                        else if (answer.isCorrect) {
+                            optionClasses.push(answer.isCorrect ? styles.correct : styles.incorrect);
+                        } else if (answer.isCorrect) {
                             optionClasses.push(styles.missedCorrect);
                         }
-                    }
-                    else if (selected.includes(index)) {
+                    } else if (isSelected) {
                         optionClasses.push(styles.selected);
                     }
 
                     const IconComponent =
-                        isChecked && !answer.isCorrect && selected.includes(index)
+                        isChecked && !answer.isCorrect && isSelected
                             ? CrossIcon
                             : CheckIcon;
 
                     return (
                         <div
-                            key={index}
+                            key={answer.id}
                             className={optionClasses.join(' ')}
-                            onClick={() => handleSelect(index)}
+                            onClick={() => handleSelect(answer.id)}
                         >
                             <div className={styles.checkbox}>
                                 <input
                                     type="checkbox"
-                                    checked={selected.includes(index)}
+                                    checked={isSelected}
                                     onChange={() => {}}
                                     disabled={disabled}
                                 />
@@ -103,6 +104,7 @@ const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, c
                                     <IconComponent className={styles.checkSvg}/>
                                 </span>
                             </div>
+
                             <div className={styles.optionText}>
                                 {answer.content}
                             </div>
