@@ -13,9 +13,7 @@ const HeaderTest = ({name, id, disabledStart = false}) => {
     };
 
     const handleStartTest = () => {
-        if (!disabledStart) {
-            navigate(`/test/${id}/quiz`);
-        }
+        navigate(`/test/${id}/quiz`);
     };
 
     return (
