@@ -2,8 +2,7 @@ import React from 'react';
 import styles from './QuestionChoiceForm.module.scss';
 import CheckIcon from "../../assets/images/tick.svg?react";
 import CrossIcon from "../../assets/images/cross.svg?react";
-import correctIcon from "../../assets/images/correct.svg";
-import incorrectIcon from "../../assets/images/incorrect.svg";
+import ChoiceLabelContainer from "../ChoiceLabelContainer/ChoiceLabelContainer.jsx";
 
 const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, correctAnswers = []}) => {
 
@@ -35,32 +34,13 @@ const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, c
 
     return (
         <div>
-            <div className={styles.labelContainer}>
-                {isChecked && allCorrectSelected && (
-                    <div className={styles.correctLabel}>
-                        <img src={correctIcon} alt="Верно"/>
-                        <span>Да, это верно!</span>
-                    </div>
-                )}
-
-                {isChecked && hasSelectedIncorrect && (
-                    <div className={styles.incorrectLabel}>
-                        <img src={incorrectIcon} alt="Неверно"/>
-                        <span>Ошибки случаются!</span>
-                    </div>
-                )}
-
-                {isChecked && !hasSelectedIncorrect && notAllCorrectSelected && (
-                    <div className={styles.incorrectLabel}>
-                        <img src={incorrectIcon} alt="Неполно"/>
-                        <span>Выбраны не все правильные варианты!</span>
-                    </div>
-                )}
-
-                {(!isChecked || (!allCorrectSelected && !hasErrors)) && (
-                    <div className={styles.label}>Выберите один или несколько вариантов:</div>
-                )}
-            </div>
+            <ChoiceLabelContainer
+                isChecked={isChecked}
+                allCorrectSelected={allCorrectSelected}
+                hasSelectedIncorrect={hasSelectedIncorrect}
+                notAllCorrectSelected={notAllCorrectSelected}
+                hasErrors={hasErrors}
+            />
 
             <div className={styles.answers}>
                 {answers.map((answer) => {
