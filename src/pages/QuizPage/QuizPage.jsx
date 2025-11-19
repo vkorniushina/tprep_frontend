@@ -96,7 +96,7 @@ const QuizPage = () => {
                 setIsChecked(true);
                 setIsCorrect(saved.isCorrect);
                 setCorrectAnswer(saved.correctAnswer || null);
-                setCorrectAnswerIds(saved.correctAnswersIndices || []);
+                setCorrectAnswerIds(saved.correctAnswerIds || []);
                 setIsAnswered(true);
             } else {
                 resetQuestionState();

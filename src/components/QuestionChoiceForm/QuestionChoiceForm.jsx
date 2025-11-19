@@ -20,10 +20,7 @@ const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, c
 
     const hasSelectedIncorrect =
         isChecked &&
-        selected.some(id => {
-            const ans = answers.find(a => a.id === id);
-            return ans && !ans.isCorrect;
-        });
+        selected.some(id => !correctAnswers.includes(id));
 
     const allCorrectSelected =
         isChecked &&
@@ -68,14 +65,15 @@ const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, c
             <div className={styles.answers}>
                 {answers.map((answer) => {
                     const isSelected = selected.includes(answer.id);
-
+                    const isGloballyCorrect = correctAnswers.includes(answer.id);
                     let optionClasses = [styles.option];
 
                     if (isChecked) {
                         if (isSelected) {
                             optionClasses.push(styles.selected);
-                            optionClasses.push(answer.isCorrect ? styles.correct : styles.incorrect);
-                        } else if (answer.isCorrect) {
+                            optionClasses.push(isGloballyCorrect ? styles.correct : styles.incorrect);
+                        }
+                        else if (isGloballyCorrect) {
                             optionClasses.push(styles.missedCorrect);
                         }
                     } else if (isSelected) {
