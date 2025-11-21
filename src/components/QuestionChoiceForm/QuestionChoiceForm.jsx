@@ -3,6 +3,7 @@ import styles from './QuestionChoiceForm.module.scss';
 import CheckIcon from "../../assets/images/tick.svg?react";
 import CrossIcon from "../../assets/images/cross.svg?react";
 import ChoiceLabelContainer from "../ChoiceLabelContainer/ChoiceLabelContainer.jsx";
+import classNames from "classnames";
 
 const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, correctAnswers = []}) => {
 
@@ -46,19 +47,6 @@ const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, c
                 {answers.map((answer) => {
                     const isSelected = selected.includes(answer.id);
                     const isGloballyCorrect = correctAnswers.includes(answer.id);
-                    let optionClasses = [styles.option];
-
-                    if (isChecked) {
-                        if (isSelected) {
-                            optionClasses.push(styles.selected);
-                            optionClasses.push(isGloballyCorrect ? styles.correct : styles.incorrect);
-                        }
-                        else if (isGloballyCorrect) {
-                            optionClasses.push(styles.missedCorrect);
-                        }
-                    } else if (isSelected) {
-                        optionClasses.push(styles.selected);
-                    }
 
                     const IconComponent =
                         isChecked && !answer.isCorrect && isSelected
@@ -68,7 +56,15 @@ const QuestionChoiceForm = ({answers, selected, onSelect, disabled, isChecked, c
                     return (
                         <div
                             key={answer.id}
-                            className={optionClasses.join(' ')}
+                            className={classNames(
+                                styles.option,
+                                {
+                                    [styles.selected]: isSelected,
+                                    [styles.correct]: isChecked && isSelected && isGloballyCorrect,
+                                    [styles.incorrect]: isChecked && isSelected && !isGloballyCorrect,
+                                    [styles.missedCorrect]: isChecked && !isSelected && isGloballyCorrect,
+                                }
+                            )}
                             onClick={() => handleSelect(answer.id)}
                         >
                             <div className={styles.checkbox}>
