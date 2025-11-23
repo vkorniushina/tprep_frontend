@@ -1,0 +1,131 @@
+@use '../../assets/styles/variables' as *;
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: $color-bg-gray;
+  cursor: pointer;
+
+  &:hover:not(.correct):not(.incorrect):not(.missedCorrect) {
+    transition: $transition-base;
+    background-color: #f9f9f9;
+    border-color: $color-border-hover;
+  }
+
+  &.correct {
+    border: 1px solid $color-success-border;
+    background-color: $color-success-bg-light;
+    border-radius: $radius-md;
+  }
+
+  &.incorrect {
+    border: 1px solid $color-error-border;
+    background-color: $color-error-bg-light;
+    border-radius: $radius-md;
+  }
+
+  &.missedCorrect {
+    border: 2px dashed $color-success-border;
+    background-color: $color-bg-base;
+    border-radius: $radius-md;
+  }
+}
+
+.checkbox {
+  position: relative;
+  width: 25px;
+  height: 25px;
+  margin-right: 15px;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    background: $color-bg-base;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .checkSvg {
+    display: none;
+  }
+
+  input:checked + .checkmark {
+    transition: $transition-base;
+    background: $color-primary;
+    border-color: $color-primary;
+
+    .checkSvg {
+      display: block;
+    }
+  }
+
+  .option.correct & input:checked + .checkmark {
+    transition: none;
+    background-color: $color-success-base;
+    border-color: $color-success-base;
+
+    .checkSvg {
+      display: block;
+
+      path {
+        fill: $color-white;
+      }
+    }
+  }
+
+  .option.missedCorrect & .checkmark {
+    background-color: $color-success-base;
+    border-color: $color-success-base;
+
+    .checkSvg {
+      display: block;
+
+      path {
+        fill: $color-white;
+      }
+    }
+  }
+
+  .option.incorrect & input:checked + .checkmark {
+    transition: none;
+    border-color: $color-error-border;
+    background: $color-error-border;
+
+    .checkSvg {
+      display: block;
+
+      path {
+        fill: $color-white;
+      }
+    }
+  }
+}
+
+.optionText {
+  font-weight: 400;
+  font-size: $font-md;
+}

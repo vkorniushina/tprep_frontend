@@ -1,16 +1,19 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import styles from "./HeaderTest.module.scss";
 import arrowLeft from "../../assets/images/arrow_left.svg";
 import editIcon from "../../assets/images/edit.svg";
 import playIcon from "../../assets/images/play.svg";
 
-
-const HeaderTest = ({name}) => {
+const HeaderTest = ({name, id, disabledStart = false}) => {
     const navigate = useNavigate();
 
     const handleBackClick = () => {
         navigate('/');
+    };
+
+    const handleStartTest = () => {
+        navigate(`/test/${id}/quiz`);
     };
 
     return (
@@ -28,7 +31,10 @@ const HeaderTest = ({name}) => {
                     <button className={styles.editBtn}>
                         <img src={editIcon}/> Редактировать
                     </button>
-                    <button className={styles.startBtn}>
+                    <button className={`${styles.startBtn} ${disabledStart ? styles.disabled : ""}`}
+                            onClick={handleStartTest}
+                            disabled={disabledStart}
+                    >
                         <img src={playIcon}/> Начать тест
                     </button>
                 </div>
@@ -38,3 +44,4 @@ const HeaderTest = ({name}) => {
 };
 
 export default HeaderTest;
+

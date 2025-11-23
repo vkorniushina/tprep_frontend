@@ -69,7 +69,14 @@
   cursor: pointer;
   transition: $transition-base;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: $color-primary-hover;
+  }
+
+  &:disabled,
+  &.disabled {
+    background-color: $color-border;
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }

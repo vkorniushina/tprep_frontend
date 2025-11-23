@@ -1,0 +1,95 @@
+@use '../../assets/styles/variables' as *;
+
+.confirmOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $color-backdrop;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.confirmBox {
+  background-color: $color-bg-base;
+  padding: 45px 25px 25px;
+  border-radius: $radius-md;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: $shadow-base;
+  position: relative;
+
+  h2 {
+    font-weight: 500;
+    font-size: $font-lg;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-weight: 400;
+    font-size: $font-sm;
+    margin-bottom: 30px;
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+
+  button {
+    flex: 1;
+    padding: 10px 15px;
+    font-weight: 500;
+    font-size: $font-sm;
+    border-radius: $radius-md;
+    border: none;
+    cursor: pointer;
+    transition: $transition-base;
+  }
+
+  .cancelButton {
+    background-color: $color-bg-base;
+    color: $color-text;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+
+    &:hover {
+      background-color: $color-bg-gray;
+    }
+  }
+
+  .confirmButton {
+    background-color: $color-dark;
+    color: $color-white;
+
+    &:hover {
+      background-color: $color-dark-hover;
+    }
+  }
+}
+
+.closeModalButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: $font-lg;
+  cursor: pointer;
+  color: $color-text-secondary;
+
+  .closeIcon {
+    width: 18px;
+    height: 18px;
+    transition: opacity $transition-speed;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}

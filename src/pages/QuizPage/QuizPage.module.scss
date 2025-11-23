@@ -1,0 +1,31 @@
+.quizContainer{
+  min-height: 100vh;
+  padding-bottom: 180px;
+}
+
+.questionContainer {
+  background: #fff;
+  border-radius: 15px;
+  padding: 55px 70px 70px;
+}
+
+.questionText {
+  font-weight: 500;
+  font-size: 24px;
+  margin-bottom: 80px;
+}
+
+.answerButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.loading, .error{
+  text-align: center;
+  padding: 30px;
+  font-size: 18px;
+  color: #666;
+}

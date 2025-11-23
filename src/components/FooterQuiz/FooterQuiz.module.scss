@@ -1,0 +1,74 @@
+@use '../../assets/styles/variables' as *;
+
+.footer {
+  display: flex;
+  align-items: center;
+  background: $color-bg-base;
+  height: 80px;
+  padding: 20px 0;
+  border-top: 1px solid $color-border;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navButton {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: $radius-md;
+  font-weight: 500;
+  font-size: $font-sm;
+  color: $color-text;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.prevButton {
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background-color: $color-bg-base;
+
+    &:hover {
+      background: $color-bg-gray;
+    }
+  }
+
+  &.nextButton {
+    background-color: $color-primary;
+    border: none;
+
+    &:hover {
+      background: $color-primary-hover;
+    }
+  }
+}
+
+.checkButton {
+  border-radius: $radius-md;
+  background-color: $color-dark;
+  color: $color-white;
+  border: none;
+  padding: 12px 20px;
+  font-size: $font-sm;
+  font-weight: 400;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background-color: $color-dark-hover;
+  }
+}

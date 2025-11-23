@@ -1,0 +1,26 @@
+@use '../../assets/styles/variables' as *;
+
+.labelContainer {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-weight: 400;
+  font-size: $font-sm;
+}
+
+.correctLabel, .incorrectLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: $font-sm;
+  font-weight: 400;
+}
+
+.correctLabel {
+  color: $color-success-dark;
+}
+
+.incorrectLabel {
+  color: $color-error-base;
+}
