@@ -10,6 +10,7 @@ import {createTestSession, submitAnswer} from "../../api/testSessions.js";
 import {getQuestionById} from "../../api/questions.js";
 import {QUESTION_TYPES} from "../../constants/questionTypes.js";
 import TestState from "../../components/TestState/TestState.jsx";
+import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal.jsx";
 
 const QuizPage = () => {
     const { id } = useParams();
@@ -32,6 +33,8 @@ const QuizPage = () => {
     const [isAnswered, setIsAnswered] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState(null);
     const [correctAnswerIds, setCorrectAnswerIds] = useState([]);
+
+    const [exitOpen, setExitOpen] = useState(false);
 
     const STORAGE_KEY = `quizState_${id}`;
 
@@ -123,6 +126,19 @@ const QuizPage = () => {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
     }, [sessionId, testName, userAnswers, currentIndex, questionsCache, questionsMeta]);
 
+    useEffect(() => {
+        const blockBack = (e) => {
+            e.preventDefault();
+            window.history.pushState(null, "", window.location.href);
+            setExitOpen(true);
+        };
+
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("popstate", blockBack);
+
+        return () => window.removeEventListener("popstate", blockBack);
+    }, []);
+
     const currentQuestionMeta = questionsMeta[currentIndex];
     const currentQuestion = currentQuestionMeta
         ? questionsCache[currentQuestionMeta.id]
@@ -201,7 +217,15 @@ const QuizPage = () => {
         setIsAnswered(false);
     };
 
-    const handleClose = () => {
+    const handleRequestExit = () => {
+        setExitOpen(true);
+    };
+
+    const handleCancelExit = () => {
+        setExitOpen(false);
+    };
+
+    const handleConfirmExit = () => {
         sessionStorage.removeItem(STORAGE_KEY);
         navigate(`/test/${id}`);
     };
@@ -216,7 +240,13 @@ const QuizPage = () => {
                 testName={testName}
                 currentQuestion={currentIndex + 1}
                 totalQuestions={questionsMeta.length}
-                onConfirmClose={handleClose}
+                onExitClick={handleRequestExit}
+            />
+
+            <ExitConfirmModal
+                open={exitOpen}
+                onCancel={handleCancelExit}
+                onConfirm={handleConfirmExit}
             />
 
             <main className={`container ${styles.main}`}>
