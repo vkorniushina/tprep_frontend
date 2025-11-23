@@ -14,9 +14,9 @@
   border-radius: $radius-md;
   background: $color-bg-gray;
   cursor: pointer;
-  transition: $transition-base;
 
   &:hover:not(.correct):not(.incorrect):not(.missedCorrect) {
+    transition: $transition-base;
     background-color: #f9f9f9;
     border-color: $color-border-hover;
   }
@@ -67,7 +67,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: $transition-base;
   }
 
   .checkSvg {
@@ -75,6 +74,7 @@
   }
 
   input:checked + .checkmark {
+    transition: $transition-base;
     background: $color-primary;
     border-color: $color-primary;
 
@@ -84,6 +84,7 @@
   }
 
   .option.correct & input:checked + .checkmark {
+    transition: none;
     background-color: $color-success-base;
     border-color: $color-success-base;
 
@@ -110,6 +111,7 @@
   }
 
   .option.incorrect & input:checked + .checkmark {
+    transition: none;
     border-color: $color-error-border;
     background: $color-error-border;
 
