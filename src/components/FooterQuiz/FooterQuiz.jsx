@@ -5,17 +5,17 @@ const FooterQuiz = ({
                         onPrevious,
                         onNext,
                         isPreviousDisabled,
-                        isNextDisabled,
                         showCheckButton,
-                        onCheckAnswer
+                        onCheckAnswer,
+                        isLastQuestion,
+                        onFinishTest
                     }) => {
     return (
         <footer className={styles.footer}>
             <div className={`container ${styles.inner}`}>
                 <button
-                    className={`${styles.navButton} ${styles.prevButton}`}
+                    className={`${styles.navButton} ${styles.prevButton} ${isPreviousDisabled ? styles.hidden : ''}`}
                     onClick={onPrevious}
-                    disabled={isPreviousDisabled}
                 >
                     Предыдущий вопрос
                 </button>
@@ -30,11 +30,10 @@ const FooterQuiz = ({
                 )}
 
                 <button
-                    className={`${styles.navButton} ${styles.nextButton}`}
-                    onClick={onNext}
-                    disabled={isNextDisabled}
+                    className={`${styles.navButton} ${isLastQuestion ? styles.finishButton : styles.nextButton}`}
+                    onClick={isLastQuestion ? onFinishTest : onNext}
                 >
-                    Следующий вопрос
+                    {isLastQuestion ? 'Завершить тест' : 'Следующий вопрос'}
                 </button>
             </div>
         </footer>
