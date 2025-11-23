@@ -6,11 +6,12 @@ import QuestionChoiceForm from '../../components/QuestionChoiceForm/QuestionChoi
 import HeaderQuiz from '../../components/HeaderQuiz/HeaderQuiz';
 import FooterQuiz from '../../components/FooterQuiz/FooterQuiz';
 import {getModuleQuestionsLight} from "../../api/modules.js";
-import {createTestSession, submitAnswer} from "../../api/testSessions.js";
+import {createTestSession, getTestSession, submitAnswer} from "../../api/testSessions.js";
 import {getQuestionById} from "../../api/questions.js";
 import {QUESTION_TYPES} from "../../constants/questionTypes.js";
 import TestState from "../../components/TestState/TestState.jsx";
 import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal.jsx";
+import ResultModal from "../../components/ResultModal/ResultModal.jsx";
 
 const QuizPage = () => {
     const { id } = useParams();
@@ -35,6 +36,10 @@ const QuizPage = () => {
     const [correctAnswerIds, setCorrectAnswerIds] = useState([]);
 
     const [exitOpen, setExitOpen] = useState(false);
+
+    const [isFinished, setIsFinished] = useState(false);
+    const [resultData, setResultData] = useState(null);
+    const [showResultModal, setShowResultModal] = useState(false);
 
     const STORAGE_KEY = `quizState_${id}`;
 
@@ -139,6 +144,20 @@ const QuizPage = () => {
         return () => window.removeEventListener("popstate", blockBack);
     }, []);
 
+    useEffect(() => {
+        if (showResultModal) {
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.width = '100%';
+        } else {
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        }
+    }, [showResultModal]);
+
     const currentQuestionMeta = questionsMeta[currentIndex];
     const currentQuestion = currentQuestionMeta
         ? questionsCache[currentQuestionMeta.id]
@@ -225,9 +244,21 @@ const QuizPage = () => {
         setExitOpen(false);
     };
 
-    const handleConfirmExit = () => {
+    const handleExit = () => {
         sessionStorage.removeItem(STORAGE_KEY);
         navigate(`/test/${id}`);
+    };
+
+    const handleFinishTest = async () => {
+        try {
+            const result = await getTestSession(sessionId);
+            setResultData(result);
+            setIsFinished(true);
+            setShowResultModal(true);
+        } catch (err) {
+            console.error('Error fetching test result:', err);
+            setError('Не удалось получить результат теста');
+        }
     };
 
     if (loading) return <TestState type="loading" message="Загрузка теста..." />;
@@ -246,7 +277,7 @@ const QuizPage = () => {
             <ExitConfirmModal
                 open={exitOpen}
                 onCancel={handleCancelExit}
-                onConfirm={handleConfirmExit}
+                onConfirm={handleExit}
             />
 
             <main className={`container ${styles.main}`}>
@@ -284,10 +315,24 @@ const QuizPage = () => {
                 onPrevious={handlePreviousQuestion}
                 onNext={handleNextQuestion}
                 isPreviousDisabled={currentIndex === 0}
-                isNextDisabled={currentIndex === questionsMeta.length - 1}
                 showCheckButton={isAnswered && !isChecked}
                 onCheckAnswer={handleCheckAnswer}
+                isLastQuestion={currentIndex === questionsMeta.length - 1}
+                onFinishTest={handleFinishTest}
             />
+
+            {showResultModal && (
+                <ResultModal
+                    result={resultData}
+                    onRetry={() => {
+                        sessionStorage.removeItem(STORAGE_KEY);
+                        setShowResultModal(false);
+                        setIsFinished(false);
+                        navigate(0);
+                    }}
+                    onClose={handleExit}
+                />
+            )}
         </div>
     );
 };
