@@ -37,7 +37,6 @@ const QuizPage = () => {
 
     const [exitOpen, setExitOpen] = useState(false);
 
-    const [isFinished, setIsFinished] = useState(false);
     const [resultData, setResultData] = useState(null);
     const [showResultModal, setShowResultModal] = useState(false);
 
@@ -258,10 +257,9 @@ const QuizPage = () => {
         try {
             const result = await finishTestSession(sessionId);
             setResultData(result);
-            setIsFinished(true);
             setShowResultModal(true);
         } catch (err) {
-            console.error('Error finishing test:', err);
+            console.error('Error finishing test', err);
             setError('Не удалось завершить тест');
         }
     };
@@ -332,7 +330,6 @@ const QuizPage = () => {
                     onRetry={() => {
                         sessionStorage.removeItem(STORAGE_KEY);
                         setShowResultModal(false);
-                        setIsFinished(false);
                         navigate(0);
                     }}
                     onClose={handleExit}
