@@ -19,3 +19,14 @@ export const submitAnswer = async (sessionId, answerData) => {
         throw error;
     }
 };
+
+export const getTestSession = async (sessionId) => {
+    try {
+        const response = await apiClient.get(`/test-sessions/${sessionId}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching test session ${sessionId}:`, error);
+        throw error;
+    }
+};
+
