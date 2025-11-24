@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
 import styles from './QuizPage.module.scss';
 import QuestionInputForm from '../../components/QuestionInputForm/QuestionInputForm';
 import QuestionChoiceForm from '../../components/QuestionChoiceForm/QuestionChoiceForm';
 import HeaderQuiz from '../../components/HeaderQuiz/HeaderQuiz';
 import FooterQuiz from '../../components/FooterQuiz/FooterQuiz';
 import {getModuleQuestionsLight} from "../../api/modules.js";
-import {createTestSession, getTestSession, submitAnswer} from "../../api/testSessions.js";
+import {createTestSession, finishTestSession, submitAnswer} from "../../api/testSessions.js";
 import {getQuestionById} from "../../api/questions.js";
 import {QUESTION_TYPES} from "../../constants/questionTypes.js";
 import TestState from "../../components/TestState/TestState.jsx";
@@ -14,7 +14,7 @@ import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal
 import ResultModal from "../../components/ResultModal/ResultModal.jsx";
 
 const QuizPage = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const navigate = useNavigate();
 
     const [sessionId, setSessionId] = useState(null);
@@ -90,7 +90,7 @@ const QuizPage = () => {
             if (!questionsCache[questionId]) {
                 try {
                     const data = await getQuestionById(questionId);
-                    setQuestionsCache(prev => ({ ...prev, [questionId]: data }));
+                    setQuestionsCache(prev => ({...prev, [questionId]: data}));
                 } catch (err) {
                     console.error(`Error loading question ${questionId}`, err);
                     setError('Не удалось загрузить вопрос');
@@ -183,7 +183,7 @@ const QuizPage = () => {
                     ? [userAnswer]
                     : selectedAnswers.map(Number),
             });
-            const { isCorrect, correctAnswer } = result;
+            const {isCorrect, correctAnswer} = result;
             setIsCorrect(isCorrect);
             setIsChecked(true);
 
@@ -244,26 +244,31 @@ const QuizPage = () => {
         setExitOpen(false);
     };
 
-    const handleExit = () => {
+    const handleExit = async () => {
+        try {
+            await finishTestSession(sessionId);
+        } catch (err) {
+            console.error("Error finishing session on exit", err);
+        }
         sessionStorage.removeItem(STORAGE_KEY);
         navigate(`/test/${id}`);
     };
 
     const handleFinishTest = async () => {
         try {
-            const result = await getTestSession(sessionId);
+            const result = await finishTestSession(sessionId);
             setResultData(result);
             setIsFinished(true);
             setShowResultModal(true);
         } catch (err) {
-            console.error('Error fetching test result:', err);
-            setError('Не удалось получить результат теста');
+            console.error('Error finishing test:', err);
+            setError('Не удалось завершить тест');
         }
     };
 
-    if (loading) return <TestState type="loading" message="Загрузка теста..." />;
-    if (error) return <TestState type="error" message={error} />;
-    if (!currentQuestion) return <TestState type="loading" message="Загрузка вопроса..." />;
+    if (loading) return <TestState type="loading" message="Загрузка теста..."/>;
+    if (error) return <TestState type="error" message={error}/>;
+    if (!currentQuestion) return <TestState type="loading" message="Загрузка вопроса..."/>;
 
     return (
         <div className={styles.quizContainer}>

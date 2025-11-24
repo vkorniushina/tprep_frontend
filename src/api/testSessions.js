@@ -30,3 +30,12 @@ export const getTestSession = async (sessionId) => {
     }
 };
 
+export const finishTestSession = async (sessionId) => {
+    try {
+        const response = await apiClient.post(`/test-sessions/${sessionId}/finish`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error finishing test session ${sessionId}:`, error);
+        throw error;
+    }
+};
