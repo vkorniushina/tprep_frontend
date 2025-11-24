@@ -32,11 +32,6 @@
   cursor: pointer;
   transition: $transition-base;
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
   &.prevButton {
     border: 1px solid $color-border;
     border-radius: $radius-md;
@@ -47,12 +42,28 @@
     }
   }
 
+  &.hidden {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   &.nextButton {
     background-color: $color-primary;
     border: none;
 
     &:hover {
       background: $color-primary-hover;
+    }
+  }
+
+  &.finishButton {
+    background-color: $color-dark;
+    color: $color-white;
+    border: none;
+    padding: 10px 30px;
+
+    &:hover {
+      background: $color-dark-hover;
     }
   }
 }
