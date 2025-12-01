@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import styles from './FooterQuiz.module.scss';
 
 const FooterQuiz = ({
@@ -14,7 +15,11 @@ const FooterQuiz = ({
         <footer className={styles.footer}>
             <div className={`container ${styles.inner}`}>
                 <button
-                    className={`${styles.navButton} ${styles.prevButton} ${isPreviousDisabled ? styles.hidden : ''}`}
+                    className={classNames(
+                        styles.navButton,
+                        styles.prevButton,
+                        {[styles.hidden]: isPreviousDisabled})
+                    }
                     onClick={onPrevious}
                 >
                     Предыдущий вопрос
@@ -30,7 +35,12 @@ const FooterQuiz = ({
                 )}
 
                 <button
-                    className={`${styles.navButton} ${isLastQuestion ? styles.finishButton : styles.nextButton}`}
+                    className={classNames(
+                        styles.navButton, {
+                            [styles.finishButton]: isLastQuestion,
+                            [styles.nextButton]: !isLastQuestion
+                        }
+                    )}
                     onClick={isLastQuestion ? onFinishTest : onNext}
                 >
                     {isLastQuestion ? 'Завершить тест' : 'Следующий вопрос'}
