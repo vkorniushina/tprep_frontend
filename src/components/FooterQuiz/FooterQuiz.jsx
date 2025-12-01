@@ -1,21 +1,26 @@
 import React from 'react';
+import classNames from 'classnames';
 import styles from './FooterQuiz.module.scss';
 
 const FooterQuiz = ({
                         onPrevious,
                         onNext,
                         isPreviousDisabled,
-                        isNextDisabled,
                         showCheckButton,
-                        onCheckAnswer
+                        onCheckAnswer,
+                        isLastQuestion,
+                        onFinishTest
                     }) => {
     return (
         <footer className={styles.footer}>
             <div className={`container ${styles.inner}`}>
                 <button
-                    className={`${styles.navButton} ${styles.prevButton}`}
+                    className={classNames(
+                        styles.navButton,
+                        styles.prevButton,
+                        {[styles.hidden]: isPreviousDisabled})
+                    }
                     onClick={onPrevious}
-                    disabled={isPreviousDisabled}
                 >
                     Предыдущий вопрос
                 </button>
@@ -30,11 +35,15 @@ const FooterQuiz = ({
                 )}
 
                 <button
-                    className={`${styles.navButton} ${styles.nextButton}`}
-                    onClick={onNext}
-                    disabled={isNextDisabled}
+                    className={classNames(
+                        styles.navButton, {
+                            [styles.finishButton]: isLastQuestion,
+                            [styles.nextButton]: !isLastQuestion
+                        }
+                    )}
+                    onClick={isLastQuestion ? onFinishTest : onNext}
                 >
-                    Следующий вопрос
+                    {isLastQuestion ? 'Завершить тест' : 'Следующий вопрос'}
                 </button>
             </div>
         </footer>
