@@ -1,0 +1,147 @@
+@use '../../assets/styles/variables' as *;
+
+.wrapper {
+  min-height: 100vh;
+}
+
+.form {
+  background: $color-bg-base;
+  padding: 40px 50px 55px;
+  margin-bottom: 60px;
+  border-radius: $radius-lg;
+
+  .block {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      font-weight: 500;
+      font-size: $font-md;
+      color: $color-text;
+      margin-bottom: 20px;
+    }
+
+    input,
+    textarea {
+      background: $color-bg-gray;
+      border: 1px solid $color-border;
+      border-radius: $radius-md;
+      font-weight: 400;
+      font-size: $font-sm;
+      color: $color-text;
+      padding: 20px;
+      line-height: 1.5;
+
+      &:focus {
+        outline: none;
+        border-color: $color-border-hover;
+      }
+
+      &::placeholder {
+        color: $color-text-muted;
+      }
+    }
+
+    input {
+      margin-bottom: 40px;
+    }
+
+    textarea {
+      height: 145px;
+      resize: none;
+    }
+  }
+}
+
+.questionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+
+  h2 {
+    font-weight: 500;
+    font-size: $font-lg;
+    color: $color-text;
+  }
+}
+
+.addQuestionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: $color-dark;
+  color: $color-white;
+  border: none;
+  border-radius: $radius-md;
+  padding: 12px 30px 12px 20px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: $font-sm;
+  transition: $transition-base;
+
+  &:hover {
+    background: $color-dark-hover;
+  }
+
+  .addIcon{
+    width: 15px;
+    height: 15px;
+    color: $color-white;
+  }
+}
+
+.questionContainer{
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  margin-bottom: 60px;
+}
+
+.addQuestionBtnContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+
+.scrollTopButton {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: $color-primary;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  opacity: 1;
+  visibility: visible;
+
+  &:hover {
+    background-color: $color-primary-hover;
+    transform: translateY(-3px);
+  }
+
+  .arrowUp {
+    width: 25px;
+    height: 25px;
+    color: $color-dark;
+    transform: rotate(90deg);
+  }
+}
+
+.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.show {
+  opacity: 1;
+  visibility: visible;
+}
