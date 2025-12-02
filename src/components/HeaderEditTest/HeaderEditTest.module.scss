@@ -1,0 +1,52 @@
+@use '../../assets/styles/variables' as *;
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background-color: $color-bg-base;
+  border-bottom: 1px solid $color-border;
+  height: 80px;
+  margin-bottom: 50px;
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.backIcon {
+  cursor: pointer;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.editBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: $color-primary;
+  border: none;
+  border-radius: $radius-md;
+  padding: 10px 20px 10px 15px;
+  font-weight: 500;
+  font-size: $font-sm;
+  color: $color-text;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background: $color-primary-hover;
+  }
+}
