@@ -1,0 +1,286 @@
+@use '../../assets/styles/variables' as *;
+
+.card {
+  background: $color-bg-base;
+  padding: 50px 80px 70px 40px;
+  border-radius: $radius-md;
+  position: relative;
+}
+
+.delete {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.content {
+  display: flex;
+  gap: 20px;
+}
+
+.index{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: $font-lg;
+  color: $color-text;
+  border-radius: $radius-sm;
+  background: $color-bg-gray;
+  max-height: 40px;
+  max-width: 40px;
+  width: 100%;
+}
+
+.contentMain {
+  flex: 1;
+}
+
+.header {
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.section {
+  margin-bottom: 30px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.questionInput {
+  width: 100%;
+  background: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-weight: 400;
+  font-size: $font-sm;
+  color: $color-text;
+  padding: 20px;
+
+  &:focus {
+    outline: none;
+    border-color: $color-border-hover;
+  }
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
+
+.radioContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  height: 24px;
+  padding-left: 40px;
+  width: fit-content
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.radioCircle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 24px;
+  width: 24px;
+  background-color: $color-bg-base;
+  border: 1px solid $color-border-hover;
+  border-radius: 50px;
+
+  &:after {
+    content: "";
+    position: absolute;
+    display: none;
+    top: 5px;
+    left: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50px;
+    background: $color-border-hover;
+  }
+}
+
+.radioInput:checked ~ .radioCircle:after {
+  display: block;
+}
+
+.radioText {
+  font-weight: 400;
+  font-size: $font-sm;
+  line-height: 24px;
+  display: inline-block;
+}
+
+.answerTextarea {
+  width: 100%;
+  min-height: 145px;
+  background: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-weight: 400;
+  font-size: $font-sm;
+  color: $color-text;
+  padding: 20px;
+  line-height: 1.5;
+  resize: none;
+
+  &:focus {
+    outline: none;
+    border-color: $color-border-hover;
+  }
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
+.headerOption {
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.optionsHelper {
+  font-weight: 400;
+  font-size: $font-xs;
+  color: $color-text-secondary;
+  margin-bottom: 20px;
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-bottom: 20px;
+}
+
+.optionItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.checkboxLabel {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkboxSquare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 24px;
+  width: 24px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.checkboxInput:checked ~ .checkboxSquare {
+  background-color: #ffdd2d;
+  border-color: #ffdd2d;
+}
+
+.checkboxTick {
+  width: 14px;
+  height: 10px;
+}
+
+.optionInput {
+  flex: 1;
+  padding: 16px 18px;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  background-color: $color-bg-gray;
+  font-weight: 400;
+  font-size: $font-sm;
+
+  &:focus {
+    outline: none;
+    border-color: $color-border-hover;
+  }
+}
+
+.optionRemove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .cross{
+    width: 12px;
+    height: 12px;
+    color: $color-text-secondary;
+    stroke-width: 1.5;
+
+    &:hover {
+      color: $color-dark-hover;
+    }
+  }
+}
+
+.addOptionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto;
+  background: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  padding: 10px 30px 10px 20px;
+  cursor: pointer;
+  font-weight: 400;
+  font-size: $font-sm;
+  transition: $transition-base;
+
+  &:hover {
+    background-color: #e6e6e6;
+  }
+
+  .add{
+    width: 12px;
+    height: 12px;
+    color: $color-dark;
+  }
+}
