@@ -21,6 +21,7 @@
     font-size: $font-sm;
     line-height: 131%;
     margin-bottom: 60px;
+    white-space: pre-wrap;
 
     &Empty{
       color: $color-text-muted;
