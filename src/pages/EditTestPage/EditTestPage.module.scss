@@ -13,6 +13,7 @@
   .block {
     display: flex;
     flex-direction: column;
+    position: relative;
 
     label {
       font-weight: 500;
@@ -42,15 +43,15 @@
       }
     }
 
-    input {
-      margin-bottom: 40px;
-    }
-
     textarea {
       height: 145px;
       resize: none;
     }
   }
+}
+
+.block:not(:last-child) {
+  margin-bottom: 40px;
 }
 
 .questionsHeader {
@@ -144,4 +145,17 @@
 .show {
   opacity: 1;
   visibility: visible;
+}
+
+.inputError {
+  border-color: $color-error-base !important;
+}
+
+.errorMessage {
+  color: $color-error-base;
+  font-size: 14px;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: 5px;
 }

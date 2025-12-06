@@ -175,11 +175,18 @@
   margin-bottom: 20px;
 }
 
-.optionItem {
+.optionContentWrapper{
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
+}
+
+.optionItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
 }
 
 .checkboxLabel {
@@ -283,4 +290,31 @@
     height: 12px;
     color: $color-dark;
   }
+}
+
+.section {
+  position: relative;
+}
+
+.inputError {
+  border-color: $color-error-base !important;
+}
+
+.errorMessage {
+  color: $color-error-base;
+  font-size: 14px;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: 5px;
+}
+
+.optionsHelperError {
+  color: $color-error-base;
+}
+
+.errorMessageFlow {
+  color: $color-error-base;
+  font-size: 14px;
+  padding-left: 36px;
 }

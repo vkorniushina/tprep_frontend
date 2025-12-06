@@ -8,6 +8,8 @@ import ArrowUp from "../../assets/images/arrow_left.svg?react";
 import {getModuleById, getModuleQuestions, updateModule} from "../../api/modules.js";
 import {QUESTION_TYPES} from "../../constants/questionTypes.js";
 import TestState from "../../components/TestState/TestState.jsx";
+import { validateModuleForm } from "../../utils/validateEditTest.js";
+import className from "classnames";
 
 const EditTestPage = () => {
     const {id} = useParams();
@@ -22,6 +24,13 @@ const EditTestPage = () => {
     const [showScrollTop, setShowScrollTop] = useState(false);
     const lastQuestionRef = useRef(null);
     const topRef = useRef(null);
+
+    const [formErrors, setFormErrors] = useState({});
+    const [questionErrors, setQuestionErrors] = useState({});
+
+    const titleRef = useRef(null);
+    const descriptionRef = useRef(null);
+    const questionRefs = useRef({});
 
     useEffect(() => {
         const handleScroll = () => {
@@ -119,6 +128,13 @@ const EditTestPage = () => {
         setQuestions(prev =>
             prev.map(q => q.id === id ? updated : q)
         );
+        if (questionErrors[id]) {
+            setQuestionErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[id];
+                return newErrors;
+            });
+        }
     };
 
     const deleteQuestion = (id) => {
@@ -172,12 +188,51 @@ const EditTestPage = () => {
     };
 
     const handleSave = async () => {
+        const { isValid, formErrors, questionErrors, firstError } = validateModuleForm(
+            title,
+            description,
+            questions
+        );
+
+        setFormErrors(formErrors);
+        setQuestionErrors(questionErrors);
+
+        if (!isValid) {
+            if (firstError.type === "form") {
+                if (firstError.id === "title") {
+                    titleRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+                if (firstError.id === "description") {
+                    descriptionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+            }
+            if (firstError.type === "question") {
+                const el = questionRefs.current[firstError.id];
+                if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+            return;
+        }
+
         try {
             const body = buildRequestBody();
             await updateModule(Number(id), body);
 
         } catch (err) {
             console.error('Error updating test:', err);
+        }
+    };
+
+    const handleTitleChange = (e) => {
+        setTitle(e.target.value);
+        if (formErrors.title) {
+            setFormErrors(prev => ({ ...prev, title: undefined }));
+        }
+    };
+
+    const handleDescriptionChange = (e) => {
+        setDescription(e.target.value);
+        if (formErrors.description) {
+            setFormErrors(prev => ({ ...prev, description: undefined }));
         }
     };
 
@@ -193,17 +248,23 @@ const EditTestPage = () => {
                     <div className={styles.block}>
                         <label>Название</label>
                         <input placeholder="Введите название теста"
+                               ref={titleRef}
                                value={title}
-                               onChange={(e) => setTitle(e.target.value)}
+                               onChange={handleTitleChange}
+                               className={formErrors.title && styles.inputError}
                         />
+                        {formErrors.title && <div className={styles.errorMessage}>{formErrors.title}</div>}
                     </div>
 
                     <div className={styles.block}>
                         <label>Описание</label>
                         <textarea placeholder="Введите краткое описание"
+                                  ref={descriptionRef}
                                   value={description}
-                                  onChange={(e) => setDescription(e.target.value)}
+                                  onChange={handleDescriptionChange}
+                                  className={formErrors.description && styles.inputError}
                         />
+                        {formErrors.description && <div className={styles.errorMessage}>{formErrors.description}</div>}
                     </div>
                 </div>
 
@@ -218,7 +279,10 @@ const EditTestPage = () => {
                     {questions.map((q, i) => (
                         <div
                             key={q.id}
-                            ref={i === questions.length - 1 ? lastQuestionRef : null}
+                            ref={el => {
+                                questionRefs.current[q.id] = el;
+                                if (i === questions.length - 1) lastQuestionRef.current = el;
+                            }}
                         >
                             <EditQuestionBlock
                                 key={q.id}
@@ -226,9 +290,9 @@ const EditTestPage = () => {
                                 data={q}
                                 onUpdate={(upd) => updateQuestion(q.id, upd)}
                                 onDelete={() => deleteQuestion(q.id)}
+                                errors={questionErrors[q.id] || {}}
                             />
                         </div>
-
                     ))}
                 </div>
 
@@ -241,7 +305,10 @@ const EditTestPage = () => {
                 )}
 
                 <button
-                    className={`${styles.scrollTopButton} ${showScrollTop ? styles.show : styles.hide}`}
+                    className={className(styles.scrollTopButton, {
+                        [styles.show]: showScrollTop,
+                        [styles.hide]: !showScrollTop,
+                    })}
                     onClick={scrollToTop}
                     aria-label="Наверх"
                 >
