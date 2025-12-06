@@ -164,7 +164,7 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                                             </label>
 
                                             <input
-                                                className={className(
+                                                className={classNames(
                                                     styles.optionInput,
                                                     errors.optionContent?.[idx]?.content && styles.inputError
                                                 )}

@@ -8,8 +8,9 @@ import ArrowUp from "../../assets/images/arrow_left.svg?react";
 import {getModuleById, getModuleQuestions, updateModule} from "../../api/modules.js";
 import {QUESTION_TYPES} from "../../constants/questionTypes.js";
 import TestState from "../../components/TestState/TestState.jsx";
-import { validateModuleForm } from "../../utils/validateEditTest.js";
-import className from "classnames";
+import {validateModuleForm} from "../../utils/validateEditTest.js";
+import classNames from "classnames";
+import ToastNotification from "../../components/ToastNotification/ToastNotification.jsx";
 
 const EditTestPage = () => {
     const {id} = useParams();
@@ -31,6 +32,12 @@ const EditTestPage = () => {
     const titleRef = useRef(null);
     const descriptionRef = useRef(null);
     const questionRefs = useRef({});
+
+    const [toast, setToast] = useState({
+        visible: false,
+        type: "success",
+        message: ""
+    });
 
     useEffect(() => {
         const handleScroll = () => {
@@ -130,7 +137,7 @@ const EditTestPage = () => {
         );
         if (questionErrors[id]) {
             setQuestionErrors(prev => {
-                const newErrors = { ...prev };
+                const newErrors = {...prev};
                 delete newErrors[id];
                 return newErrors;
             });
@@ -188,7 +195,7 @@ const EditTestPage = () => {
     };
 
     const handleSave = async () => {
-        const { isValid, formErrors, questionErrors, firstError } = validateModuleForm(
+        const {isValid, formErrors, questionErrors, firstError} = validateModuleForm(
             title,
             description,
             questions
@@ -200,16 +207,17 @@ const EditTestPage = () => {
         if (!isValid) {
             if (firstError.type === "form") {
                 if (firstError.id === "title") {
-                    titleRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    titleRef.current?.scrollIntoView({behavior: "smooth", block: "center"});
                 }
                 if (firstError.id === "description") {
-                    descriptionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    descriptionRef.current?.scrollIntoView({behavior: "smooth", block: "center"});
                 }
             }
             if (firstError.type === "question") {
                 const el = questionRefs.current[firstError.id];
-                if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                if (el) el.scrollIntoView({behavior: "smooth", block: "center"});
             }
+            showToast("error", "Проверьте правильность заполнения формы");
             return;
         }
 
@@ -217,106 +225,125 @@ const EditTestPage = () => {
             const body = buildRequestBody();
             await updateModule(Number(id), body);
 
+            showToast("success", "Изменения успешно сохранены");
         } catch (err) {
             console.error('Error updating test:', err);
+            showToast("error", "Не удалось сохранить изменения. Попробуйте позже");
         }
     };
 
     const handleTitleChange = (e) => {
         setTitle(e.target.value);
         if (formErrors.title) {
-            setFormErrors(prev => ({ ...prev, title: undefined }));
+            setFormErrors(prev => ({...prev, title: undefined}));
         }
     };
 
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
         if (formErrors.description) {
-            setFormErrors(prev => ({ ...prev, description: undefined }));
+            setFormErrors(prev => ({...prev, description: undefined}));
         }
+    };
+
+    const showToast = (type, message) => {
+        setToast({visible: true, type, message});
+    };
+
+    const hideToast = () => {
+        setToast(prev => ({...prev, visible: false}));
     };
 
     if (loading) return <TestState type="loading" message="Загрузка данных теста..."/>;
     if (error) return <TestState type="error" message={error}/>;
 
     return (
-        <div className={styles.wrapper} ref={topRef}>
-            <HeaderEditTest onSave={handleSave}/>
+        <>
+            <div className={styles.wrapper} ref={topRef}>
+                <HeaderEditTest onSave={handleSave}/>
 
-            <main className="container">
-                <div className={styles.form}>
-                    <div className={styles.block}>
-                        <label>Название</label>
-                        <input placeholder="Введите название теста"
-                               ref={titleRef}
-                               value={title}
-                               onChange={handleTitleChange}
-                               className={formErrors.title && styles.inputError}
-                        />
-                        {formErrors.title && <div className={styles.errorMessage}>{formErrors.title}</div>}
-                    </div>
-
-                    <div className={styles.block}>
-                        <label>Описание</label>
-                        <textarea placeholder="Введите краткое описание"
-                                  ref={descriptionRef}
-                                  value={description}
-                                  onChange={handleDescriptionChange}
-                                  className={formErrors.description && styles.inputError}
-                        />
-                        {formErrors.description && <div className={styles.errorMessage}>{formErrors.description}</div>}
-                    </div>
-                </div>
-
-                <div className={styles.questionsHeader}>
-                    <h2>Вопросы ({questions.length})</h2>
-                    <button className={styles.addQuestionBtn} onClick={addQuestion}>
-                        <AddIcon className={styles.addIcon}/> Добавить вопрос
-                    </button>
-                </div>
-
-                <div className={styles.questionContainer}>
-                    {questions.map((q, i) => (
-                        <div
-                            key={q.id}
-                            ref={el => {
-                                questionRefs.current[q.id] = el;
-                                if (i === questions.length - 1) lastQuestionRef.current = el;
-                            }}
-                        >
-                            <EditQuestionBlock
-                                key={q.id}
-                                index={i + 1}
-                                data={q}
-                                onUpdate={(upd) => updateQuestion(q.id, upd)}
-                                onDelete={() => deleteQuestion(q.id)}
-                                errors={questionErrors[q.id] || {}}
+                <main className="container">
+                    <div className={styles.form}>
+                        <div className={styles.block}>
+                            <label>Название</label>
+                            <input placeholder="Введите название теста"
+                                   ref={titleRef}
+                                   value={title}
+                                   onChange={handleTitleChange}
+                                   className={formErrors.title && styles.inputError}
                             />
+                            {formErrors.title && <div className={styles.errorMessage}>{formErrors.title}</div>}
                         </div>
-                    ))}
-                </div>
 
-                {questions.length > 1 && (
-                    <div className={styles.addQuestionBtnContainer}>
+                        <div className={styles.block}>
+                            <label>Описание</label>
+                            <textarea placeholder="Введите краткое описание"
+                                      ref={descriptionRef}
+                                      value={description}
+                                      onChange={handleDescriptionChange}
+                                      className={formErrors.description && styles.inputError}
+                            />
+                            {formErrors.description &&
+                                <div className={styles.errorMessage}>{formErrors.description}</div>}
+                        </div>
+                    </div>
+
+                    <div className={styles.questionsHeader}>
+                        <h2>Вопросы ({questions.length})</h2>
                         <button className={styles.addQuestionBtn} onClick={addQuestion}>
                             <AddIcon className={styles.addIcon}/> Добавить вопрос
                         </button>
                     </div>
-                )}
 
-                <button
-                    className={className(styles.scrollTopButton, {
-                        [styles.show]: showScrollTop,
-                        [styles.hide]: !showScrollTop,
-                    })}
-                    onClick={scrollToTop}
-                    aria-label="Наверх"
-                >
-                    <ArrowUp className={styles.arrowUp}/>
-                </button>
+                    <div className={styles.questionContainer}>
+                        {questions.map((q, i) => (
+                            <div
+                                key={q.id}
+                                ref={el => {
+                                    questionRefs.current[q.id] = el;
+                                    if (i === questions.length - 1) lastQuestionRef.current = el;
+                                }}
+                            >
+                                <EditQuestionBlock
+                                    key={q.id}
+                                    index={i + 1}
+                                    data={q}
+                                    onUpdate={(upd) => updateQuestion(q.id, upd)}
+                                    onDelete={() => deleteQuestion(q.id)}
+                                    errors={questionErrors[q.id] || {}}
+                                />
+                            </div>
+                        ))}
+                    </div>
 
-            </main>
-        </div>
+                    {questions.length > 1 && (
+                        <div className={styles.addQuestionBtnContainer}>
+                            <button className={styles.addQuestionBtn} onClick={addQuestion}>
+                                <AddIcon className={styles.addIcon}/> Добавить вопрос
+                            </button>
+                        </div>
+                    )}
+
+                    <button
+                        className={classNames(styles.scrollTopButton, {
+                            [styles.show]: showScrollTop,
+                            [styles.hide]: !showScrollTop,
+                        })}
+                        onClick={scrollToTop}
+                        aria-label="Наверх"
+                    >
+                        <ArrowUp className={styles.arrowUp}/>
+                    </button>
+                </main>
+            </div>
+            {toast.visible && (
+                <ToastNotification
+                    type={toast.type}
+                    message={toast.message}
+                    onClose={hideToast}
+                />
+            )}
+        </>
     );
 };
 

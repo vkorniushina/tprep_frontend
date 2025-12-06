@@ -1,0 +1,51 @@
+@use '../../assets/styles/variables' as *;
+
+.toast {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  padding: 15px 20px;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  font-weight: 500;
+  color: $color-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 9999;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(-20px) translateX(-50%);
+  animation: fadeInDown 0.35s forwards;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.success {
+  background: #E8F8EB;
+
+  .icon {
+    background-image: url("../../assets/images/correct.svg");
+  }
+}
+
+.error {
+  background: #FDEEEE;
+
+  .icon {
+    background-image: url("../../assets/images/incorrect.svg");
+  }
+}
+
+@keyframes fadeInDown {
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+}
