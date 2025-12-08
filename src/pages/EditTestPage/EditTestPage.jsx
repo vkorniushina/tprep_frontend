@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useParams} from "react-router-dom";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import styles from "./EditTestPage.module.scss";
 import EditQuestionBlock from "../../components/EditQuestionBlock/EditQuestionBlock.jsx";
 import HeaderEditTest from "../../components/HeaderEditTest/HeaderEditTest.jsx";
@@ -11,14 +11,16 @@ import TestState from "../../components/TestState/TestState.jsx";
 import {validateModuleForm} from "../../utils/validateEditTest.js";
 import classNames from "classnames";
 import ToastNotification from "../../components/ToastNotification/ToastNotification.jsx";
+import UnsavedChangesModal from "../../components/UnsavedChangesModal/UnsavedChangesModal.jsx";
 
 const EditTestPage = () => {
     const {id} = useParams();
+    const navigate = useNavigate();
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-
     const [questions, setQuestions] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -39,20 +41,18 @@ const EditTestPage = () => {
         message: ""
     });
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 500) {
-                setShowScrollTop(true);
-            } else {
-                setShowScrollTop(false);
-            }
-        };
+    const [originalData, setOriginalData] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const pendingNavigation = useRef(null);
+    const isDirtyRef = useRef(false);
+    const allowExitRef = useRef(false);
 
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    const isDirty = useMemo(() => {
+        if (!originalData) return false;
+        if (title !== originalData.title || description !== originalData.description)
+            return true;
+        return JSON.stringify(questions) !== JSON.stringify(originalData.questions);
+    }, [title, description, questions, originalData]);
 
     useEffect(() => {
         const loadData = async () => {
@@ -96,6 +96,11 @@ const EditTestPage = () => {
                 });
 
                 setQuestions(formattedQuestions);
+                setOriginalData({
+                    title: moduleData.name || "",
+                    description: moduleData.description || "",
+                    questions: formattedQuestions,
+                });
                 setError(null);
             } catch (err) {
                 console.error('Error fetching test data:', err);
@@ -107,6 +112,49 @@ const EditTestPage = () => {
 
         loadData();
     }, [id]);
+
+    useEffect(() => {
+        isDirtyRef.current = isDirty;
+    }, [isDirty]);
+
+    useEffect(() => {
+        window.history.pushState({ locked: true }, "");
+
+        const handlePopState = () => {
+            if (allowExitRef.current) {
+                navigate(-1);
+                return;
+            }
+
+            if (isDirtyRef.current) {
+                pendingNavigation.current = () => navigate(-1);
+                setShowModal(true);
+
+                window.history.pushState({ locked: true }, "");
+            }
+            else {
+                navigate(-1);
+            }
+        };
+
+        window.addEventListener("popstate", handlePopState);
+        return () => window.removeEventListener("popstate", handlePopState);
+    }, []);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 500) {
+                setShowScrollTop(true);
+            } else {
+                setShowScrollTop(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const addQuestion = () => {
         const newId = 'temp-' + Date.now();
@@ -218,7 +266,7 @@ const EditTestPage = () => {
                 if (el) el.scrollIntoView({behavior: "smooth", block: "center"});
             }
             showToast("error", "Проверьте правильность заполнения формы");
-            return;
+            return false;
         }
 
         try {
@@ -226,9 +274,16 @@ const EditTestPage = () => {
             await updateModule(Number(id), body);
 
             showToast("success", "Изменения успешно сохранены");
+            setOriginalData({
+                title,
+                description,
+                questions: JSON.parse(JSON.stringify(questions)),
+            });
+            return true;
         } catch (err) {
             console.error('Error updating test:', err);
             showToast("error", "Не удалось сохранить изменения. Попробуйте позже");
+            return false;
         }
     };
 
@@ -254,14 +309,45 @@ const EditTestPage = () => {
         setToast(prev => ({...prev, visible: false}));
     };
 
+    const handleBackClick = () => {
+        if (isDirty) {
+            pendingNavigation.current = () => navigate(-1);
+            setShowModal(true);
+        } else {
+            navigate(-1);
+        }
+    };
+
+    const handleModalSaveAndExit = async () => {
+        const success = await handleSave();
+        setShowModal(false);
+        if (success && pendingNavigation.current) {
+            allowExitRef.current = true;
+            pendingNavigation.current();
+        }
+        pendingNavigation.current = null;
+    };
+
+    const handleModalDiscard = () => {
+        setShowModal(false);
+        allowExitRef.current = true;
+        pendingNavigation.current();
+        pendingNavigation.current = null;
+    };
+
+    const handleModalCancel = () => {
+        setShowModal(false);
+        allowExitRef.current = false;
+        pendingNavigation.current = null;
+    };
+
     if (loading) return <TestState type="loading" message="Загрузка данных теста..."/>;
     if (error) return <TestState type="error" message={error}/>;
 
     return (
         <>
             <div className={styles.wrapper} ref={topRef}>
-                <HeaderEditTest onSave={handleSave}/>
-
+                <HeaderEditTest onBack={handleBackClick} onSave={handleSave} />
                 <main className="container">
                     <div className={styles.form}>
                         <div className={styles.block}>
@@ -343,6 +429,13 @@ const EditTestPage = () => {
                     onClose={hideToast}
                 />
             )}
+
+            <UnsavedChangesModal
+                isVisible={showModal}
+                onSave={handleModalSaveAndExit}
+                onDiscard={handleModalDiscard}
+                onCancel={handleModalCancel}
+            />
         </>
     );
 };
