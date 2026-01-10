@@ -49,3 +49,35 @@ export const updateModule = async (id, body) => {
         throw error;
     }
 };
+
+export const createModuleManual = async (body) => {
+    try {
+        const response = await apiClient.post('/modules', body);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating module:', error);
+        throw error;
+    }
+};
+
+export const createModuleByFile = async (formData) => {
+    try {
+        const response = await apiClient.post('/modules', formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating module from file:', error);
+        throw error;
+    }
+};
+
+export const deleteModule = async (id) => {
+    try {
+        const response = await apiClient.delete(`/modules/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error deleting module ${id}:`, error);
+        throw error;
+    }
+};
