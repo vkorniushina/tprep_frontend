@@ -9,6 +9,7 @@
   flex-direction: column;
   max-width: 352px;
   min-height: 290px;
+  position: relative;
 }
 
 .topContent {
@@ -107,5 +108,59 @@
 
   &:hover {
     background: $color-dark-hover;
+  }
+}
+
+.menuWrapper {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.menuBtn {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  width: 30px;
+  border-radius: $radius-sm;
+  cursor: pointer;
+
+  &:hover {
+    background: $color-bg-gray;
+  }
+}
+
+.menu {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  background: $color-bg-base;
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  z-index: 10;
+  padding: 5px;
+  min-width: 120px;
+}
+
+.menuItem {
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover {
+    background: $color-bg-gray;
+  }
+
+  span{
+    color: $color-error-base;
   }
 }
