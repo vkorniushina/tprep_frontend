@@ -62,7 +62,7 @@ export const createModuleManual = async (body) => {
 
 export const createModuleByFile = async (formData) => {
     try {
-        const response = await apiClient.post('/modules', formData, {
+        const response = await apiClient.post('/modules/upload', formData, {
             headers: { "Content-Type": "multipart/form-data" }
         });
         return response.data;
