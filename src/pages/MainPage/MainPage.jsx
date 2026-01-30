@@ -1,17 +1,22 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import HeaderMain from "../../components/HeaderMain/HeaderMain.jsx";
 import plusIcon from "../../assets/images/plus.svg";
 import styles from "../MainPage/MainPage.module.scss";
 import Card from "../../components/Card/Card.jsx";
-import {createModuleByFile, createModuleManual, deleteModule, getAllModules} from "../../api/modules.js";
+import {createModuleByFile, createModuleManual, deleteModule, getAllModules, searchModules} from "../../api/modules.js";
 import CreateTestModal from "../../components/CreateTestModal/CreateTestModal.jsx";
 import ToastNotification from "../../components/ToastNotification/ToastNotification.jsx";
+import Pagination from "../../components/Pagination/Pagination.jsx";
 
 const MainPage = () => {
     const navigate = useNavigate();
 
     const [tests, setTests] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const size = 6;
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -24,11 +29,23 @@ const MainPage = () => {
         message: ""
     });
 
-    const fetchTests = async () => {
+    const fetchTests = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await getAllModules();
-            setTests(data);
+
+            const data = searchQuery.trim()
+                ? await searchModules({
+                    keyword: searchQuery,
+                    page,
+                    size
+                })
+                : await getAllModules({
+                    page,
+                    size
+                });
+
+            setTests(data.items);
+            setTotalPages(data.totalPages);
             setError(null);
         } catch (err) {
             setError('Не удалось загрузить тесты');
@@ -36,15 +53,21 @@ const MainPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, searchQuery]);
 
     useEffect(() => {
         fetchTests();
-    }, []);
+    }, [fetchTests]);
+
+    useEffect(() => {
+        setPage(0);
+    }, [searchQuery]);
 
     useEffect(() => {
         document.body.style.overflow = isModalOpen ? 'hidden' : 'unset';
-        return () => { document.body.style.overflow = 'unset'; };
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
     }, [isModalOpen]);
 
     const showToast = (type, message) => {
@@ -58,12 +81,21 @@ const MainPage = () => {
     const handleDelete = async (id) => {
         try {
             await deleteModule(id);
-            setTests(prev => prev.filter(t => t.id !== id));
+
+            const isLastItemOnPage = tests.length === 1;
+            const isNotFirstPage = page > 0;
+
+            if (isLastItemOnPage && isNotFirstPage) {
+                setPage(prev => prev - 1);
+            } else {
+                await fetchTests();
+            }
+
             showToast("success", "Тест удалён!");
             setActiveMenuId(null);
         } catch (err) {
             console.error(err);
-            showToast("error", "Не удалось удалить тест.");
+            showToast("error", "Не удалось удалить тест");
         }
     };
 
@@ -95,10 +127,6 @@ const MainPage = () => {
         }
     };
 
-    const filteredTests = searchQuery.trim()
-        ? tests.filter(test => test.name.toLowerCase().includes(searchQuery.toLowerCase()))
-        : tests;
-
     return (
         <>
             <HeaderMain searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
@@ -117,9 +145,9 @@ const MainPage = () => {
                 {error && <div className={styles.loadingEmptyState}>{error}</div>}
 
                 {!loading && !error && (
-                    filteredTests.length > 0 ? (
+                    tests.length > 0 ? (
                         <div className={styles.cards}>
-                            {filteredTests.map((test) => (
+                            {tests.map((test) => (
                                 <Card
                                     key={test.id}
                                     id={test.id}
@@ -148,6 +176,15 @@ const MainPage = () => {
                         </div>
                     )
                 )}
+
+                {!loading && !error && totalPages > 1 && (
+                    <Pagination
+                        page={page}
+                        totalPages={totalPages}
+                        onPageChange={setPage}
+                    />
+                )}
+
             </main>
 
             {isModalOpen && (

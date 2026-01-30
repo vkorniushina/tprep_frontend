@@ -1,11 +1,32 @@
 import apiClient from './apiClient.js';
 
-export const getAllModules = async () => {
+export const getAllModules = async ({ page = 0, size = 6}) => {
     try {
-        const response = await apiClient.get('/modules');
+        const response = await apiClient.get('/modules', {
+            params: {
+                page,
+                size
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching modules:', error);
+        throw error;
+    }
+};
+
+export const searchModules = async ({ keyword, page = 0, size = 6 }) => {
+    try {
+        const response = await apiClient.get('/modules/search', {
+            params: {
+                keyWord: keyword,
+                page,
+                size
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error searching modules:', error);
         throw error;
     }
 };
