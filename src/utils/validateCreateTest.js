@@ -1,4 +1,4 @@
-import {ALLOWED_FILE_EXTENSIONS, ALLOWED_FILE_TYPES, MAX_FILE_SIZE} from "../constants/fileUpload.js";
+import {ALLOWED_FILE_EXTENSIONS, ALLOWED_FILE_TYPES, MAX_FILE_SIZE, MAX_FILE_SIZE_MB} from "../constants/fileUpload.js";
 
 export const validateTestForm = (name, description) => {
     const errors = {};
@@ -35,7 +35,7 @@ export const validateFile = (file) => {
 
     if (file.size > MAX_FILE_SIZE) {
         return {
-            error: `Файл слишком большой. Максимальный размер: ${MAX_FILE_SIZE / 1024 / 1024} МБ.`
+            error: `Файл слишком большой. Максимальный размер: ${MAX_FILE_SIZE_MB} МБ.`
         };
     }
 

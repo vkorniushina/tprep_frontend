@@ -3,7 +3,7 @@ import styles from "./CreateTestModal.module.scss";
 import CloseIcon from "../../assets/images/close.svg?react";
 import UploadIcon from "../../assets/images/upload.svg?react";
 import FileIcon from "../../assets/images/file.svg?react";
-import {MAX_FILE_SIZE, ALLOWED_FILE_EXTENSIONS} from "../../constants/fileUpload.js";
+import {ALLOWED_FILE_EXTENSIONS, MAX_FILE_SIZE_MB} from "../../constants/fileUpload.js";
 import {formatFileSize} from "../../utils/formatFileSize.js";
 import {validateFile, validateTestForm} from "../../utils/validateCreateTest.js";
 import classNames from "classnames";
@@ -208,7 +208,7 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                                 <UploadIcon className={styles.uploadIcon}/>
                                 <p>Перетащите файл сюда или нажмите, чтобы загрузить</p>
                                 <p className={styles.supportText}>
-                                    {ALLOWED_FILE_EXTENSIONS.join(', ')} (до {MAX_FILE_SIZE / 1024 / 1024} Мб)
+                                    {ALLOWED_FILE_EXTENSIONS.join(', ')} (до {MAX_FILE_SIZE_MB} Мб)
                                 </p>
                             </div>
                         )}
