@@ -1,11 +1,12 @@
 import React from "react";
 import styles from "./EditQuestionBlock.module.scss";
 import trash from "../../assets/images/trash.svg";
-import tick from "../../assets/images/tick.svg";
-import Cross from "../../assets/images/cross.svg?react";
 import AddIcon from "../../assets/images/add.svg?react";
 import {QUESTION_TYPES} from "../../constants/questionTypes";
+import {QUESTION_FIELDS} from "../../constants/questionFields";
 import classNames from 'classnames';
+import { v4 as uuidv4 } from 'uuid';
+import OptionItem from "../OptionItem/OptionItem.jsx";
 
 const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
     const updateField = (field, value) => {
@@ -14,19 +15,28 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
 
     const updateOption = (idx, value) => {
         const updated = [...data.options];
-        updated[idx] = {...updated[idx], content: value};
-        updateField("options", updated);
+        updated[idx] = {...updated[idx], [QUESTION_FIELDS.CONTENT]: value};
+        updateField(QUESTION_FIELDS.OPTIONS, updated);
+    };
+
+    const toggleOptionCorrect = (idx) => {
+        const updatedOptions = data.options.map((item, i) =>
+            i === idx
+                ? {...item, [QUESTION_FIELDS.IS_CORRECT]: !item.isCorrect}
+                : item
+        );
+        updateField(QUESTION_FIELDS.OPTIONS, updatedOptions);
     };
 
     const addOption = () => {
-        const newId = 'temp-answer-' + Date.now();
+        const newId = uuidv4();
 
-        updateField("options", [
+        updateField(QUESTION_FIELDS.OPTIONS, [
             ...(data.options || []),
             {
                 id: newId,
-                content: `Вариант ${(data.options?.length || 0) + 1}`,
-                isCorrect: false
+                [QUESTION_FIELDS.CONTENT]: `Вариант ${(data.options?.length || 0) + 1}`,
+                [QUESTION_FIELDS.IS_CORRECT]: false
             }
         ]);
     };
@@ -36,32 +46,37 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
 
         onUpdate({
             ...data,
-            options: updatedOptions,
+            [QUESTION_FIELDS.OPTIONS]: updatedOptions,
         });
     };
 
     const handleTypeChange = (type) => {
         if (type === QUESTION_TYPES.CHOICE) {
-            const tempId1 = 'temp-answer-' + Date.now();
-            const tempId2 = 'temp-answer-' + (Date.now() + 1);
-
             onUpdate({
                 ...data,
-                type,
-                options: [
-                    {id: tempId1, content: "Вариант 1", isCorrect: true},
-                    {id: tempId2, content: "Вариант 2", isCorrect: false}
+                [QUESTION_FIELDS.TYPE]: type,
+                [QUESTION_FIELDS.OPTIONS]: [
+                    {
+                        id: uuidv4(),
+                        [QUESTION_FIELDS.CONTENT]: "Вариант 1",
+                        [QUESTION_FIELDS.IS_CORRECT]: true
+                    },
+                    {
+                        id: uuidv4(),
+                        [QUESTION_FIELDS.CONTENT]: "Вариант 2",
+                        [QUESTION_FIELDS.IS_CORRECT]: false
+                    }
                 ],
             });
         } else {
             onUpdate({
                 ...data,
-                type,
-                options: [],
-                answers: [{
+                [QUESTION_FIELDS.TYPE]: type,
+                [QUESTION_FIELDS.OPTIONS]: [],
+                [QUESTION_FIELDS.ANSWERS]: [{
                     id: data.answers?.[0]?.id || null,
-                    content: data.answers?.[0]?.content || "",
-                    isCorrect: true
+                    [QUESTION_FIELDS.CONTENT]: data.answers?.[0]?.content || "",
+                    [QUESTION_FIELDS.IS_CORRECT]: true
                 }]
             });
         }
@@ -81,7 +96,7 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                             className={classNames(styles.questionInput, errors.text && styles.inputError)}
                             placeholder="Введите текст вопроса"
                             value={data.text || ""}
-                            onChange={(e) => updateField("text", e.target.value)}
+                            onChange={(e) => updateField(QUESTION_FIELDS.TEXT, e.target.value)}
                         />
                         {errors.text && <div className={styles.errorMessage}>{errors.text}</div>}
                     </div>
@@ -122,8 +137,12 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                                 placeholder="Введите правильный ответ"
                                 value={data.answers?.[0]?.content || ""}
                                 onChange={(e) =>
-                                    updateField("answers", [
-                                        {...(data.answers?.[0] || {}), content: e.target.value, isCorrect: true}
+                                    updateField(QUESTION_FIELDS.ANSWERS, [
+                                        {
+                                            ...(data.answers?.[0] || {}),
+                                            [QUESTION_FIELDS.CONTENT]: e.target.value,
+                                            [QUESTION_FIELDS.IS_CORRECT]: true
+                                        }
                                     ])
                                 }
                             />
@@ -141,45 +160,16 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                             </div>
 
                             <div className={styles.optionsList}>
-                                {data.options && data.options.map((ans, idx) => (
-                                    <div key={ans.id} className={styles.optionItem}>
-                                        <div className={styles.optionContentWrapper}>
-                                            <label className={styles.checkboxLabel}>
-                                                <input
-                                                    type="checkbox"
-                                                    className={styles.checkboxInput}
-                                                    checked={ans.isCorrect}
-                                                    onChange={() => {
-                                                        const updatedOptions = data.options.map((item, i) =>
-                                                            i === idx ? {...item, isCorrect: !item.isCorrect} : item
-                                                        );
-                                                        updateField("options", updatedOptions);
-                                                    }}
-                                                />
-                                                <span className={styles.checkboxSquare}>
-                                                {ans.isCorrect && (
-                                                    <img src={tick} alt="Выбрано" className={styles.checkboxTick}/>
-                                                )}
-                                                </span>
-                                            </label>
-
-                                            <input
-                                                className={classNames(
-                                                    styles.optionInput,
-                                                    errors.optionContent?.[idx]?.content && styles.inputError
-                                                )}
-                                                value={ans.content}
-                                                onChange={(e) => updateOption(idx, e.target.value)}
-                                            />
-
-                                            <button className={styles.optionRemove} onClick={() => removeOption(idx)}>
-                                                <Cross className={styles.cross}/>
-                                            </button>
-                                        </div>
-                                        {errors.optionContent?.[idx]?.content && (
-                                            <div className={styles.errorMessageFlow}>{errors.optionContent[idx].content}</div>
-                                        )}
-                                    </div>
+                                {data.options && data.options.map((option, idx) => (
+                                    <OptionItem
+                                        key={option.id}
+                                        option={option}
+                                        index={idx}
+                                        onContentChange={(value) => updateOption(idx, value)}
+                                        onToggleCorrect={() => toggleOptionCorrect(idx)}
+                                        onRemove={() => removeOption(idx)}
+                                        error={errors.optionContent?.[idx]?.content}
+                                    />
                                 ))}
                             </div>
 

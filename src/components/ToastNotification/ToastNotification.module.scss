@@ -28,7 +28,7 @@
 }
 
 .success {
-  background: #E8F8EB;
+  background: $color-toast-success;
 
   .icon {
     background-image: url("../../assets/images/correct.svg");
@@ -36,7 +36,7 @@
 }
 
 .error {
-  background: #FDEEEE;
+  background: $color-toast-error;
 
   .icon {
     background-image: url("../../assets/images/incorrect.svg");

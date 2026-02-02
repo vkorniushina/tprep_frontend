@@ -12,6 +12,8 @@ import {validateModuleForm} from "../../utils/validateEditTest.js";
 import classNames from "classnames";
 import ToastNotification from "../../components/ToastNotification/ToastNotification.jsx";
 import UnsavedChangesModal from "../../components/UnsavedChangesModal/UnsavedChangesModal.jsx";
+import {QUESTION_FIELDS} from "../../constants/questionFields.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const EditTestPage = () => {
     const {id} = useParams();
@@ -66,32 +68,32 @@ const EditTestPage = () => {
                 const qData = await getModuleQuestions(Number(id));
 
                 const formattedQuestions = qData.questions.map(q => {
-                    if (q.type === QUESTION_TYPES.CHOICE) {
+                    if (q[QUESTION_FIELDS.TYPE] === QUESTION_TYPES.CHOICE) {
                         return {
                             id: q.id,
-                            type: q.type,
-                            text: q.content,
-                            options: q.answers?.map(a => ({
+                            [QUESTION_FIELDS.TYPE]: q.type,
+                            [QUESTION_FIELDS.TEXT]: q.content,
+                            [QUESTION_FIELDS.OPTIONS]: q.answers?.map(a => ({
                                 id: a.id,
-                                content: a.content,
-                                isCorrect: a.isCorrect
+                                [QUESTION_FIELDS.CONTENT]: a.content,
+                                [QUESTION_FIELDS.IS_CORRECT]: a.isCorrect
                             })) || [],
-                            answers: []
+                            [QUESTION_FIELDS.ANSWERS]: []
                         };
                     }
 
                     return {
                         id: q.id,
-                        type: q.type,
-                        text: q.content,
-                        answers: [
+                        [QUESTION_FIELDS.TYPE]: q.type,
+                        [QUESTION_FIELDS.TEXT]: q.content,
+                        [QUESTION_FIELDS.ANSWERS]: [
                             {
                                 id: q.answers?.[0]?.id,
-                                content: q.answers?.[0]?.content || "",
-                                isCorrect: true
+                                [QUESTION_FIELDS.CONTENT]: q.answers?.[0]?.content || "",
+                                [QUESTION_FIELDS.IS_CORRECT]: true
                             }
                         ],
-                        options: [],
+                        [QUESTION_FIELDS.OPTIONS]: [],
                     };
                 });
 
@@ -157,17 +159,17 @@ const EditTestPage = () => {
     }, []);
 
     const addQuestion = () => {
-        const newId = 'temp-' + Date.now();
+        const newId = uuidv4();
         setQuestions(prev => [
             ...prev,
             {
                 id: newId,
-                type: QUESTION_TYPES.INPUT,
-                text: "",
-                answers: [
-                    {id: null, content: "", isCorrect: true}
+                [QUESTION_FIELDS.TYPE]: QUESTION_TYPES.INPUT,
+                [QUESTION_FIELDS.TEXT]: "",
+                [QUESTION_FIELDS.ANSWERS]: [
+                    {id: null, [QUESTION_FIELDS.CONTENT]: "", [QUESTION_FIELDS.IS_CORRECT]: true}
                 ],
-                options: [],
+                [QUESTION_FIELDS.OPTIONS]: [],
             }
         ]);
 
@@ -211,29 +213,29 @@ const EditTestPage = () => {
                 const isNewQuestion = typeof q.id === 'string';
                 const questionIdValue = isNewQuestion ? undefined : q.id;
 
-                if (q.type === QUESTION_TYPES.CHOICE) {
+                if (q[QUESTION_FIELDS.TYPE] === QUESTION_TYPES.CHOICE) {
                     return {
                         questionId: questionIdValue,
-                        content: q.text,
+                        content: q[QUESTION_FIELDS.TEXT],
                         type: QUESTION_TYPES.CHOICE,
-                        answers: q.options.map(ans => ({
+                        answers: q[QUESTION_FIELDS.OPTIONS].map(ans => ({
                             answerId: typeof ans.id === 'string' ? undefined : ans.id,
-                            content: ans.content,
-                            isCorrect: ans.isCorrect
+                            content: ans[QUESTION_FIELDS.CONTENT],
+                            isCorrect: ans[QUESTION_FIELDS.IS_CORRECT]
                         }))
                     };
                 }
 
                 return {
                     questionId: questionIdValue,
-                    content: q.text,
+                    content: q[QUESTION_FIELDS.TEXT],
                     type: QUESTION_TYPES.INPUT,
                     answers: [
                         {
-                            answerId: typeof q.answers?.[0]?.id === "string"
+                            answerId: typeof q[QUESTION_FIELDS.ANSWERS]?.[0]?.id === "string"
                                 ? undefined
-                                : q.answers?.[0]?.id,
-                            content: q.answers?.[0]?.content || "",
+                                : q[QUESTION_FIELDS.ANSWERS]?.[0]?.id,
+                            content: q[QUESTION_FIELDS.ANSWERS]?.[0]?.[QUESTION_FIELDS.CONTENT] || "",
                             isCorrect: true
                         }
                     ]
