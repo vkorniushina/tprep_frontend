@@ -3,8 +3,9 @@ import styles from "./CreateTestModal.module.scss";
 import CloseIcon from "../../assets/images/close.svg?react";
 import UploadIcon from "../../assets/images/upload.svg?react";
 import FileIcon from "../../assets/images/file.svg?react";
-import {MAX_FILE_SIZE, ALLOWED_FILE_TYPES, ALLOWED_FILE_EXTENSIONS} from "../../constants/fileUpload.js";
+import {MAX_FILE_SIZE, ALLOWED_FILE_EXTENSIONS} from "../../constants/fileUpload.js";
 import {formatFileSize} from "../../utils/formatFileSize.js";
+import {validateFile, validateTestForm} from "../../utils/validateCreateTest.js";
 
 const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast}) => {
 
@@ -20,44 +21,15 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
     const [formErrors, setFormErrors] = useState({});
     const [fileErrorMessage, setFileErrorMessage] = useState(null);
 
-    const validateForm = () => {
-        const errors = {};
-        let isValid = true;
-
-        if (!name.trim()) {
-            errors.name = "Обязательное поле";
-            isValid = false;
-        } else if (name.length < 2) {
-            errors.name = "Минимальная длина — 2 символа";
-            isValid = false;
-        } else if (name.length > 70) {
-            errors.name = "Слишком длинное название";
-            isValid = false;
-        }
-
-        if (description.length > 255) {
-            errors.description = "Слишком длинное описание";
-            isValid = false;
-        }
-
-        setFormErrors(errors);
-        return isValid;
-    };
-
     const processFile = (selectedFile, inputRef) => {
         setFileErrorMessage(null);
 
         if (!selectedFile) return;
 
-        if (!ALLOWED_FILE_TYPES.includes(selectedFile.type)) {
-            setFileErrorMessage(`Неподдерживаемый формат файла. Допустимо: ${ALLOWED_FILE_EXTENSIONS.join(', ')}`);
-            if (inputRef.current) inputRef.current.value = "";
-            setFile(null);
-            return;
-        }
+        const validation = validateFile(selectedFile);
 
-        if (selectedFile.size > MAX_FILE_SIZE) {
-            setFileErrorMessage(`Файл слишком большой. Максимальный размер: ${MAX_FILE_SIZE / 1024 / 1024} МБ.`);
+        if (validation.error) {
+            setFileErrorMessage(validation.error);
             if (inputRef.current) inputRef.current.value = "";
             setFile(null);
             return;
@@ -124,14 +96,16 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
     };
 
     const handleCreateFile = async () => {
-        const formIsValid = validateForm();
+        const {errors, isValid} = validateTestForm(name, description);
+        setFormErrors(errors);
+
         const fileIsPresent = !!file;
 
         if (!fileIsPresent && !fileErrorMessage) {
             setFileErrorMessage("Прикрепите файл для создания теста");
         }
 
-        if (!formIsValid || !fileIsPresent || fileErrorMessage) {
+        if (!isValid || !fileIsPresent || fileErrorMessage) {
             showToast("error", "Проверьте правильность заполнения формы");
             return;
         }
@@ -146,7 +120,10 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
     };
 
     const handleCreateManual = async () => {
-        if (!validateForm()) {
+        const {errors, isValid} = validateTestForm(name, description);
+        setFormErrors(errors);
+
+        if (!isValid) {
             showToast("error", "Проверьте правильность заполнения формы");
             return;
         }
