@@ -37,7 +37,7 @@
   left: 0;
   height: 24px;
   width: 24px;
-  background-color: #fff;
+  background-color: $color-bg-base;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   display: flex;
@@ -47,8 +47,8 @@
 }
 
 .checkboxInput:checked ~ .checkboxSquare {
-  background-color: #ffdd2d;
-  border-color: #ffdd2d;
+  background-color: $color-primary;
+  border-color: $color-primary;
 }
 
 .checkboxTick {
