@@ -6,6 +6,7 @@ import FileIcon from "../../assets/images/file.svg?react";
 import {MAX_FILE_SIZE, ALLOWED_FILE_EXTENSIONS} from "../../constants/fileUpload.js";
 import {formatFileSize} from "../../utils/formatFileSize.js";
 import {validateFile, validateTestForm} from "../../utils/validateCreateTest.js";
+import classNames from "classnames";
 
 const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast}) => {
 
@@ -171,7 +172,13 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                 <div>
                     <label className={styles.label}>Шаг 3: Загрузка файла</label>
                     <div
-                        className={`${styles.dropzone} ${isDragging || isHovered || fileErrorMessage ? styles.dragging : ""} ${fileErrorMessage ? styles.dropzoneError : ""}`}
+                        className={classNames(
+                            styles.dropzone,
+                            {
+                                [styles.dragging]: isDragging || isHovered || fileErrorMessage,
+                                [styles.dropzoneError]: fileErrorMessage
+                            }
+                        )}
                         onClick={!file ? () => fileInputRef.current.click() : undefined}
                         onDrop={handleDrop}
                         onDragEnter={handleDragEnter}
