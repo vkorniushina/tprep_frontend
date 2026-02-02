@@ -19,6 +19,17 @@ const Card = ({id, name, description, questionsCount, progress, onDelete, isMenu
         navigate(`/test/${id}/edit`);
     };
 
+    const handleMenuToggle = (e) => {
+        e.stopPropagation();
+        onMenuToggle(isMenuOpen ? null : id);
+    };
+
+    const handleDelete = (e) => {
+        e.stopPropagation();
+        onDelete(id);
+        onMenuToggle(null);
+    };
+
     useEffect(() => {
         if (!isMenuOpen) return;
 
@@ -40,10 +51,7 @@ const Card = ({id, name, description, questionsCount, progress, onDelete, isMenu
             <div className={styles.menuWrapper} ref={menuRef}>
                 <button
                     className={styles.menuBtn}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onMenuToggle(isMenuOpen ? null : id);
-                    }}
+                    onClick={handleMenuToggle}
                 >
                     <img src={menuIcon} alt="Menu"/>
                 </button>
@@ -51,11 +59,7 @@ const Card = ({id, name, description, questionsCount, progress, onDelete, isMenu
                 {isMenuOpen && (
                     <div className={styles.menu}>
                         <button className={styles.menuItem}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onDelete(id);
-                                    onMenuToggle(null);
-                                }}
+                                onClick={handleDelete}
                         >
                             <span>Удалить</span>
                         </button>
