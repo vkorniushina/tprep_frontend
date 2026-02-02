@@ -7,6 +7,7 @@ import AddIcon from "../../assets/images/add.svg?react";
 import {QUESTION_TYPES} from "../../constants/questionTypes";
 import {QUESTION_FIELDS} from "../../constants/questionFields";
 import classNames from 'classnames';
+import { v4 as uuidv4 } from 'uuid';
 
 const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
     const updateField = (field, value) => {
@@ -20,7 +21,7 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
     };
 
     const addOption = () => {
-        const newId = 'temp-answer-' + Date.now();
+        const newId = uuidv4();
 
         updateField(QUESTION_FIELDS.OPTIONS, [
             ...(data.options || []),
@@ -43,20 +44,17 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
 
     const handleTypeChange = (type) => {
         if (type === QUESTION_TYPES.CHOICE) {
-            const tempId1 = 'temp-answer-' + Date.now();
-            const tempId2 = 'temp-answer-' + (Date.now() + 1);
-
             onUpdate({
                 ...data,
                 [QUESTION_FIELDS.TYPE]: type,
                 [QUESTION_FIELDS.OPTIONS]: [
                     {
-                        id: tempId1,
+                        id: uuidv4(),
                         [QUESTION_FIELDS.CONTENT]: "Вариант 1",
                         [QUESTION_FIELDS.IS_CORRECT]: true
                     },
                     {
-                        id: tempId2,
+                        id: uuidv4(),
                         [QUESTION_FIELDS.CONTENT]: "Вариант 2",
                         [QUESTION_FIELDS.IS_CORRECT]: false
                     }
@@ -193,8 +191,7 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                                             </button>
                                         </div>
                                         {errors.optionContent?.[idx]?.content && (
-                                            <div
-                                                className={styles.errorMessageFlow}>{errors.optionContent[idx].content}</div>
+                                            <div className={styles.errorMessageFlow}>{errors.optionContent[idx].content}</div>
                                         )}
                                     </div>
                                 ))}

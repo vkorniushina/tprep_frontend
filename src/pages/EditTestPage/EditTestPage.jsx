@@ -13,6 +13,7 @@ import classNames from "classnames";
 import ToastNotification from "../../components/ToastNotification/ToastNotification.jsx";
 import UnsavedChangesModal from "../../components/UnsavedChangesModal/UnsavedChangesModal.jsx";
 import {QUESTION_FIELDS} from "../../constants/questionFields.js";
+import { v4 as uuidv4 } from 'uuid';
 
 const EditTestPage = () => {
     const {id} = useParams();
@@ -158,7 +159,7 @@ const EditTestPage = () => {
     }, []);
 
     const addQuestion = () => {
-        const newId = 'temp-' + Date.now();
+        const newId = uuidv4();
         setQuestions(prev => [
             ...prev,
             {
