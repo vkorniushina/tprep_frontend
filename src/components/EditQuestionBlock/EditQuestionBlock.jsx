@@ -5,6 +5,7 @@ import tick from "../../assets/images/tick.svg";
 import Cross from "../../assets/images/cross.svg?react";
 import AddIcon from "../../assets/images/add.svg?react";
 import {QUESTION_TYPES} from "../../constants/questionTypes";
+import {QUESTION_FIELDS} from "../../constants/questionFields";
 import classNames from 'classnames';
 
 const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
@@ -14,19 +15,19 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
 
     const updateOption = (idx, value) => {
         const updated = [...data.options];
-        updated[idx] = {...updated[idx], content: value};
-        updateField("options", updated);
+        updated[idx] = {...updated[idx], [QUESTION_FIELDS.CONTENT]: value};
+        updateField(QUESTION_FIELDS.OPTIONS, updated);
     };
 
     const addOption = () => {
         const newId = 'temp-answer-' + Date.now();
 
-        updateField("options", [
+        updateField(QUESTION_FIELDS.OPTIONS, [
             ...(data.options || []),
             {
                 id: newId,
-                content: `Вариант ${(data.options?.length || 0) + 1}`,
-                isCorrect: false
+                [QUESTION_FIELDS.CONTENT]: `Вариант ${(data.options?.length || 0) + 1}`,
+                [QUESTION_FIELDS.IS_CORRECT]: false
             }
         ]);
     };
@@ -36,7 +37,7 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
 
         onUpdate({
             ...data,
-            options: updatedOptions,
+            [QUESTION_FIELDS.OPTIONS]: updatedOptions,
         });
     };
 
@@ -47,21 +48,30 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
 
             onUpdate({
                 ...data,
-                type,
-                options: [
-                    {id: tempId1, content: "Вариант 1", isCorrect: true},
-                    {id: tempId2, content: "Вариант 2", isCorrect: false}
+                [QUESTION_FIELDS.TYPE]: type,
+                [QUESTION_FIELDS.OPTIONS]: [
+                    {
+                        id: tempId1,
+                        [QUESTION_FIELDS.CONTENT]: "Вариант 1",
+                        [QUESTION_FIELDS.IS_CORRECT]: true
+                    },
+                    {
+                        id: tempId2,
+                        [QUESTION_FIELDS.CONTENT]: "Вариант 2",
+                        [QUESTION_FIELDS.IS_CORRECT]: false
+                    }
+
                 ],
             });
         } else {
             onUpdate({
                 ...data,
-                type,
-                options: [],
-                answers: [{
+                [QUESTION_FIELDS.TYPE]: type,
+                [QUESTION_FIELDS.OPTIONS]: [],
+                [QUESTION_FIELDS.ANSWERS]: [{
                     id: data.answers?.[0]?.id || null,
-                    content: data.answers?.[0]?.content || "",
-                    isCorrect: true
+                    [QUESTION_FIELDS.CONTENT]: data.answers?.[0]?.content || "",
+                    [QUESTION_FIELDS.IS_CORRECT]: true
                 }]
             });
         }
@@ -81,7 +91,7 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                             className={classNames(styles.questionInput, errors.text && styles.inputError)}
                             placeholder="Введите текст вопроса"
                             value={data.text || ""}
-                            onChange={(e) => updateField("text", e.target.value)}
+                            onChange={(e) => updateField(QUESTION_FIELDS.TEXT, e.target.value)}
                         />
                         {errors.text && <div className={styles.errorMessage}>{errors.text}</div>}
                     </div>
@@ -122,8 +132,12 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                                 placeholder="Введите правильный ответ"
                                 value={data.answers?.[0]?.content || ""}
                                 onChange={(e) =>
-                                    updateField("answers", [
-                                        {...(data.answers?.[0] || {}), content: e.target.value, isCorrect: true}
+                                    updateField(QUESTION_FIELDS.ANSWERS, [
+                                        {
+                                            ...(data.answers?.[0] || {}),
+                                            [QUESTION_FIELDS.CONTENT]: e.target.value,
+                                            [QUESTION_FIELDS.IS_CORRECT]: true
+                                        }
                                     ])
                                 }
                             />
@@ -151,9 +165,11 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                                                     checked={ans.isCorrect}
                                                     onChange={() => {
                                                         const updatedOptions = data.options.map((item, i) =>
-                                                            i === idx ? {...item, isCorrect: !item.isCorrect} : item
+                                                            i === idx
+                                                                ? {...item, [QUESTION_FIELDS.IS_CORRECT]: !item.isCorrect}
+                                                                : item
                                                         );
-                                                        updateField("options", updatedOptions);
+                                                        updateField(QUESTION_FIELDS.OPTIONS, updatedOptions);
                                                     }}
                                                 />
                                                 <span className={styles.checkboxSquare}>
@@ -177,7 +193,8 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                                             </button>
                                         </div>
                                         {errors.optionContent?.[idx]?.content && (
-                                            <div className={styles.errorMessageFlow}>{errors.optionContent[idx].content}</div>
+                                            <div
+                                                className={styles.errorMessageFlow}>{errors.optionContent[idx].content}</div>
                                         )}
                                     </div>
                                 ))}
