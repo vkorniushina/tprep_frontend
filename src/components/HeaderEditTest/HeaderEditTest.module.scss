@@ -12,9 +12,8 @@
 
 .inner {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  align-items: center;
   width: 100%;
 }
 
@@ -22,7 +21,6 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  flex: 1;
 }
 
 .backIcon {
@@ -32,35 +30,9 @@
 .title {
   font-weight: 500;
   font-size: 24px;
-  word-break: break-word;
-}
-
-.buttons {
-  display: flex;
-  gap: 25px;
-  flex-shrink: 0;
 }
 
 .editBtn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: $color-bg-base;
-  font-weight: 500;
-  font-size: $font-sm;
-  color: $color-text;
-  padding: 10px 20px 10px 15px;
-  cursor: pointer;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  transition: $transition-base;
-
-  &:hover {
-    background: $color-bg-gray;
-  }
-}
-
-.startBtn {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -74,14 +46,7 @@
   cursor: pointer;
   transition: $transition-base;
 
-  &:hover:not(:disabled) {
+  &:hover {
     background: $color-primary-hover;
-  }
-
-  &:disabled,
-  &.disabled {
-    background-color: $color-border;
-    cursor: not-allowed;
-    opacity: 0.5;
   }
 }

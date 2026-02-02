@@ -1,0 +1,106 @@
+@use '../../assets/styles/variables' as *;
+
+.optionItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+}
+
+.optionContentWrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.checkboxLabel {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkboxSquare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 24px;
+  width: 24px;
+  background-color: $color-bg-base;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.checkboxInput:checked ~ .checkboxSquare {
+  background-color: $color-primary;
+  border-color: $color-primary;
+}
+
+.checkboxTick {
+  width: 14px;
+  height: 10px;
+}
+
+.optionInput {
+  flex: 1;
+  padding: 16px 18px;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  background-color: $color-bg-gray;
+  font-weight: 400;
+  font-size: $font-sm;
+
+  &:focus {
+    outline: none;
+    border-color: $color-border-hover;
+  }
+}
+
+.optionRemove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .cross{
+    width: 12px;
+    height: 12px;
+    color: $color-text-secondary;
+    stroke-width: 1.5;
+
+    &:hover {
+      color: $color-dark-hover;
+    }
+  }
+}
+
+.section {
+  position: relative;
+}
+
+.inputError {
+  border-color: $color-error-base !important;
+}
+
+.errorMessageFlow {
+  color: $color-error-base;
+  font-size: 14px;
+  padding-left: 36px;
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import styles from "./HeaderTest.module.scss";
 import arrowLeft from "../../assets/images/arrow_left.svg";
 import editIcon from "../../assets/images/edit.svg";
@@ -16,6 +16,10 @@ const HeaderTest = ({name, id, disabledStart = false}) => {
         navigate(`/test/${id}/quiz`);
     };
 
+    const handleEditClick = () => {
+        navigate(`/test/${id}/edit`);
+    };
+
     return (
         <header className={styles.header}>
             <div className={`container ${styles.inner}`}>
@@ -28,7 +32,7 @@ const HeaderTest = ({name, id, disabledStart = false}) => {
                 </div>
 
                 <div className={styles.buttons}>
-                    <button className={styles.editBtn}>
+                    <button className={styles.editBtn} onClick={handleEditClick}>
                         <img src={editIcon}/> Редактировать
                     </button>
                     <button className={`${styles.startBtn} ${disabledStart ? styles.disabled : ""}`}
@@ -44,4 +48,3 @@ const HeaderTest = ({name, id, disabledStart = false}) => {
 };
 
 export default HeaderTest;
-

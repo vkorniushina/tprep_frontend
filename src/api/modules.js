@@ -39,3 +39,13 @@ export const getModuleQuestionsLight = async (id) => {
         throw error;
     }
 };
+
+export const updateModule = async (id, body) => {
+    try {
+        const response = await apiClient.put(`/modules/${id}`, body);
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating module ${id}:`, error);
+        throw error;
+    }
+};
