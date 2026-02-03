@@ -5,7 +5,7 @@ import ReloadIcon from "../../assets/images/reload.svg?react";
 import ArrowIcon from "../../assets/images/arrow_right.svg?react";
 import BellIcon from "../../assets/images/bell.svg?react";
 
-const ResultModal = ({ result, onRetry, onClose }) => {
+const ResultModal = ({ result, onRetry, onFixErrors, onClose }) => {
     if (!result) return null;
 
     const { progress, questionsCount } = result;
@@ -37,7 +37,7 @@ const ResultModal = ({ result, onRetry, onClose }) => {
                         <ReloadIcon className={styles.reloadIcon} />
                     </button>
 
-                    <button className={styles.fixButton}>
+                    <button className={styles.fixButton} onClick={onFixErrors}>
                         Исправить ошибки
                         <ArrowIcon className={styles.arrowIcon} />
                     </button>
