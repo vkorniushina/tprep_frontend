@@ -66,7 +66,6 @@ const EditQuestionBlock = ({index, data, onUpdate, onDelete, errors}) => {
                         [QUESTION_FIELDS.CONTENT]: "Вариант 2",
                         [QUESTION_FIELDS.IS_CORRECT]: false
                     }
-
                 ],
             });
         } else {
