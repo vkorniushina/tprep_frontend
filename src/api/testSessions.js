@@ -39,3 +39,13 @@ export const finishTestSession = async (sessionId) => {
         throw error;
     }
 };
+
+export const startWrongTestSession = async (sessionId) => {
+    try {
+        const response = await apiClient.post(`/test-sessions/start-wrong/${sessionId}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error starting wrong answers session ${sessionId}:`, error);
+        throw error;
+    }
+};
