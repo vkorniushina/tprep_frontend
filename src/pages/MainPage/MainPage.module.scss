@@ -29,6 +29,7 @@
   font-size: $font-lg;
   color: $color-text;
   transition: $transition-base;
+  white-space: nowrap;
 
   &:hover {
     background: $color-primary-hover;

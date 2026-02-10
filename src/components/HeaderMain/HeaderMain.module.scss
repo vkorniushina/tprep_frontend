@@ -66,6 +66,7 @@
   border-radius: $radius-md;
   cursor: pointer;
   transition: $transition-base;
+  white-space: nowrap;
 
   &:hover {
     background-color: #ebeff3;

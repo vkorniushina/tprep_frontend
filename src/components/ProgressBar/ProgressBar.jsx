@@ -2,8 +2,8 @@ import React from "react";
 import styles from "./ProgressBar.module.scss";
 
 const ProgressBar = ({ value, total, variant = 'fraction' }) => {
-    const percent = (value / total) * 100;
-    const displayPercent = Math.round(percent);
+    const percent = total === 0 ? 0 : Math.round((value / total) * 100);
+
     return (
         <div className={styles.wrapper}>
             <div className={styles.track}>
@@ -13,7 +13,7 @@ const ProgressBar = ({ value, total, variant = 'fraction' }) => {
                 {variant === 'fraction' ? (
                     `${value} / ${total}`
                 ) : (
-                    `${displayPercent}%`
+                    `${percent}%`
                 )}
             </div>
         </div>
