@@ -6,6 +6,7 @@ import styles from "./TestPage.module.scss";
 import {getModuleById, getModuleQuestions} from "../../api/modules.js";
 import QuestionBlock from "../../components/QuestionBlock/QuestionBlock.jsx";
 import TestState from "../../components/TestState/TestState.jsx";
+import {formatDate} from "../../utils/dateFormatter.js";
 
 const TestPage = () => {
     const [showQuestions, setShowQuestions] = useState(false);
@@ -87,7 +88,7 @@ const TestPage = () => {
                         <p className={`${styles.description} ${styles.descriptionEmpty}`}>Здесь могло быть
                             описание...</p>}
                     <div className={styles.lastUse}>
-                        Последнее прохождение: {lastUse}
+                        Последнее прохождение: {formatDate(lastUse)}
                     </div>
 
                     <ProgressBar value={progress || 0} total={questionsCount || 0}/>
