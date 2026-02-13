@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, {useRef, useState} from "react";
 import styles from "./Register.module.scss";
 import CheckIcon from "../../assets/images/tick.svg?react";
 import UserIcon from "../../assets/images/user.svg?react";
 import EmailIcon from "../../assets/images/email.svg?react";
 import LockIcon from "../../assets/images/lock.svg?react";
+import EyeOpenIcon from "../../assets/images/eye_open.svg?react";
+import EyeClosedIcon from "../../assets/images/eye_closed.svg?react";
 
 const Register = () => {
     const [name, setName] = useState("");
@@ -11,6 +13,29 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [termsAccepted, setTermsAccepted] = useState(true);
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
+    const passwordRef = useRef(null);
+    const passwordConfirmRef = useRef(null);
+
+    const togglePasswordVisibility = (field) => {
+        const ref = field === 'password' ? passwordRef : passwordConfirmRef;
+        const cursorPosition = ref.current?.selectionStart;
+
+        if (field === 'password') {
+            setShowPassword(prev => !prev);
+        } else {
+            setShowPasswordConfirm(prev => !prev);
+        }
+
+        requestAnimationFrame(() => {
+            if (ref.current && document.activeElement === ref.current) {
+                ref.current.setSelectionRange(cursorPosition, cursorPosition);
+            }
+        });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -59,13 +84,28 @@ const Register = () => {
                             <div className={styles.inputWrapper}>
                                 <LockIcon className={styles.inputIcon} />
                                 <input
-                                    type="password"
+                                    ref={passwordRef}
+                                    type={showPassword ? "text" : "password"}
                                     id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Пароль"
-                                    className={styles.input}
+                                    className={`${styles.input} ${styles.inputWithEye}`}
                                 />
+                                {password && (
+                                    <button
+                                        type="button"
+                                        className={styles.eyeButton}
+                                        onClick={() => togglePasswordVisibility('password')}
+                                        onMouseDown={(e) => e.preventDefault()}
+                                    >
+                                        {showPassword ? (
+                                            <EyeClosedIcon className={styles.eyeIcon} />
+                                        ) : (
+                                            <EyeOpenIcon className={styles.eyeIcon} />
+                                        )}
+                                    </button>
+                                )}
                             </div>
                         </div>
 
@@ -73,13 +113,28 @@ const Register = () => {
                             <div className={styles.inputWrapper}>
                                 <LockIcon className={styles.inputIcon} />
                                 <input
-                                    type="password"
+                                    ref={passwordConfirmRef}
+                                    type={showPasswordConfirm ? "text" : "password"}
                                     id="passwordConfirm"
                                     value={passwordConfirm}
                                     onChange={(e) => setPasswordConfirm(e.target.value)}
                                     placeholder="Повторите пароль"
-                                    className={styles.input}
+                                    className={`${styles.input} ${styles.inputWithEye}`}
                                 />
+                                {passwordConfirm && (
+                                    <button
+                                        type="button"
+                                        className={styles.eyeButton}
+                                        onClick={() => togglePasswordVisibility('passwordConfirm')}
+                                        onMouseDown={(e) => e.preventDefault()}
+                                    >
+                                        {showPasswordConfirm ? (
+                                            <EyeClosedIcon className={styles.eyeIcon} />
+                                        ) : (
+                                            <EyeOpenIcon className={styles.eyeIcon} />
+                                        )}
+                                    </button>
+                                )}
                             </div>
                         </div>
 

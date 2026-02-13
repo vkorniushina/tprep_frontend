@@ -196,3 +196,38 @@
     outline-offset: 2px;
   }
 }
+
+.eyeButton {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity $transition-speed;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.eyeIcon {
+  width: 20px;
+  height: 20px;
+  color: $color-text-muted;
+  pointer-events: none;
+}
+
+.inputWithEye {
+  padding-right: 42px;
+}
