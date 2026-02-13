@@ -302,7 +302,7 @@
 
 .errorMessage {
   color: $color-error-base;
-  font-size: 14px;
+  font-size: $font-xxs;
   position: absolute;
   left: 0;
   top: 100%;
@@ -315,6 +315,6 @@
 
 .errorMessageFlow {
   color: $color-error-base;
-  font-size: 14px;
+  font-size: $font-xxs;
   padding-left: 36px;
 }
