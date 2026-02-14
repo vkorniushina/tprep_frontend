@@ -1,0 +1,176 @@
+@use '../../assets/styles/variables' as *;
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: $color-bg-base;
+  border-bottom: 1px solid $color-border;
+  text-align: center;
+  padding: 20px 0;
+
+  h1 {
+    font-size: $font-xl;
+  }
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0.7;
+  padding: 20px;
+}
+
+.card {
+  background: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 50px 40px;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+}
+
+.backButton {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: $color-text;
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.title {
+  font-size: $font-xl;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.description {
+  text-align: center;
+  margin-bottom: 30px;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.email {
+  font-weight: 500;
+  color: $color-text;
+}
+
+.formContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.formGroup {
+  display: flex;
+  gap: 5px;
+}
+
+.input {
+  background: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-size: $font-xs;
+  color: $color-text;
+  padding: 14px;
+  transition: $transition-base;
+
+  &:focus {
+    outline: none;
+    border-color: $color-border-hover;
+    background-color: $color-bg-base;
+  }
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
+.primaryButton {
+  height: 48px;
+  min-width: 48px;
+  padding: 0;
+  border-radius: $radius-md;
+  background: $color-primary;
+  border: none;
+  cursor: pointer;
+  transition: $transition-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+
+  &:not(:disabled):hover {
+    background-color: $color-primary-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.buttonIcon {
+  width: 25px;
+  height: 25px;
+  transform: rotate(180deg);
+}
+
+.resendBlock {
+  text-align: center;
+}
+
+.timerText {
+  color: $color-text-secondary;
+  font-size: $font-xxs;
+}
+
+.resendButton {
+  background: none;
+  border: none;
+  color: $color-text-secondary;
+  font-size: $font-xxs;
+  cursor: pointer;
+  padding: 0;
+  transition: $transition-base;
+  text-decoration: underline;
+
+  &:hover {
+    color: $color-text;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
