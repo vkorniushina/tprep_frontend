@@ -1,4 +1,5 @@
 import React, {useRef, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import styles from "./Login.module.scss";
 import EyeOpenIcon from "../../assets/images/eye_open.svg?react";
 import EyeClosedIcon from "../../assets/images/eye_closed.svg?react";
@@ -6,6 +7,8 @@ import EmailIcon from "../../assets/images/email.svg?react";
 import LockIcon from "../../assets/images/lock.svg?react";
 
 const Login = () => {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -26,6 +29,11 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        navigate("/");
+    };
+
+    const handleRegisterClick = () => {
+        navigate("/register");
     };
 
     return (
@@ -96,7 +104,9 @@ const Login = () => {
                         <span>Нет аккаунта?</span>
                     </div>
 
-                    <button className={styles.secondaryButton}>
+                    <button className={styles.secondaryButton}
+                            onClick={handleRegisterClick}
+                    >
                         Зарегистрироваться
                     </button>
                 </div>

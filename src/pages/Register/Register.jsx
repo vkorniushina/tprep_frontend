@@ -1,4 +1,5 @@
 import React, {useRef, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import styles from "./Register.module.scss";
 import CheckIcon from "../../assets/images/tick.svg?react";
 import UserIcon from "../../assets/images/user.svg?react";
@@ -8,6 +9,8 @@ import EyeOpenIcon from "../../assets/images/eye_open.svg?react";
 import EyeClosedIcon from "../../assets/images/eye_closed.svg?react";
 
 const Register = () => {
+    const navigate = useNavigate();
+
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -39,6 +42,11 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        navigate("/verify-email", { state: { email } });
+    };
+
+    const handleLoginClick = () => {
+        navigate("/login");
     };
 
     return (
@@ -164,7 +172,9 @@ const Register = () => {
                         <span>Уже есть аккаунт?</span>
                     </div>
 
-                    <button className={styles.secondaryButton}>
+                    <button className={styles.secondaryButton}
+                            onClick={handleLoginClick}
+                    >
                         Войти
                     </button>
                 </div>

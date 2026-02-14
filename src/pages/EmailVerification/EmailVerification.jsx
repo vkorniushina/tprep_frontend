@@ -1,14 +1,18 @@
 import React, {useEffect, useRef, useState} from "react";
 import styles from "./EmailVerification.module.scss";
 import ArrowLeftIcon from "../../assets/images/arrow_left.svg?react";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const EmailVerification = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [verificationCode, setVerificationCode] = useState("");
     const [secondsLeft, setSecondsLeft] = useState(60);
     const [canResend, setCanResend] = useState(false);
     const timerRef = useRef(null);
 
-    const email = "ivanov.mail@gmail.com";
+    const email = location.state?.email || "ivanov.mail@gmail.com";
 
     useEffect(() => {
         startTimer();
@@ -53,6 +57,12 @@ const EmailVerification = () => {
     const handleCodeSubmit = (e) => {
         e.preventDefault();
         if (!verificationCode || verificationCode.length !== 4) return;
+
+        navigate("/");
+    };
+
+    const handleGoBack = () => {
+        navigate("/register");
     };
 
     return (
@@ -65,6 +75,7 @@ const EmailVerification = () => {
                 <div className={styles.card}>
                     <button
                         className={styles.backButton}
+                        onClick={handleGoBack}
                     >
                         <ArrowLeftIcon/>
                     </button>
