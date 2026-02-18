@@ -249,3 +249,13 @@
     }
   }
 }
+
+.inputError {
+  border-color: $color-error-border !important;
+}
+
+.errorMessage {
+  color: $color-error-base;
+  font-size: $font-xxs;
+  margin-top: 5px;
+}
