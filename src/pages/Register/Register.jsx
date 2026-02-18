@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React from "react";
 import {useNavigate} from "react-router-dom";
 import styles from "./Register.module.scss";
 import CheckIcon from "../../assets/images/tick.svg?react";
@@ -7,42 +7,19 @@ import EmailIcon from "../../assets/images/email.svg?react";
 import LockIcon from "../../assets/images/lock.svg?react";
 import EyeOpenIcon from "../../assets/images/eye_open.svg?react";
 import EyeClosedIcon from "../../assets/images/eye_closed.svg?react";
+import {useRegisterForm} from "../../hooks/useRegisterForm.js";
+import classNames from "classnames";
 
 const Register = () => {
     const navigate = useNavigate();
-
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirm, setPasswordConfirm] = useState("");
-    const [termsAccepted, setTermsAccepted] = useState(true);
-
-    const [showPassword, setShowPassword] = useState(false);
-    const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-
-    const passwordRef = useRef(null);
-    const passwordConfirmRef = useRef(null);
-
-    const togglePasswordVisibility = (field) => {
-        const ref = field === 'password' ? passwordRef : passwordConfirmRef;
-        const cursorPosition = ref.current?.selectionStart;
-
-        if (field === 'password') {
-            setShowPassword(prev => !prev);
-        } else {
-            setShowPasswordConfirm(prev => !prev);
-        }
-
-        requestAnimationFrame(() => {
-            if (ref.current && document.activeElement === ref.current) {
-                ref.current.setSelectionRange(cursorPosition, cursorPosition);
-            }
-        });
-    };
+    const form = useRegisterForm();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        navigate("/verify-email", { state: { email } });
+
+        if (form.validateForm()) {
+            navigate("/verify-email", {state: {email: form.email}});
+        }
     };
 
     const handleLoginClick = () => {
@@ -66,12 +43,19 @@ const Register = () => {
                                 <input
                                     type="text"
                                     id="name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    value={form.name}
+                                    onChange={form.handleNameChange}
+                                    onBlur={form.handleNameBlur}
                                     placeholder="Имя"
-                                    className={styles.input}
+                                    className={classNames(
+                                        styles.input,
+                                        {[styles.inputError]: form.nameError}
+                                    )}
                                 />
                             </div>
+                            {form.nameError && (
+                                <div className={styles.errorMessage}>{form.nameError}</div>
+                            )}
                         </div>
 
                         <div className={styles.fieldGroup}>
@@ -80,34 +64,45 @@ const Register = () => {
                                 <input
                                     type="email"
                                     id="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={form.email}
+                                    onChange={form.handleEmailChange}
+                                    onBlur={form.handleEmailBlur}
                                     placeholder="E-mail"
-                                    className={styles.input}
+                                    className={classNames(
+                                        styles.input,
+                                        {[styles.inputError]: form.emailError}
+                                    )}
                                 />
                             </div>
+                            {form.emailError && (
+                                <div className={styles.errorMessage}>{form.emailError}</div>
+                            )}
                         </div>
 
                         <div className={styles.fieldGroup}>
                             <div className={styles.inputWrapper}>
                                 <LockIcon className={styles.inputIcon} />
                                 <input
-                                    ref={passwordRef}
-                                    type={showPassword ? "text" : "password"}
+                                    ref={form.passwordRef}
+                                    type={form.showPassword ? "text" : "password"}
                                     id="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={form.password}
+                                    onChange={form.handlePasswordChange}
                                     placeholder="Пароль"
-                                    className={`${styles.input} ${styles.inputWithEye}`}
+                                    className={classNames(
+                                        styles.input,
+                                        styles.inputWithEye,
+                                        {[styles.inputError]: form.passwordStrength === 'weak' || form.passwordError}
+                                    )}
                                 />
-                                {password && (
+                                {form.password && (
                                     <button
                                         type="button"
                                         className={styles.eyeButton}
-                                        onClick={() => togglePasswordVisibility('password')}
+                                        onClick={() => form.togglePasswordVisibility('password')}
                                         onMouseDown={(e) => e.preventDefault()}
                                     >
-                                        {showPassword ? (
+                                        {form.showPassword ? (
                                             <EyeClosedIcon className={styles.eyeIcon} />
                                         ) : (
                                             <EyeOpenIcon className={styles.eyeIcon} />
@@ -115,28 +110,70 @@ const Register = () => {
                                     </button>
                                 )}
                             </div>
+
+                            {form.password && !form.passwordError && (
+                                <div className={styles.passwordStrengthBar}>
+                                    <div
+                                        className={classNames(styles.passwordStrengthFill, {
+                                            [styles.weakFill]: form.passwordStrength === 'weak',
+                                            [styles.mediumFill]: form.passwordStrength === 'medium',
+                                            [styles.strongFill]: form.passwordStrength === 'strong'
+                                        })}
+                                    />
+                                </div>
+                            )}
+
+                            {form.passwordError && (
+                                <div className={styles.errorMessage}>{form.passwordError}</div>
+                            )}
+
+                            {!form.passwordError && form.passwordHint && (
+                                <>
+                                    {form.passwordStrength === 'weak' && (
+                                        <div className={styles.errorMessage}>{form.passwordHint}</div>
+                                    )}
+
+                                    {form.passwordStrength === 'medium' && (
+                                        <div className={styles.passwordMessage}>
+                                            <span>Простой пароль.</span>
+                                            <span className={styles.mediumPasswordHint}> {form.passwordHint}</span>
+                                        </div>
+                                    )}
+
+                                    {form.passwordStrength === 'strong' && (
+                                        <div className={styles.passwordMessage}>
+                                            {form.passwordHint}
+                                        </div>
+                                    )}
+                                </>
+                            )}
                         </div>
 
                         <div className={styles.fieldGroup}>
                             <div className={styles.inputWrapper}>
                                 <LockIcon className={styles.inputIcon} />
                                 <input
-                                    ref={passwordConfirmRef}
-                                    type={showPasswordConfirm ? "text" : "password"}
+                                    ref={form.passwordConfirmRef}
+                                    type={form.showPasswordConfirm ? "text" : "password"}
                                     id="passwordConfirm"
-                                    value={passwordConfirm}
-                                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                                    value={form.passwordConfirm}
+                                    onChange={form.handlePasswordConfirmChange}
+                                    onBlur={form.handlePasswordConfirmBlur}
                                     placeholder="Повторите пароль"
-                                    className={`${styles.input} ${styles.inputWithEye}`}
+                                    className={classNames(
+                                        styles.input,
+                                        styles.inputWithEye,
+                                        {[styles.inputError]: form.passwordConfirmError}
+                                    )}
                                 />
-                                {passwordConfirm && (
+                                {form.passwordConfirm && (
                                     <button
                                         type="button"
                                         className={styles.eyeButton}
-                                        onClick={() => togglePasswordVisibility('passwordConfirm')}
+                                        onClick={() => form.togglePasswordVisibility('passwordConfirm')}
                                         onMouseDown={(e) => e.preventDefault()}
                                     >
-                                        {showPasswordConfirm ? (
+                                        {form.showPasswordConfirm ? (
                                             <EyeClosedIcon className={styles.eyeIcon} />
                                         ) : (
                                             <EyeOpenIcon className={styles.eyeIcon} />
@@ -144,24 +181,35 @@ const Register = () => {
                                     </button>
                                 )}
                             </div>
+                            {form.passwordConfirmError && (
+                                <div className={styles.errorMessage}>{form.passwordConfirmError}</div>
+                            )}
                         </div>
 
-                        <label className={styles.checkboxLabel}>
-                            <div className={styles.checkboxWrapper}>
-                                <input
-                                    type="checkbox"
-                                    checked={termsAccepted}
-                                    onChange={(e) => setTermsAccepted(e.target.checked)}
-                                    className={styles.checkboxInput}
-                                />
-                                {termsAccepted && (
-                                    <CheckIcon className={styles.checkboxIcon} />
-                                )}
-                            </div>
-                            <span className={styles.checkboxText}>
-                                Я принимаю условия использования и политику конфиденциальности
-                            </span>
-                        </label>
+                        <div className={styles.checkboxGroup}>
+                            <label className={styles.checkboxLabel}>
+                                <div className={styles.checkboxWrapper}>
+                                    <input
+                                        type="checkbox"
+                                        checked={form.termsAccepted}
+                                        onChange={form.handleTermsChange}
+                                        className={classNames(
+                                            styles.checkboxInput,
+                                            {[styles.checkboxError]: form.termsError}
+                                        )}
+                                    />
+                                    {form.termsAccepted && (
+                                        <CheckIcon className={styles.checkboxIcon}/>
+                                    )}
+                                </div>
+                                <span className={styles.checkboxText}>
+                                    Я принимаю условия использования и политику конфиденциальности
+                                </span>
+                            </label>
+                            {form.termsError && (
+                                <div className={styles.errorMessage}>{form.termsError}</div>
+                            )}
+                        </div>
 
                         <button type="submit" className={styles.primaryButton}>
                             Зарегистрироваться
@@ -172,9 +220,7 @@ const Register = () => {
                         <span>Уже есть аккаунт?</span>
                     </div>
 
-                    <button className={styles.secondaryButton}
-                            onClick={handleLoginClick}
-                    >
+                    <button className={styles.secondaryButton} onClick={handleLoginClick}>
                         Войти
                     </button>
                 </div>
