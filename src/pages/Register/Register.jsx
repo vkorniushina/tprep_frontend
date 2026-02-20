@@ -9,6 +9,7 @@ import EyeOpenIcon from "../../assets/images/eye_open.svg?react";
 import EyeClosedIcon from "../../assets/images/eye_closed.svg?react";
 import {useRegisterForm} from "../../hooks/useRegisterForm.js";
 import classNames from "classnames";
+import FormInput from "../../components/FormInput/FormInput.jsx";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -37,47 +38,27 @@ const Register = () => {
                     <h2 className={styles.title}>Создайте аккаунт</h2>
 
                     <form onSubmit={handleSubmit} className={styles.form} noValidate>
-                        <div className={styles.fieldGroup}>
-                            <div className={styles.inputWrapper}>
-                                <UserIcon className={styles.inputIcon} />
-                                <input
-                                    type="text"
-                                    id="name"
-                                    value={form.name}
-                                    onChange={form.handleNameChange}
-                                    onBlur={form.handleNameBlur}
-                                    placeholder="Имя"
-                                    className={classNames(
-                                        styles.input,
-                                        {[styles.inputError]: form.nameError}
-                                    )}
-                                />
-                            </div>
-                            {form.nameError && (
-                                <div className={styles.errorMessage}>{form.nameError}</div>
-                            )}
-                        </div>
+                        <FormInput
+                            type="text"
+                            id="name"
+                            value={form.name}
+                            onChange={form.handleNameChange}
+                            onBlur={form.handleNameBlur}
+                            placeholder="Имя"
+                            icon={UserIcon}
+                            error={form.nameError}
+                        />
 
-                        <div className={styles.fieldGroup}>
-                            <div className={styles.inputWrapper}>
-                                <EmailIcon className={styles.inputIcon} />
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={form.email}
-                                    onChange={form.handleEmailChange}
-                                    onBlur={form.handleEmailBlur}
-                                    placeholder="E-mail"
-                                    className={classNames(
-                                        styles.input,
-                                        {[styles.inputError]: form.emailError}
-                                    )}
-                                />
-                            </div>
-                            {form.emailError && (
-                                <div className={styles.errorMessage}>{form.emailError}</div>
-                            )}
-                        </div>
+                        <FormInput
+                            type="email"
+                            id="email"
+                            value={form.email}
+                            onChange={form.handleEmailChange}
+                            onBlur={form.handleEmailBlur}
+                            placeholder="E-mail"
+                            icon={EmailIcon}
+                            error={form.emailError}
+                        />
 
                         <div className={styles.fieldGroup}>
                             <div className={styles.inputWrapper}>

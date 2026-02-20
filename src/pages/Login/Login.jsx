@@ -7,6 +7,7 @@ import EmailIcon from "../../assets/images/email.svg?react";
 import LockIcon from "../../assets/images/lock.svg?react";
 import { useLoginForm } from "../../hooks/useLoginForm";
 import classNames from "classnames";
+import FormInput from "../../components/FormInput/FormInput.jsx";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -37,26 +38,16 @@ const Login = () => {
                     <h2 className={styles.title}>Вход в аккаунт</h2>
 
                     <form onSubmit={handleSubmit} className={styles.form} noValidate>
-                        <div className={styles.fieldGroup}>
-                            <div className={styles.inputWrapper}>
-                                <EmailIcon className={styles.inputIcon} />
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={form.email}
-                                    onChange={form.handleEmailChange}
-                                    onBlur={form.handleEmailBlur}
-                                    placeholder="E-mail"
-                                    className={classNames(
-                                        styles.input,
-                                        {[styles.inputError]: form.emailError}
-                                    )}
-                                />
-                            </div>
-                            {form.emailError && (
-                                <div className={styles.errorMessage}>{form.emailError}</div>
-                            )}
-                        </div>
+                        <FormInput
+                            type="email"
+                            id="email"
+                            value={form.email}
+                            onChange={form.handleEmailChange}
+                            onBlur={form.handleEmailBlur}
+                            placeholder="E-mail"
+                            icon={EmailIcon}
+                            error={form.emailError}
+                        />
 
                         <div className={styles.fieldGroup}>
                             <div className={styles.inputWrapper}>
