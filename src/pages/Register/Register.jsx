@@ -8,6 +8,7 @@ import {useRegisterForm} from "../../hooks/useRegisterForm.js";
 import classNames from "classnames";
 import FormInput from "../../components/FormInput/FormInput.jsx";
 import PasswordInput from "../../components/PasswordInput/PasswordInput.jsx";
+import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator/PasswordStrengthIndicator.jsx";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -72,36 +73,10 @@ const Register = () => {
                             />
 
                             {form.password && !form.passwordError && (
-                                <div className={styles.passwordStrengthBar}>
-                                    <div
-                                        className={classNames(styles.passwordStrengthFill, {
-                                            [styles.weakFill]: form.passwordStrength === 'weak',
-                                            [styles.mediumFill]: form.passwordStrength === 'medium',
-                                            [styles.strongFill]: form.passwordStrength === 'strong'
-                                        })}
-                                    />
-                                </div>
-                            )}
-
-                            {!form.passwordError && form.passwordHint && (
-                                <>
-                                    {form.passwordStrength === 'weak' && (
-                                        <div className={styles.errorMessage}>{form.passwordHint}</div>
-                                    )}
-
-                                    {form.passwordStrength === 'medium' && (
-                                        <div className={styles.passwordMessage}>
-                                            <span>Простой пароль.</span>
-                                            <span className={styles.mediumPasswordHint}> {form.passwordHint}</span>
-                                        </div>
-                                    )}
-
-                                    {form.passwordStrength === 'strong' && (
-                                        <div className={styles.passwordMessage}>
-                                            {form.passwordHint}
-                                        </div>
-                                    )}
-                                </>
+                                <PasswordStrengthIndicator
+                                    strength={form.passwordStrength}
+                                    hint={form.passwordHint}
+                                />
                             )}
                         </div>
 
