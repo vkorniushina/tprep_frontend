@@ -1,13 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.scss";
-import EyeOpenIcon from "../../assets/images/eye_open.svg?react";
-import EyeClosedIcon from "../../assets/images/eye_closed.svg?react";
 import EmailIcon from "../../assets/images/email.svg?react";
-import LockIcon from "../../assets/images/lock.svg?react";
 import { useLoginForm } from "../../hooks/useLoginForm";
-import classNames from "classnames";
 import FormInput from "../../components/FormInput/FormInput.jsx";
+import PasswordInput from "../../components/PasswordInput/PasswordInput.jsx";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -50,40 +47,17 @@ const Login = () => {
                         />
 
                         <div className={styles.fieldGroup}>
-                            <div className={styles.inputWrapper}>
-                                <LockIcon className={styles.inputIcon} />
-                                <input
-                                    ref={form.passwordRef}
-                                    type={form.showPassword ? "text" : "password"}
-                                    id="password"
-                                    value={form.password}
-                                    onChange={form.handlePasswordChange}
-                                    onBlur={form.handlePasswordBlur}
-                                    placeholder="Пароль"
-                                    className={classNames(
-                                        styles.input,
-                                        styles.inputWithEye,
-                                        {[styles.inputError]: form.passwordError}
-                                    )}
-                                />
-                                {form.password && (
-                                    <button
-                                        type="button"
-                                        className={styles.eyeButton}
-                                        onClick={form.togglePasswordVisibility}
-                                        onMouseDown={(e) => e.preventDefault()}
-                                    >
-                                        {form.showPassword ? (
-                                            <EyeClosedIcon className={styles.eyeIcon} />
-                                        ) : (
-                                            <EyeOpenIcon className={styles.eyeIcon} />
-                                        )}
-                                    </button>
-                                )}
-                            </div>
-                            {form.passwordError && (
-                                <div className={styles.errorMessage}>{form.passwordError}</div>
-                            )}
+                            <PasswordInput
+                                id="password"
+                                value={form.password}
+                                onChange={form.handlePasswordChange}
+                                placeholder="Пароль"
+                                showPassword={form.showPassword}
+                                onToggleVisibility={form.togglePasswordVisibility}
+                                passwordRef={form.passwordRef}
+                                error={form.passwordError}
+                                hasError={form.passwordError}
+                            />
                         </div>
 
                         <div className={styles.forgotPassword}>

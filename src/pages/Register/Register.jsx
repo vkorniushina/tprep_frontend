@@ -4,12 +4,10 @@ import styles from "./Register.module.scss";
 import CheckIcon from "../../assets/images/tick.svg?react";
 import UserIcon from "../../assets/images/user.svg?react";
 import EmailIcon from "../../assets/images/email.svg?react";
-import LockIcon from "../../assets/images/lock.svg?react";
-import EyeOpenIcon from "../../assets/images/eye_open.svg?react";
-import EyeClosedIcon from "../../assets/images/eye_closed.svg?react";
 import {useRegisterForm} from "../../hooks/useRegisterForm.js";
 import classNames from "classnames";
 import FormInput from "../../components/FormInput/FormInput.jsx";
+import PasswordInput from "../../components/PasswordInput/PasswordInput.jsx";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -61,36 +59,17 @@ const Register = () => {
                         />
 
                         <div className={styles.fieldGroup}>
-                            <div className={styles.inputWrapper}>
-                                <LockIcon className={styles.inputIcon} />
-                                <input
-                                    ref={form.passwordRef}
-                                    type={form.showPassword ? "text" : "password"}
-                                    id="password"
-                                    value={form.password}
-                                    onChange={form.handlePasswordChange}
-                                    placeholder="Пароль"
-                                    className={classNames(
-                                        styles.input,
-                                        styles.inputWithEye,
-                                        {[styles.inputError]: form.passwordStrength === 'weak' || form.passwordError}
-                                    )}
-                                />
-                                {form.password && (
-                                    <button
-                                        type="button"
-                                        className={styles.eyeButton}
-                                        onClick={() => form.togglePasswordVisibility('password')}
-                                        onMouseDown={(e) => e.preventDefault()}
-                                    >
-                                        {form.showPassword ? (
-                                            <EyeClosedIcon className={styles.eyeIcon} />
-                                        ) : (
-                                            <EyeOpenIcon className={styles.eyeIcon} />
-                                        )}
-                                    </button>
-                                )}
-                            </div>
+                            <PasswordInput
+                                id="password"
+                                value={form.password}
+                                onChange={form.handlePasswordChange}
+                                placeholder="Пароль"
+                                showPassword={form.showPassword}
+                                onToggleVisibility={() => form.togglePasswordVisibility('password')}
+                                passwordRef={form.passwordRef}
+                                error={form.passwordError}
+                                hasError={form.passwordStrength === 'weak' || form.passwordError}
+                            />
 
                             {form.password && !form.passwordError && (
                                 <div className={styles.passwordStrengthBar}>
@@ -102,10 +81,6 @@ const Register = () => {
                                         })}
                                     />
                                 </div>
-                            )}
-
-                            {form.passwordError && (
-                                <div className={styles.errorMessage}>{form.passwordError}</div>
                             )}
 
                             {!form.passwordError && form.passwordHint && (
@@ -131,40 +106,18 @@ const Register = () => {
                         </div>
 
                         <div className={styles.fieldGroup}>
-                            <div className={styles.inputWrapper}>
-                                <LockIcon className={styles.inputIcon} />
-                                <input
-                                    ref={form.passwordConfirmRef}
-                                    type={form.showPasswordConfirm ? "text" : "password"}
-                                    id="passwordConfirm"
-                                    value={form.passwordConfirm}
-                                    onChange={form.handlePasswordConfirmChange}
-                                    onBlur={form.handlePasswordConfirmBlur}
-                                    placeholder="Повторите пароль"
-                                    className={classNames(
-                                        styles.input,
-                                        styles.inputWithEye,
-                                        {[styles.inputError]: form.passwordConfirmError}
-                                    )}
-                                />
-                                {form.passwordConfirm && (
-                                    <button
-                                        type="button"
-                                        className={styles.eyeButton}
-                                        onClick={() => form.togglePasswordVisibility('passwordConfirm')}
-                                        onMouseDown={(e) => e.preventDefault()}
-                                    >
-                                        {form.showPasswordConfirm ? (
-                                            <EyeClosedIcon className={styles.eyeIcon} />
-                                        ) : (
-                                            <EyeOpenIcon className={styles.eyeIcon} />
-                                        )}
-                                    </button>
-                                )}
-                            </div>
-                            {form.passwordConfirmError && (
-                                <div className={styles.errorMessage}>{form.passwordConfirmError}</div>
-                            )}
+                            <PasswordInput
+                                id="passwordConfirm"
+                                value={form.passwordConfirm}
+                                onChange={form.handlePasswordConfirmChange}
+                                onBlur={form.handlePasswordConfirmBlur}
+                                placeholder="Повторите пароль"
+                                showPassword={form.showPasswordConfirm}
+                                onToggleVisibility={() => form.togglePasswordVisibility('passwordConfirm')}
+                                passwordRef={form.passwordConfirmRef}
+                                error={form.passwordConfirmError}
+                                hasError={form.passwordConfirmError}
+                            />
                         </div>
 
                         <div className={styles.checkboxGroup}>
