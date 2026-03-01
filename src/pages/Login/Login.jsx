@@ -1,23 +1,46 @@
-import React from "react";
+import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.scss";
 import EmailIcon from "../../assets/images/email.svg?react";
 import { useLoginForm } from "../../hooks/useLoginForm";
 import FormInput from "../../components/FormInput/FormInput.jsx";
 import PasswordInput from "../../components/PasswordInput/PasswordInput.jsx";
+import { signIn } from "../../api/auth.js";
+import { saveToken } from "../../utils/tokenStorage.js";
 
 const Login = () => {
     const navigate = useNavigate();
     const form = useLoginForm();
 
-    const handleSubmit = (e) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [serverError, setServerError] = useState("");
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        setServerError("");
 
         if (!form.validateForm()) {
             return;
         }
 
-        navigate("/");
+        setIsLoading(true);
+
+        try {
+            const response = await signIn(form.email, form.password);
+            saveToken(response.token);
+            navigate("/");
+        } catch (error) {
+            if (error.response?.status === 401) {
+                setServerError("Неверный email или пароль");
+            } else if (error.response?.status === 500) {
+                setServerError("Ошибка сервера. Попробуйте позже");
+            } else {
+                setServerError("Ошибка входа. Проверьте соединение");
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleRegisterClick = () => {
@@ -64,7 +87,16 @@ const Login = () => {
                             <span>Забыли пароль?</span>
                         </div>
 
-                        <button type="submit" className={styles.primaryButton}>
+
+                        {serverError && (
+                            <div className={styles.serverError}>{serverError}</div>
+                        )}
+
+                        <button
+                            type="submit"
+                            className={styles.primaryButton}
+                            disabled={isLoading}
+                        >
                             Войти
                         </button>
                     </form>
