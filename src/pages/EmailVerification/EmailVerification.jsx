@@ -56,7 +56,7 @@ const EmailVerification = () => {
 
     const handleCodeSubmit = (e) => {
         e.preventDefault();
-        if (!verificationCode || verificationCode.length !== 4) return;
+        if (verificationCode.length !== 6) return;
 
         navigate("/");
     };
@@ -97,12 +97,12 @@ const EmailVerification = () => {
                                 placeholder="Код"
                                 className={styles.input}
                                 autoFocus
-                                maxLength={4}
+                                maxLength={6}
                             />
                             <button
                                 type="submit"
                                 className={styles.primaryButton}
-                                disabled={verificationCode.length !== 4}
+                                disabled={verificationCode.length !== 6}
                             >
                                 <ArrowLeftIcon className={styles.buttonIcon}/>
                             </button>
