@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import styles from "./Register.module.scss";
 import CheckIcon from "../../assets/images/tick.svg?react";
@@ -9,16 +9,42 @@ import classNames from "classnames";
 import FormInput from "../../components/FormInput/FormInput.jsx";
 import PasswordInput from "../../components/PasswordInput/PasswordInput.jsx";
 import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator/PasswordStrengthIndicator.jsx";
+import {sendVerificationCode} from "../../api/auth.js";
 
 const Register = () => {
     const navigate = useNavigate();
     const form = useRegisterForm();
 
-    const handleSubmit = (e) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [serverError, setServerError] = useState("");
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (form.validateForm()) {
-            navigate("/verify-email", {state: {email: form.email}});
+        if (!form.validateForm()) {
+            return;
+        }
+
+        setIsLoading(true);
+        setServerError("");
+
+        try {
+            await sendVerificationCode(form.email);
+            navigate("/verify-email", {
+                state: {
+                    email: form.email,
+                    password: form.password,
+                    name: form.name,
+                }
+            });
+        } catch (error) {
+            if (error.response?.status === 500) {
+                setServerError("Ошибка сервера. Попробуйте позже");
+            } else {
+                setServerError("Ошибка регистрации. Проверьте соединение");
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -120,7 +146,15 @@ const Register = () => {
                             )}
                         </div>
 
-                        <button type="submit" className={styles.primaryButton}>
+                        {serverError && (
+                            <div className={styles.serverError}>{serverError}</div>
+                        )}
+
+                        <button
+                            type="submit"
+                            className={styles.primaryButton}
+                            disabled={isLoading}
+                        >
                             Зарегистрироваться
                         </button>
                     </form>
