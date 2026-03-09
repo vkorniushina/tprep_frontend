@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {useParams, useNavigate} from 'react-router-dom';
+import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import styles from './QuizPage.module.scss';
 import QuestionInputForm from '../../components/QuestionInputForm/QuestionInputForm';
 import QuestionChoiceForm from '../../components/QuestionChoiceForm/QuestionChoiceForm';
 import HeaderQuiz from '../../components/HeaderQuiz/HeaderQuiz';
 import FooterQuiz from '../../components/FooterQuiz/FooterQuiz';
 import {getModuleQuestionsLight} from "../../api/modules.js";
-import {createTestSession, finishTestSession, submitAnswer} from "../../api/testSessions.js";
+import {createTestSession, finishTestSession, startWrongTestSession, submitAnswer} from "../../api/testSessions.js";
 import {getQuestionById} from "../../api/questions.js";
 import {QUESTION_TYPES} from "../../constants/questionTypes.js";
 import TestState from "../../components/TestState/TestState.jsx";
@@ -16,12 +16,16 @@ import ResultModal from "../../components/ResultModal/ResultModal.jsx";
 const QuizPage = () => {
     const {id} = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const passedSession = location.state?.session;
 
     const [sessionId, setSessionId] = useState(null);
     const [questionsMeta, setQuestionsMeta] = useState([]);
     const [questionsCache, setQuestionsCache] = useState({});
     const [currentIndex, setCurrentIndex] = useState(0);
     const [testName, setTestName] = useState('');
+    const [currentTestId, setCurrentTestId] = useState(null);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -47,11 +51,30 @@ const QuizPage = () => {
             try {
                 setLoading(true);
 
+                if (passedSession) {
+                    setSessionId(passedSession.sessionId);
+                    setTestName(passedSession.testName);
+                    setCurrentTestId(passedSession.testId);
+
+                    setUserAnswers({});
+                    setCurrentIndex(0);
+                    setQuestionsCache({});
+                    resetQuestionState();
+
+                    const meta = await getModuleQuestionsLight(passedSession.testId);
+                    setQuestionsMeta(meta.questions);
+
+                    setError(null);
+                    setLoading(false);
+                    return;
+                }
+
                 const saved = sessionStorage.getItem(STORAGE_KEY);
                 if (saved) {
                     const parsed = JSON.parse(saved);
                     setSessionId(parsed.sessionId);
                     setTestName(parsed.testName);
+                    setCurrentTestId(parsed.currentTestId || Number(id));
                     setUserAnswers(parsed.userAnswers || {});
                     setCurrentIndex(parsed.currentIndex || 0);
                     setQuestionsCache(parsed.questionsCache || {});
@@ -63,6 +86,7 @@ const QuizPage = () => {
                 const session = await createTestSession(Number(id));
                 setSessionId(session.sessionId);
                 setTestName(session.testName);
+                setCurrentTestId(Number(id));
 
                 const meta = await getModuleQuestionsLight(Number(id));
                 setQuestionsMeta(meta.questions);
@@ -77,7 +101,7 @@ const QuizPage = () => {
         };
 
         if (id) initTest();
-    }, [id]);
+    }, [id, passedSession]);
 
     useEffect(() => {
         const fetchQuestion = async () => {
@@ -121,6 +145,7 @@ const QuizPage = () => {
         const savedState = {
             sessionId,
             testName,
+            currentTestId,
             userAnswers,
             currentIndex,
             questionsCache,
@@ -128,7 +153,7 @@ const QuizPage = () => {
         };
 
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
-    }, [sessionId, testName, userAnswers, currentIndex, questionsCache, questionsMeta]);
+    }, [sessionId, testName, currentTestId, userAnswers, currentIndex, questionsCache, questionsMeta]);
 
     useEffect(() => {
         const blockBack = (e) => {
@@ -258,6 +283,27 @@ const QuizPage = () => {
         }
     };
 
+    const handleFixErrors = async () => {
+        try {
+            setShowResultModal(false);
+
+            sessionStorage.removeItem(STORAGE_KEY);
+
+            const newSession = await startWrongTestSession(sessionId);
+
+            navigate(`/test/${id}/quiz`, {
+                replace: true,
+                state: {
+                    session: newSession
+                }
+            });
+
+        } catch (err) {
+            console.error('Error starting fix mode', err);
+            setError('Не удалось начать исправление ошибок');
+        }
+    };
+
     if (loading) return <TestState type="loading" message="Загрузка теста..."/>;
     if (error) return <TestState type="error" message={error}/>;
     if (!currentQuestion) return <TestState type="loading" message="Загрузка вопроса..."/>;
@@ -326,6 +372,7 @@ const QuizPage = () => {
                         setShowResultModal(false);
                         navigate(0);
                     }}
+                    onFixErrors={handleFixErrors}
                     onClose={handleExit}
                 />
             )}
