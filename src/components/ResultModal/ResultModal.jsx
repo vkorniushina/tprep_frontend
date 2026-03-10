@@ -35,7 +35,7 @@ const ResultModal = ({ result, onRetry, onFixErrors, onClose }) => {
 
                 <div className={styles.actions}>
                     <button className={styles.retryButton} onClick={onRetry}>
-                        Пройти ещё раз
+                        Пройти тест заново
                         <ReloadIcon className={styles.reloadIcon} />
                     </button>
 
