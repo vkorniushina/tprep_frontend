@@ -1,17 +1,17 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import styles from './QuizPage.module.scss';
 import HeaderQuiz from '../../components/HeaderQuiz/HeaderQuiz';
 import FooterQuiz from '../../components/FooterQuiz/FooterQuiz';
 import {getModuleQuestionsLight} from "../../api/modules.js";
 import {createTestSession, finishTestSession, startWrongTestSession} from "../../api/testSessions.js";
-import {getQuestionById} from "../../api/questions.js";
 import TestState from "../../components/TestState/TestState.jsx";
 import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal.jsx";
 import ResultModal from "../../components/ResultModal/ResultModal.jsx";
 import QuestionContainer from "../../components/QuestionContainer/QuestionContainer.jsx";
 import useBackButtonGuard from "../../hooks/useBackButtonGuard.js";
 import useQuizAnswer from "../../hooks/useQuizAnswer.js";
+import useQuizNavigation from "../../hooks/useQuizNavigation.js";
 
 const QuizPage = () => {
     const {id} = useParams();
@@ -20,13 +20,19 @@ const QuizPage = () => {
 
     const passedSession = location.state?.session;
 
-    const [sessionId, setSessionId] = useState(null);
-    const [questionsMeta, setQuestionsMeta] = useState([]);
-    const [questionsCache, setQuestionsCache] = useState({});
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [testName, setTestName] = useState('');
-    const [currentTestId, setCurrentTestId] = useState(null);
-    const [userAnswers, setUserAnswers] = useState({});
+    const STORAGE_KEY = `quizState_${id}`;
+
+    const savedState = useMemo(() => {
+        if (passedSession) return null;
+        const saved = sessionStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : null;
+    }, []);
+
+    const [sessionId, setSessionId] = useState(savedState?.sessionId || null);
+    const [questionsMeta, setQuestionsMeta] = useState(savedState?.questionsMeta || []);
+    const [testName, setTestName] = useState(savedState?.testName || '');
+    const [currentTestId, setCurrentTestId] = useState(savedState?.currentTestId || null);
+    const [userAnswers, setUserAnswers] = useState(savedState?.userAnswers || {});
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -35,12 +41,17 @@ const QuizPage = () => {
     const [resultData, setResultData] = useState(null);
     const [showResultModal, setShowResultModal] = useState(false);
 
-    const STORAGE_KEY = `quizState_${id}`;
-
-    const currentQuestionMeta = questionsMeta[currentIndex];
-    const currentQuestion = currentQuestionMeta
-        ? questionsCache[currentQuestionMeta.id]
-        : null;
+    const {
+        currentIndex,
+        setCurrentIndex,
+        currentQuestion,
+        questionsCache,
+        handleNextQuestion,
+        handlePreviousQuestion,
+        navError,
+        isFirstQuestion,
+        isLastQuestion,
+    } = useQuizNavigation(questionsMeta, savedState);
 
     const {
         userAnswer,
@@ -66,10 +77,8 @@ const QuizPage = () => {
                     setSessionId(passedSession.sessionId);
                     setTestName(passedSession.testName);
                     setCurrentTestId(passedSession.testId);
-
                     setUserAnswers({});
                     setCurrentIndex(0);
-                    setQuestionsCache({});
 
                     const meta = await getModuleQuestionsLight(passedSession.testId);
                     setQuestionsMeta(meta.questions);
@@ -79,16 +88,7 @@ const QuizPage = () => {
                     return;
                 }
 
-                const saved = sessionStorage.getItem(STORAGE_KEY);
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    setSessionId(parsed.sessionId);
-                    setTestName(parsed.testName);
-                    setCurrentTestId(parsed.currentTestId || Number(id));
-                    setUserAnswers(parsed.userAnswers || {});
-                    setCurrentIndex(parsed.currentIndex || 0);
-                    setQuestionsCache(parsed.questionsCache || {});
-                    setQuestionsMeta(parsed.questionsMeta || []);
+                if (savedState) {
                     setLoading(false);
                     return;
                 }
@@ -114,30 +114,9 @@ const QuizPage = () => {
     }, [id, passedSession]);
 
     useEffect(() => {
-        const fetchQuestion = async () => {
-            const currentMeta = questionsMeta[currentIndex];
-            if (!currentMeta) return;
-
-            const questionId = currentMeta.id;
-
-            if (!questionsCache[questionId]) {
-                try {
-                    const data = await getQuestionById(questionId);
-                    setQuestionsCache(prev => ({...prev, [questionId]: data}));
-                } catch (err) {
-                    console.error(`Error loading question ${questionId}`, err);
-                    setError('Не удалось загрузить вопрос');
-                }
-            }
-        };
-
-        if (questionsMeta.length > 0) fetchQuestion();
-    }, [currentIndex, questionsMeta]);
-
-    useEffect(() => {
         if (!sessionId) return;
 
-        const savedState = {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
             sessionId,
             testName,
             currentTestId,
@@ -145,22 +124,12 @@ const QuizPage = () => {
             currentIndex,
             questionsCache,
             questionsMeta,
-        };
-
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
+        }));
     }, [sessionId, testName, currentTestId, userAnswers, currentIndex, questionsCache, questionsMeta]);
 
     useEffect(() => {
         document.body.style.overflow = showResultModal ? "hidden" : "";
     }, [showResultModal]);
-
-    const handleNextQuestion = () => {
-        if (currentIndex < questionsMeta.length - 1) setCurrentIndex(currentIndex + 1);
-    };
-
-    const handlePreviousQuestion = () => {
-        if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
-    };
 
     const handleRequestExit = () => setExitOpen(true);
 
@@ -203,6 +172,7 @@ const QuizPage = () => {
         try {
             setShowResultModal(false);
             sessionStorage.removeItem(STORAGE_KEY);
+            setUserAnswers({});
 
             const newSession = await startWrongTestSession(sessionId);
 
@@ -218,8 +188,14 @@ const QuizPage = () => {
         }
     };
 
+    const handleRetry = () => {
+        sessionStorage.removeItem(STORAGE_KEY);
+        navigate(`/test/${id}/quiz`, {replace: true, state: null});
+        window.location.reload();
+    };
+
     if (loading) return <TestState type="loading" message="Загрузка теста..."/>;
-    if (error) return <TestState type="error" message={error}/>;
+    if (error || navError) return <TestState type="error" message={error || navError}/>;
     if (!currentQuestion) return <TestState type="loading" message="Загрузка вопроса..."/>;
 
     return (
@@ -254,21 +230,17 @@ const QuizPage = () => {
             <FooterQuiz
                 onPrevious={handlePreviousQuestion}
                 onNext={handleNextQuestion}
-                isPreviousDisabled={currentIndex === 0}
+                isPreviousDisabled={isFirstQuestion}
                 showCheckButton={isAnswered && !isChecked}
                 onCheckAnswer={handleCheckAnswerWithSave}
-                isLastQuestion={currentIndex === questionsMeta.length - 1}
+                isLastQuestion={isLastQuestion}
                 onFinishTest={handleFinishTest}
             />
 
             {showResultModal && (
                 <ResultModal
                     result={resultData}
-                    onRetry={() => {
-                        sessionStorage.removeItem(STORAGE_KEY);
-                        setShowResultModal(false);
-                        navigate(0);
-                    }}
+                    onRetry={handleRetry}
                     onFixErrors={handleFixErrors}
                     onClose={handleExit}
                 />
