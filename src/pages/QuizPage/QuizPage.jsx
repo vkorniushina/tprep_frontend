@@ -11,6 +11,7 @@ import TestState from "../../components/TestState/TestState.jsx";
 import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal.jsx";
 import ResultModal from "../../components/ResultModal/ResultModal.jsx";
 import QuestionContainer from "../../components/QuestionContainer/QuestionContainer.jsx";
+import useBackButtonGuard from "../../hooks/useBackButtonGuard.js";
 
 const QuizPage = () => {
     const {id} = useParams();
@@ -154,18 +155,7 @@ const QuizPage = () => {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
     }, [sessionId, testName, currentTestId, userAnswers, currentIndex, questionsCache, questionsMeta]);
 
-    useEffect(() => {
-        const blockBack = (e) => {
-            e.preventDefault();
-            window.history.pushState(null, "", window.location.href);
-            setExitOpen(true);
-        };
-
-        window.history.pushState(null, "", window.location.href);
-        window.addEventListener("popstate", blockBack);
-
-        return () => window.removeEventListener("popstate", blockBack);
-    }, []);
+    useBackButtonGuard(() => setExitOpen(true));
 
     useEffect(() => {
         if (showResultModal) {
