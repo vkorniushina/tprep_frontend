@@ -4,14 +4,14 @@ import styles from './QuizPage.module.scss';
 import HeaderQuiz from '../../components/HeaderQuiz/HeaderQuiz';
 import FooterQuiz from '../../components/FooterQuiz/FooterQuiz';
 import {getModuleQuestionsLight} from "../../api/modules.js";
-import {createTestSession, finishTestSession, startWrongTestSession, submitAnswer} from "../../api/testSessions.js";
+import {createTestSession, finishTestSession, startWrongTestSession} from "../../api/testSessions.js";
 import {getQuestionById} from "../../api/questions.js";
-import {QUESTION_TYPES} from "../../constants/questionTypes.js";
 import TestState from "../../components/TestState/TestState.jsx";
 import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal.jsx";
 import ResultModal from "../../components/ResultModal/ResultModal.jsx";
 import QuestionContainer from "../../components/QuestionContainer/QuestionContainer.jsx";
 import useBackButtonGuard from "../../hooks/useBackButtonGuard.js";
+import useQuizAnswer from "../../hooks/useQuizAnswer.js";
 
 const QuizPage = () => {
     const {id} = useParams();
@@ -26,25 +26,36 @@ const QuizPage = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [testName, setTestName] = useState('');
     const [currentTestId, setCurrentTestId] = useState(null);
+    const [userAnswers, setUserAnswers] = useState({});
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const [userAnswers, setUserAnswers] = useState({});
-    const [userAnswer, setUserAnswer] = useState('');
-    const [selectedAnswers, setSelectedAnswers] = useState([]);
-    const [isChecked, setIsChecked] = useState(false);
-    const [isCorrect, setIsCorrect] = useState(false);
-    const [isAnswered, setIsAnswered] = useState(false);
-    const [correctAnswer, setCorrectAnswer] = useState(null);
-    const [correctAnswerIds, setCorrectAnswerIds] = useState([]);
-
     const [exitOpen, setExitOpen] = useState(false);
-
     const [resultData, setResultData] = useState(null);
     const [showResultModal, setShowResultModal] = useState(false);
 
     const STORAGE_KEY = `quizState_${id}`;
+
+    const currentQuestionMeta = questionsMeta[currentIndex];
+    const currentQuestion = currentQuestionMeta
+        ? questionsCache[currentQuestionMeta.id]
+        : null;
+
+    const {
+        userAnswer,
+        selectedAnswers,
+        isChecked,
+        isCorrect,
+        isAnswered,
+        correctAnswer,
+        correctAnswerIds,
+        handleInputChange,
+        handleChoiceSelect,
+        handleCheckAnswer,
+    } = useQuizAnswer(currentQuestion, sessionId, userAnswers);
+
+    useBackButtonGuard(() => setExitOpen(true));
 
     useEffect(() => {
         const initTest = async () => {
@@ -59,7 +70,6 @@ const QuizPage = () => {
                     setUserAnswers({});
                     setCurrentIndex(0);
                     setQuestionsCache({});
-                    resetQuestionState();
 
                     const meta = await getModuleQuestionsLight(passedSession.testId);
                     setQuestionsMeta(meta.questions);
@@ -119,25 +129,10 @@ const QuizPage = () => {
                     setError('Не удалось загрузить вопрос');
                 }
             }
-
-            const saved = userAnswers[questionId];
-            if (saved) {
-                setUserAnswer(saved.userAnswer || '');
-                setSelectedAnswers(saved.selectedAnswers || []);
-                setIsChecked(true);
-                setIsCorrect(saved.isCorrect);
-                setCorrectAnswer(saved.correctAnswer || null);
-                setCorrectAnswerIds(saved.correctAnswerIds || []);
-                setIsAnswered(true);
-            } else {
-                resetQuestionState();
-            }
         };
 
-        if (questionsMeta.length > 0) {
-            fetchQuestion();
-        }
-    }, [currentIndex, questionsMeta, userAnswers]);
+        if (questionsMeta.length > 0) fetchQuestion();
+    }, [currentIndex, questionsMeta]);
 
     useEffect(() => {
         if (!sessionId) return;
@@ -155,75 +150,9 @@ const QuizPage = () => {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
     }, [sessionId, testName, currentTestId, userAnswers, currentIndex, questionsCache, questionsMeta]);
 
-    useBackButtonGuard(() => setExitOpen(true));
-
     useEffect(() => {
-        if (showResultModal) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
+        document.body.style.overflow = showResultModal ? "hidden" : "";
     }, [showResultModal]);
-
-    const currentQuestionMeta = questionsMeta[currentIndex];
-    const currentQuestion = currentQuestionMeta
-        ? questionsCache[currentQuestionMeta.id]
-        : null;
-
-    const handleInputChange = (value) => {
-        setUserAnswer(value);
-        setIsAnswered(value.trim().length > 0);
-    };
-
-    const handleChoiceSelect = (selectedIds) => {
-        setSelectedAnswers(selectedIds);
-        setIsAnswered(selectedIds.length > 0);
-    };
-
-    const handleCheckAnswer = async () => {
-        if (!currentQuestion || !sessionId) return;
-
-        try {
-            const result = await submitAnswer(sessionId, {
-                questionId: currentQuestion.id,
-                userAnswer: currentQuestion.type === QUESTION_TYPES.INPUT
-                    ? [userAnswer]
-                    : selectedAnswers.map(Number),
-            });
-            const {isCorrect, correctAnswer} = result;
-            setIsCorrect(isCorrect);
-            setIsChecked(true);
-
-            if (!isCorrect) {
-                if (currentQuestion.type === QUESTION_TYPES.INPUT) {
-                    setCorrectAnswer(correctAnswer);
-                    setCorrectAnswerIds([]);
-                } else {
-                    setCorrectAnswer(null);
-                    setCorrectAnswerIds(correctAnswer);
-                }
-            } else {
-                setCorrectAnswer(null);
-                setCorrectAnswerIds([]);
-            }
-
-            setUserAnswers(prev => ({
-                ...prev,
-                [currentQuestion.id]: {
-                    userAnswer,
-                    selectedAnswers,
-                    isCorrect: isCorrect,
-                    type: currentQuestion.type,
-                    correctAnswer: correctAnswer,
-                    correctAnswerIds: currentQuestion.type === QUESTION_TYPES.INPUT ? [] : correctAnswer,
-                },
-            }));
-
-        } catch (err) {
-            console.error('Error submitting answer', err);
-            setError('Произошла ошибка. Попробуйте ещё раз.');
-        }
-    };
 
     const handleNextQuestion = () => {
         if (currentIndex < questionsMeta.length - 1) setCurrentIndex(currentIndex + 1);
@@ -233,23 +162,9 @@ const QuizPage = () => {
         if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
     };
 
-    const resetQuestionState = () => {
-        setUserAnswer('');
-        setSelectedAnswers([]);
-        setIsChecked(false);
-        setIsCorrect(false);
-        setCorrectAnswer(null);
-        setCorrectAnswerIds([]);
-        setIsAnswered(false);
-    };
+    const handleRequestExit = () => setExitOpen(true);
 
-    const handleRequestExit = () => {
-        setExitOpen(true);
-    };
-
-    const handleCancelExit = () => {
-        setExitOpen(false);
-    };
+    const handleCancelExit = () => setExitOpen(false);
 
     const handleExit = async () => {
         try {
@@ -272,10 +187,21 @@ const QuizPage = () => {
         }
     };
 
+    const handleCheckAnswerWithSave = async () => {
+        try {
+            const answerRecord = await handleCheckAnswer();
+            if (answerRecord) {
+                setUserAnswers(prev => ({...prev, [currentQuestion.id]: answerRecord}));
+            }
+        } catch (err) {
+            console.error('Error submitting answer', err);
+            setError('Произошла ошибка. Попробуйте ещё раз.');
+        }
+    };
+
     const handleFixErrors = async () => {
         try {
             setShowResultModal(false);
-
             sessionStorage.removeItem(STORAGE_KEY);
 
             const newSession = await startWrongTestSession(sessionId);
@@ -286,7 +212,6 @@ const QuizPage = () => {
                     session: newSession
                 }
             });
-
         } catch (err) {
             console.error('Error starting fix mode', err);
             setError('Не удалось начать исправление ошибок');
@@ -331,7 +256,7 @@ const QuizPage = () => {
                 onNext={handleNextQuestion}
                 isPreviousDisabled={currentIndex === 0}
                 showCheckButton={isAnswered && !isChecked}
-                onCheckAnswer={handleCheckAnswer}
+                onCheckAnswer={handleCheckAnswerWithSave}
                 isLastQuestion={currentIndex === questionsMeta.length - 1}
                 onFinishTest={handleFinishTest}
             />
