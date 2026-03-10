@@ -1,8 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import styles from './QuizPage.module.scss';
-import QuestionInputForm from '../../components/QuestionInputForm/QuestionInputForm';
-import QuestionChoiceForm from '../../components/QuestionChoiceForm/QuestionChoiceForm';
 import HeaderQuiz from '../../components/HeaderQuiz/HeaderQuiz';
 import FooterQuiz from '../../components/FooterQuiz/FooterQuiz';
 import {getModuleQuestionsLight} from "../../api/modules.js";
@@ -12,6 +10,7 @@ import {QUESTION_TYPES} from "../../constants/questionTypes.js";
 import TestState from "../../components/TestState/TestState.jsx";
 import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal.jsx";
 import ResultModal from "../../components/ResultModal/ResultModal.jsx";
+import QuestionContainer from "../../components/QuestionContainer/QuestionContainer.jsx";
 
 const QuizPage = () => {
     const {id} = useParams();
@@ -324,34 +323,17 @@ const QuizPage = () => {
             />
 
             <main className={`container ${styles.main}`}>
-                <div className={styles.questionContainer}>
-                    <h2 className={styles.questionText}>
-                        {currentQuestion.content}
-                    </h2>
-
-                    <div className={styles.answerForm}>
-                        {currentQuestion.type === QUESTION_TYPES.INPUT ? (
-                            <QuestionInputForm
-                                value={userAnswer}
-                                onChange={handleInputChange}
-                                disabled={isChecked}
-                                isChecked={isChecked}
-                                isCorrect={isCorrect}
-                                correctAnswer={correctAnswer}
-                            />
-                        ) : (
-                            <QuestionChoiceForm
-                                answers={currentQuestion.answers}
-                                selected={selectedAnswers}
-                                onSelect={handleChoiceSelect}
-                                disabled={isChecked}
-                                isChecked={isChecked}
-                                correctAnswers={correctAnswerIds}
-                            />
-                        )}
-                    </div>
-
-                </div>
+                <QuestionContainer
+                    question={currentQuestion}
+                    userAnswer={userAnswer}
+                    selectedAnswers={selectedAnswers}
+                    isChecked={isChecked}
+                    isCorrect={isCorrect}
+                    correctAnswer={correctAnswer}
+                    correctAnswerIds={correctAnswerIds}
+                    onInputChange={handleInputChange}
+                    onChoiceSelect={handleChoiceSelect}
+                />
             </main>
 
             <FooterQuiz
