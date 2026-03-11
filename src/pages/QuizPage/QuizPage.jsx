@@ -3,8 +3,7 @@ import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import styles from './QuizPage.module.scss';
 import HeaderQuiz from '../../components/HeaderQuiz/HeaderQuiz';
 import FooterQuiz from '../../components/FooterQuiz/FooterQuiz';
-import {getModuleQuestionsLight} from "../../api/modules.js";
-import {createTestSession, finishTestSession, startWrongTestSession} from "../../api/testSessions.js";
+import {startWrongTestSession} from "../../api/testSessions.js";
 import TestState from "../../components/TestState/TestState.jsx";
 import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal.jsx";
 import ResultModal from "../../components/ResultModal/ResultModal.jsx";
@@ -12,6 +11,7 @@ import QuestionContainer from "../../components/QuestionContainer/QuestionContai
 import useBackButtonGuard from "../../hooks/useBackButtonGuard.js";
 import useQuizAnswer from "../../hooks/useQuizAnswer.js";
 import useQuizNavigation from "../../hooks/useQuizNavigation.js";
+import useQuizSession from "../../hooks/useQuizSession.js";
 
 const QuizPage = () => {
     const {id} = useParams();
@@ -28,18 +28,22 @@ const QuizPage = () => {
         return saved ? JSON.parse(saved) : null;
     }, []);
 
-    const [sessionId, setSessionId] = useState(savedState?.sessionId || null);
-    const [questionsMeta, setQuestionsMeta] = useState(savedState?.questionsMeta || []);
-    const [testName, setTestName] = useState(savedState?.testName || '');
-    const [currentTestId, setCurrentTestId] = useState(savedState?.currentTestId || null);
     const [userAnswers, setUserAnswers] = useState(savedState?.userAnswers || {});
-
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
     const [exitOpen, setExitOpen] = useState(false);
     const [resultData, setResultData] = useState(null);
     const [showResultModal, setShowResultModal] = useState(false);
+
+    const {
+        sessionId,
+        testName,
+        currentTestId,
+        questionsMeta,
+        loading,
+        sessionError,
+        exitSession,
+        finishSession,
+    } = useQuizSession(id, savedState, passedSession);
 
     const {
         currentIndex,
@@ -69,49 +73,11 @@ const QuizPage = () => {
     useBackButtonGuard(() => setExitOpen(true));
 
     useEffect(() => {
-        const initTest = async () => {
-            try {
-                setLoading(true);
-
-                if (passedSession) {
-                    setSessionId(passedSession.sessionId);
-                    setTestName(passedSession.testName);
-                    setCurrentTestId(passedSession.testId);
-                    setUserAnswers({});
-                    setCurrentIndex(0);
-
-                    const meta = await getModuleQuestionsLight(passedSession.testId);
-                    setQuestionsMeta(meta.questions);
-
-                    setError(null);
-                    setLoading(false);
-                    return;
-                }
-
-                if (savedState) {
-                    setLoading(false);
-                    return;
-                }
-
-                const session = await createTestSession(Number(id));
-                setSessionId(session.sessionId);
-                setTestName(session.testName);
-                setCurrentTestId(Number(id));
-
-                const meta = await getModuleQuestionsLight(Number(id));
-                setQuestionsMeta(meta.questions);
-
-                setError(null);
-            } catch (err) {
-                console.error(err);
-                setError('Не удалось загрузить тест');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (id) initTest();
-    }, [id, passedSession]);
+        if (passedSession) {
+            setUserAnswers({});
+            setCurrentIndex(0);
+        }
+    }, [passedSession]);
 
     useEffect(() => {
         if (!sessionId) return;
@@ -136,18 +102,14 @@ const QuizPage = () => {
     const handleCancelExit = () => setExitOpen(false);
 
     const handleExit = async () => {
-        try {
-            await finishTestSession(sessionId);
-        } catch (err) {
-            console.error("Error finishing session on exit", err);
-        }
+        await exitSession();
         sessionStorage.removeItem(STORAGE_KEY);
         navigate(`/test/${id}`);
     };
 
     const handleFinishTest = async () => {
         try {
-            const result = await finishTestSession(sessionId);
+            const result = await finishSession();
             setResultData(result);
             setShowResultModal(true);
         } catch (err) {
@@ -172,7 +134,6 @@ const QuizPage = () => {
         try {
             setShowResultModal(false);
             sessionStorage.removeItem(STORAGE_KEY);
-            setUserAnswers({});
 
             const newSession = await startWrongTestSession(sessionId);
 
@@ -195,7 +156,7 @@ const QuizPage = () => {
     };
 
     if (loading) return <TestState type="loading" message="Загрузка теста..."/>;
-    if (error || navError) return <TestState type="error" message={error || navError}/>;
+    if (error || navError || sessionError) return <TestState type="error" message={error || navError || sessionError}/>;
     if (!currentQuestion) return <TestState type="loading" message="Загрузка вопроса..."/>;
 
     return (
