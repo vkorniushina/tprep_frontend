@@ -7,6 +7,7 @@ import {
     validateTerms,
     checkPasswordStrength
 } from "../utils/registerValidation.js";
+import {PASSWORD_STRENGTH} from "../constants/passwordStrength.js";
 
 export const useRegisterForm = () => {
     const [name, setName] = useState("");
@@ -149,7 +150,7 @@ export const useRegisterForm = () => {
             return false;
         }
 
-        if (passwordStrength === 'weak') {
+        if (passwordStrength === PASSWORD_STRENGTH.WEAK) {
             return false;
         }
 

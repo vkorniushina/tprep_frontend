@@ -9,6 +9,7 @@ import classNames from "classnames";
 import FormInput from "../../components/FormInput/FormInput.jsx";
 import PasswordInput from "../../components/PasswordInput/PasswordInput.jsx";
 import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator/PasswordStrengthIndicator.jsx";
+import {PASSWORD_STRENGTH} from "../../constants/passwordStrength.js";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -69,7 +70,7 @@ const Register = () => {
                                 onToggleVisibility={() => form.togglePasswordVisibility('password')}
                                 passwordRef={form.passwordRef}
                                 error={form.passwordError}
-                                hasError={form.passwordStrength === 'weak' || form.passwordError}
+                                hasError={form.passwordStrength === PASSWORD_STRENGTH.WEAK || form.passwordError}
                             />
 
                             {form.password && !form.passwordError && (
