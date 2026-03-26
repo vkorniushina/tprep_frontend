@@ -1,0 +1,13 @@
+@use '../../assets/styles/variables' as *;
+
+.questionContainer {
+  background: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 55px 70px 70px;
+}
+
+.questionText {
+  font-weight: 500;
+  font-size: 24px;
+  margin-bottom: 80px;
+}

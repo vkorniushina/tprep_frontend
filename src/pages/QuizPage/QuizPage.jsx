@@ -1,17 +1,17 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import styles from './QuizPage.module.scss';
-import QuestionInputForm from '../../components/QuestionInputForm/QuestionInputForm';
-import QuestionChoiceForm from '../../components/QuestionChoiceForm/QuestionChoiceForm';
 import HeaderQuiz from '../../components/HeaderQuiz/HeaderQuiz';
 import FooterQuiz from '../../components/FooterQuiz/FooterQuiz';
-import {getModuleQuestionsLight} from "../../api/modules.js";
-import {createTestSession, finishTestSession, startWrongTestSession, submitAnswer} from "../../api/testSessions.js";
-import {getQuestionById} from "../../api/questions.js";
-import {QUESTION_TYPES} from "../../constants/questionTypes.js";
+import {startWrongTestSession} from "../../api/testSessions.js";
 import TestState from "../../components/TestState/TestState.jsx";
 import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal.jsx";
 import ResultModal from "../../components/ResultModal/ResultModal.jsx";
+import QuestionContainer from "../../components/QuestionContainer/QuestionContainer.jsx";
+import useBackButtonGuard from "../../hooks/useBackButtonGuard.js";
+import useQuizAnswer from "../../hooks/useQuizAnswer.js";
+import useQuizNavigation from "../../hooks/useQuizNavigation.js";
+import useQuizSession from "../../hooks/useQuizSession.js";
 
 const QuizPage = () => {
     const {id} = useParams();
@@ -20,129 +20,69 @@ const QuizPage = () => {
 
     const passedSession = location.state?.session;
 
-    const [sessionId, setSessionId] = useState(null);
-    const [questionsMeta, setQuestionsMeta] = useState([]);
-    const [questionsCache, setQuestionsCache] = useState({});
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [testName, setTestName] = useState('');
-    const [currentTestId, setCurrentTestId] = useState(null);
+    const STORAGE_KEY = `quizState_${id}`;
 
-    const [loading, setLoading] = useState(true);
+    const savedState = useMemo(() => {
+        if (passedSession) return null;
+        const saved = sessionStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : null;
+    }, []);
+
+    const [userAnswers, setUserAnswers] = useState(savedState?.userAnswers || {});
     const [error, setError] = useState(null);
-
-    const [userAnswers, setUserAnswers] = useState({});
-    const [userAnswer, setUserAnswer] = useState('');
-    const [selectedAnswers, setSelectedAnswers] = useState([]);
-    const [isChecked, setIsChecked] = useState(false);
-    const [isCorrect, setIsCorrect] = useState(false);
-    const [isAnswered, setIsAnswered] = useState(false);
-    const [correctAnswer, setCorrectAnswer] = useState(null);
-    const [correctAnswerIds, setCorrectAnswerIds] = useState([]);
-
     const [exitOpen, setExitOpen] = useState(false);
-
     const [resultData, setResultData] = useState(null);
     const [showResultModal, setShowResultModal] = useState(false);
 
-    const STORAGE_KEY = `quizState_${id}`;
+    const {
+        sessionId,
+        testName,
+        currentTestId,
+        questionsMeta,
+        loading,
+        sessionError,
+        exitSession,
+        finishSession,
+    } = useQuizSession(id, savedState, passedSession);
+
+    const {
+        currentIndex,
+        setCurrentIndex,
+        currentQuestion,
+        questionsCache,
+        handleNextQuestion,
+        handlePreviousQuestion,
+        navError,
+        isFirstQuestion,
+        isLastQuestion,
+    } = useQuizNavigation(questionsMeta, savedState);
+
+    const {
+        userAnswer,
+        selectedAnswers,
+        isChecked,
+        isCorrect,
+        isAnswered,
+        correctAnswer,
+        correctAnswerIds,
+        handleInputChange,
+        handleChoiceSelect,
+        handleCheckAnswer,
+    } = useQuizAnswer(currentQuestion, sessionId, userAnswers);
+
+    useBackButtonGuard(() => setExitOpen(true));
 
     useEffect(() => {
-        const initTest = async () => {
-            try {
-                setLoading(true);
-
-                if (passedSession) {
-                    setSessionId(passedSession.sessionId);
-                    setTestName(passedSession.testName);
-                    setCurrentTestId(passedSession.testId);
-
-                    setUserAnswers({});
-                    setCurrentIndex(0);
-                    setQuestionsCache({});
-                    resetQuestionState();
-
-                    const meta = await getModuleQuestionsLight(passedSession.testId);
-                    setQuestionsMeta(meta.questions);
-
-                    setError(null);
-                    setLoading(false);
-                    return;
-                }
-
-                const saved = sessionStorage.getItem(STORAGE_KEY);
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    setSessionId(parsed.sessionId);
-                    setTestName(parsed.testName);
-                    setCurrentTestId(parsed.currentTestId || Number(id));
-                    setUserAnswers(parsed.userAnswers || {});
-                    setCurrentIndex(parsed.currentIndex || 0);
-                    setQuestionsCache(parsed.questionsCache || {});
-                    setQuestionsMeta(parsed.questionsMeta || []);
-                    setLoading(false);
-                    return;
-                }
-
-                const session = await createTestSession(Number(id));
-                setSessionId(session.sessionId);
-                setTestName(session.testName);
-                setCurrentTestId(Number(id));
-
-                const meta = await getModuleQuestionsLight(Number(id));
-                setQuestionsMeta(meta.questions);
-
-                setError(null);
-            } catch (err) {
-                console.error(err);
-                setError('Не удалось загрузить тест');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (id) initTest();
-    }, [id, passedSession]);
-
-    useEffect(() => {
-        const fetchQuestion = async () => {
-            const currentMeta = questionsMeta[currentIndex];
-            if (!currentMeta) return;
-
-            const questionId = currentMeta.id;
-
-            if (!questionsCache[questionId]) {
-                try {
-                    const data = await getQuestionById(questionId);
-                    setQuestionsCache(prev => ({...prev, [questionId]: data}));
-                } catch (err) {
-                    console.error(`Error loading question ${questionId}`, err);
-                    setError('Не удалось загрузить вопрос');
-                }
-            }
-
-            const saved = userAnswers[questionId];
-            if (saved) {
-                setUserAnswer(saved.userAnswer || '');
-                setSelectedAnswers(saved.selectedAnswers || []);
-                setIsChecked(true);
-                setIsCorrect(saved.isCorrect);
-                setCorrectAnswer(saved.correctAnswer || null);
-                setCorrectAnswerIds(saved.correctAnswerIds || []);
-                setIsAnswered(true);
-            } else {
-                resetQuestionState();
-            }
-        };
-
-        if (questionsMeta.length > 0) {
-            fetchQuestion();
+        if (passedSession) {
+            setUserAnswers({});
+            setCurrentIndex(0);
         }
-    }, [currentIndex, questionsMeta, userAnswers]);
+    }, [passedSession]);
 
     useEffect(() => {
         if (!sessionId) return;
 
-        const savedState = {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
             sessionId,
             testName,
             currentTestId,
@@ -150,131 +90,26 @@ const QuizPage = () => {
             currentIndex,
             questionsCache,
             questionsMeta,
-        };
-
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(savedState));
+        }));
     }, [sessionId, testName, currentTestId, userAnswers, currentIndex, questionsCache, questionsMeta]);
 
     useEffect(() => {
-        const blockBack = (e) => {
-            e.preventDefault();
-            window.history.pushState(null, "", window.location.href);
-            setExitOpen(true);
-        };
-
-        window.history.pushState(null, "", window.location.href);
-        window.addEventListener("popstate", blockBack);
-
-        return () => window.removeEventListener("popstate", blockBack);
-    }, []);
-
-    useEffect(() => {
-        if (showResultModal) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
+        document.body.style.overflow = showResultModal ? "hidden" : "";
     }, [showResultModal]);
 
-    const currentQuestionMeta = questionsMeta[currentIndex];
-    const currentQuestion = currentQuestionMeta
-        ? questionsCache[currentQuestionMeta.id]
-        : null;
+    const handleRequestExit = () => setExitOpen(true);
 
-    const handleInputChange = (value) => {
-        setUserAnswer(value);
-        setIsAnswered(value.trim().length > 0);
-    };
-
-    const handleChoiceSelect = (selectedIds) => {
-        setSelectedAnswers(selectedIds);
-        setIsAnswered(selectedIds.length > 0);
-    };
-
-    const handleCheckAnswer = async () => {
-        if (!currentQuestion || !sessionId) return;
-
-        try {
-            const result = await submitAnswer(sessionId, {
-                questionId: currentQuestion.id,
-                userAnswer: currentQuestion.type === QUESTION_TYPES.INPUT
-                    ? [userAnswer]
-                    : selectedAnswers.map(Number),
-            });
-            const {isCorrect, correctAnswer} = result;
-            setIsCorrect(isCorrect);
-            setIsChecked(true);
-
-            if (!isCorrect) {
-                if (currentQuestion.type === QUESTION_TYPES.INPUT) {
-                    setCorrectAnswer(correctAnswer);
-                    setCorrectAnswerIds([]);
-                } else {
-                    setCorrectAnswer(null);
-                    setCorrectAnswerIds(correctAnswer);
-                }
-            } else {
-                setCorrectAnswer(null);
-                setCorrectAnswerIds([]);
-            }
-
-            setUserAnswers(prev => ({
-                ...prev,
-                [currentQuestion.id]: {
-                    userAnswer,
-                    selectedAnswers,
-                    isCorrect: isCorrect,
-                    type: currentQuestion.type,
-                    correctAnswer: correctAnswer,
-                    correctAnswerIds: currentQuestion.type === QUESTION_TYPES.INPUT ? [] : correctAnswer,
-                },
-            }));
-
-        } catch (err) {
-            console.error('Error submitting answer', err);
-            setError('Произошла ошибка. Попробуйте ещё раз.');
-        }
-    };
-
-    const handleNextQuestion = () => {
-        if (currentIndex < questionsMeta.length - 1) setCurrentIndex(currentIndex + 1);
-    };
-
-    const handlePreviousQuestion = () => {
-        if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
-    };
-
-    const resetQuestionState = () => {
-        setUserAnswer('');
-        setSelectedAnswers([]);
-        setIsChecked(false);
-        setIsCorrect(false);
-        setCorrectAnswer(null);
-        setCorrectAnswerIds([]);
-        setIsAnswered(false);
-    };
-
-    const handleRequestExit = () => {
-        setExitOpen(true);
-    };
-
-    const handleCancelExit = () => {
-        setExitOpen(false);
-    };
+    const handleCancelExit = () => setExitOpen(false);
 
     const handleExit = async () => {
-        try {
-            await finishTestSession(sessionId);
-        } catch (err) {
-            console.error("Error finishing session on exit", err);
-        }
+        await exitSession();
         sessionStorage.removeItem(STORAGE_KEY);
         navigate(`/test/${id}`);
     };
 
     const handleFinishTest = async () => {
         try {
-            const result = await finishTestSession(sessionId);
+            const result = await finishSession();
             setResultData(result);
             setShowResultModal(true);
         } catch (err) {
@@ -283,10 +118,21 @@ const QuizPage = () => {
         }
     };
 
+    const handleCheckAnswerWithSave = async () => {
+        try {
+            const answerRecord = await handleCheckAnswer();
+            if (answerRecord) {
+                setUserAnswers(prev => ({...prev, [currentQuestion.id]: answerRecord}));
+            }
+        } catch (err) {
+            console.error('Error submitting answer', err);
+            setError('Произошла ошибка. Попробуйте ещё раз.');
+        }
+    };
+
     const handleFixErrors = async () => {
         try {
             setShowResultModal(false);
-
             sessionStorage.removeItem(STORAGE_KEY);
 
             const newSession = await startWrongTestSession(sessionId);
@@ -297,15 +143,20 @@ const QuizPage = () => {
                     session: newSession
                 }
             });
-
         } catch (err) {
             console.error('Error starting fix mode', err);
             setError('Не удалось начать исправление ошибок');
         }
     };
 
+    const handleRetry = () => {
+        sessionStorage.removeItem(STORAGE_KEY);
+        navigate(`/test/${id}/quiz`, {replace: true, state: null});
+        window.location.reload();
+    };
+
     if (loading) return <TestState type="loading" message="Загрузка теста..."/>;
-    if (error) return <TestState type="error" message={error}/>;
+    if (error || navError || sessionError) return <TestState type="error" message={error || navError || sessionError}/>;
     if (!currentQuestion) return <TestState type="loading" message="Загрузка вопроса..."/>;
 
     return (
@@ -324,54 +175,33 @@ const QuizPage = () => {
             />
 
             <main className={`container ${styles.main}`}>
-                <div className={styles.questionContainer}>
-                    <h2 className={styles.questionText}>
-                        {currentQuestion.content}
-                    </h2>
-
-                    <div className={styles.answerForm}>
-                        {currentQuestion.type === QUESTION_TYPES.INPUT ? (
-                            <QuestionInputForm
-                                value={userAnswer}
-                                onChange={handleInputChange}
-                                disabled={isChecked}
-                                isChecked={isChecked}
-                                isCorrect={isCorrect}
-                                correctAnswer={correctAnswer}
-                            />
-                        ) : (
-                            <QuestionChoiceForm
-                                answers={currentQuestion.answers}
-                                selected={selectedAnswers}
-                                onSelect={handleChoiceSelect}
-                                disabled={isChecked}
-                                isChecked={isChecked}
-                                correctAnswers={correctAnswerIds}
-                            />
-                        )}
-                    </div>
-
-                </div>
+                <QuestionContainer
+                    question={currentQuestion}
+                    userAnswer={userAnswer}
+                    selectedAnswers={selectedAnswers}
+                    isChecked={isChecked}
+                    isCorrect={isCorrect}
+                    correctAnswer={correctAnswer}
+                    correctAnswerIds={correctAnswerIds}
+                    onInputChange={handleInputChange}
+                    onChoiceSelect={handleChoiceSelect}
+                />
             </main>
 
             <FooterQuiz
                 onPrevious={handlePreviousQuestion}
                 onNext={handleNextQuestion}
-                isPreviousDisabled={currentIndex === 0}
+                isPreviousDisabled={isFirstQuestion}
                 showCheckButton={isAnswered && !isChecked}
-                onCheckAnswer={handleCheckAnswer}
-                isLastQuestion={currentIndex === questionsMeta.length - 1}
+                onCheckAnswer={handleCheckAnswerWithSave}
+                isLastQuestion={isLastQuestion}
                 onFinishTest={handleFinishTest}
             />
 
             {showResultModal && (
                 <ResultModal
                     result={resultData}
-                    onRetry={() => {
-                        sessionStorage.removeItem(STORAGE_KEY);
-                        setShowResultModal(false);
-                        navigate(0);
-                    }}
+                    onRetry={handleRetry}
                     onFixErrors={handleFixErrors}
                     onClose={handleExit}
                 />
