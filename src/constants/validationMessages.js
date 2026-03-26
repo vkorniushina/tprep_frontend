@@ -20,7 +20,7 @@ export const VALIDATION_MESSAGES = {
 export const REGEX = {
     EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     NAME_START: /^[a-zA-Zа-яА-ЯёЁ]/,
-    NAME_VALID: /^[a-zA-Zа-яА-ЯёЁ0-9_-]+$/,
+    NAME_VALID: /^[a-zA-Zа-яА-ЯёЁ0-9 _-]+$/,
     UPPERCASE: /[A-Z]/,
     LOWERCASE: /[a-z]/,
     DIGITS: /\d/,
