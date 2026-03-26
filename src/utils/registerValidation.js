@@ -1,4 +1,5 @@
 import {VALIDATION_MESSAGES, REGEX} from "../constants/validationMessages";
+import {PASSWORD_STRENGTH} from "../constants/passwordStrength.js";
 
 export const validateName = (value, checkEmpty = false) => {
     if (!value.trim()) {
@@ -63,7 +64,7 @@ export const checkPasswordStrength = (value, currentName, currentEmail) => {
     const typesCount = [hasUpperCase, hasLowerCase, hasDigits, hasSpecialChars].filter(Boolean).length;
 
     if (value.length < 8) {
-        return {strength: 'weak', hint: VALIDATION_MESSAGES.PASSWORD_MIN_LENGTH};
+        return {strength: PASSWORD_STRENGTH.WEAK, hint: VALIDATION_MESSAGES.PASSWORD_MIN_LENGTH};
     }
 
     const onlyDigits = REGEX.ONLY_DIGITS.test(value);
@@ -71,7 +72,7 @@ export const checkPasswordStrength = (value, currentName, currentEmail) => {
     const onlyUpperCase = REGEX.ONLY_UPPERCASE.test(value);
 
     if (onlyDigits || onlyLowerCase || onlyUpperCase) {
-        return {strength: 'weak', hint: VALIDATION_MESSAGES.PASSWORD_VARIETY};
+        return {strength: PASSWORD_STRENGTH.WEAK, hint: VALIDATION_MESSAGES.PASSWORD_VARIETY};
     }
 
     const lowerValue = value.toLowerCase();
@@ -79,29 +80,29 @@ export const checkPasswordStrength = (value, currentName, currentEmail) => {
     const lowerEmail = currentEmail.toLowerCase().trim();
 
     if (lowerName && lowerValue === lowerName) {
-        return {strength: 'weak', hint: VALIDATION_MESSAGES.PASSWORD_NAME_MATCH};
+        return {strength: PASSWORD_STRENGTH.WEAK, hint: VALIDATION_MESSAGES.PASSWORD_NAME_MATCH};
     }
 
     if (lowerEmail && lowerValue === lowerEmail) {
-        return {strength: 'weak', hint: VALIDATION_MESSAGES.PASSWORD_EMAIL_MATCH};
+        return {strength: PASSWORD_STRENGTH.WEAK, hint: VALIDATION_MESSAGES.PASSWORD_EMAIL_MATCH};
     }
 
     if (value.length >= 12 && typesCount === 4) {
-        return {strength: 'strong', hint: VALIDATION_MESSAGES.PASSWORD_STRONG};
+        return {strength: PASSWORD_STRENGTH.STRONG, hint: VALIDATION_MESSAGES.PASSWORD_STRONG};
     }
 
     if (value.length < 12) {
-        return {strength: 'medium', hint: VALIDATION_MESSAGES.PASSWORD_WEAK_ADD_CHARS};
+        return {strength: PASSWORD_STRENGTH.MEDIUM, hint: VALIDATION_MESSAGES.PASSWORD_WEAK_ADD_CHARS};
     }
     if (!hasSpecialChars) {
-        return {strength: 'medium', hint: VALIDATION_MESSAGES.PASSWORD_ADD_SPECIAL};
+        return {strength: PASSWORD_STRENGTH.MEDIUM, hint: VALIDATION_MESSAGES.PASSWORD_ADD_SPECIAL};
     }
     if (!hasDigits) {
-        return {strength: 'medium', hint: VALIDATION_MESSAGES.PASSWORD_ADD_DIGITS};
+        return {strength: PASSWORD_STRENGTH.MEDIUM, hint: VALIDATION_MESSAGES.PASSWORD_ADD_DIGITS};
     }
     if (!hasUpperCase || !hasLowerCase) {
-        return {strength: 'medium', hint: VALIDATION_MESSAGES.PASSWORD_ADD_CASE};
+        return {strength: PASSWORD_STRENGTH.MEDIUM, hint: VALIDATION_MESSAGES.PASSWORD_ADD_CASE};
     }
 
-    return {strength: 'medium', hint: ""};
+    return {strength: PASSWORD_STRENGTH.MEDIUM, hint: ""};
 };
