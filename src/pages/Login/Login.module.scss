@@ -1,0 +1,129 @@
+@use '../../assets/styles/variables' as *;
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: $color-bg-base;
+  border-bottom: 1px solid $color-border;
+  text-align: center;
+  padding: 20px 0;
+
+  h1 {
+    font-size: $font-xl;
+  }
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 20px;
+}
+
+.card {
+  background: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 50px 40px;
+  max-width: 480px;
+  width: 100%;
+}
+
+.title {
+  font-size: $font-xl;
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.fieldGroup {
+  margin-bottom: 20px;
+}
+
+.primaryButton {
+  width: 100%;
+  padding: 15px;
+  border-radius: $radius-md;
+  background: $color-primary;
+  border: none;
+  font-size: $font-sm;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background-color: $color-primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: $color-text-secondary;
+  }
+
+  span {
+    font-size: $font-xs;
+    color: $color-text-secondary;
+    white-space: nowrap;
+  }
+}
+
+.secondaryButton {
+  width: 100%;
+  padding: 15px;
+  border-radius: $radius-md;
+  background: $color-dark;
+  color: $color-white;
+  border: none;
+  font-size: $font-sm;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background-color: $color-dark-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.forgotPassword {
+  text-align: right;
+  margin-bottom: 25px;
+  margin-top: -5px;
+
+  span{
+    color: $color-text-secondary;
+    font-size: $font-xxs;
+    transition: $transition-base;
+
+    &:hover {
+      color: $color-text;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}

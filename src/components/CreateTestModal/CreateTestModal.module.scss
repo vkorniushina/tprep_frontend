@@ -52,7 +52,7 @@
   color: $color-text;
   margin-bottom: 30px;
   font-weight: 500;
-  font-size: 24px;
+  font-size: $font-xl;
   text-align: center;
 }
 
@@ -274,7 +274,7 @@ textarea {
 
 .errorMessage{
   color: $color-error-base;
-  font-size: 14px;
+  font-size: $font-xxs;
   position: absolute;
   left: 0;
   top: 100%;
@@ -283,7 +283,7 @@ textarea {
 .errorMessageFile{
   margin-top: 5px;
   color: $color-error-base;
-  font-size: 14px;
+  font-size: $font-xxs;
 }
 
 .dropzoneError {

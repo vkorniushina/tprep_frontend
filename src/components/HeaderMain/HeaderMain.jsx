@@ -1,11 +1,17 @@
 import React from "react";
 import styles from "./HeaderMain.module.scss";
 import searchIcon from "../../assets/images/search.svg";
+import {useNavigate} from "react-router-dom";
 
 const HeaderMain = ({ searchQuery, setSearchQuery }) => {
+    const navigate = useNavigate();
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
+    };
+
+    const handleProfileClick = () => {
+        navigate("/register");
     };
 
     return (
@@ -23,7 +29,11 @@ const HeaderMain = ({ searchQuery, setSearchQuery }) => {
                         onChange={handleSearch}
                     />
                 </div>
-                <button className={styles.profileBtn}>Личный кабинет</button>
+                <button className={styles.profileBtn}
+                        onClick={handleProfileClick}
+                >
+                    Личный кабинет
+                </button>
             </div>
         </header>
     )
