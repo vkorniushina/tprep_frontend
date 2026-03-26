@@ -2,6 +2,10 @@ import React, {useEffect, useRef, useState} from "react";
 import styles from "./EmailVerification.module.scss";
 import ArrowLeftIcon from "../../assets/images/arrow_left.svg?react";
 import {useLocation, useNavigate} from "react-router-dom";
+import {sendVerificationCode, signUp, verifyEmail} from "../../api/auth.js";
+import {saveToken} from "../../utils/tokenStorage.js";
+
+const MAX_ATTEMPTS = 3;
 
 const EmailVerification = () => {
     const navigate = useNavigate();
@@ -10,11 +14,20 @@ const EmailVerification = () => {
     const [verificationCode, setVerificationCode] = useState("");
     const [secondsLeft, setSecondsLeft] = useState(60);
     const [canResend, setCanResend] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [attempts, setAttempts] = useState(0);
+    const [isBlocked, setIsBlocked] = useState(false);
+
     const timerRef = useRef(null);
 
-    const email = location.state?.email || "ivanov.mail@gmail.com";
+    const { email, password, name } = location.state || {};
 
     useEffect(() => {
+        if (!email || !password || !name) {
+            navigate("/register");
+            return;
+        }
         startTimer();
 
         return () => {
@@ -44,21 +57,65 @@ const EmailVerification = () => {
         }, 1000);
     };
 
-    const handleResendCode = () => {
-        startTimer();
-        setVerificationCode("");
+    const handleResendCode = async () => {
+        setError("");
+        try {
+            await sendVerificationCode(email);
+            startTimer();
+            setVerificationCode("");
+            setAttempts(0);
+            setIsBlocked(false);
+        } catch {
+            setError("Не удалось отправить код повторно. Попробуйте позже");
+        }
     };
 
     const handleCodeChange = (e) => {
         const value = e.target.value.replace(/\D/g, '');
         setVerificationCode(value);
+        if (error) setError("");
     };
 
-    const handleCodeSubmit = (e) => {
+    const handleCodeSubmit = async (e) => {
         e.preventDefault();
-        if (verificationCode.length !== 6) return;
+        if (verificationCode.length !== 6 || isBlocked) return;
 
-        navigate("/");
+        setIsLoading(true);
+        setError("");
+
+        try {
+            await verifyEmail(email, verificationCode);
+        } catch (err) {
+            const newAttempts = attempts + 1;
+            setAttempts(newAttempts);
+
+            if (err.response?.status === 410) {
+                setIsBlocked(true);
+                setError("Срок действия кода истёк. Запросите новый.");
+            } else if (newAttempts >= MAX_ATTEMPTS) {
+                setIsBlocked(true);
+                setError("Код введён неверно. Запросите новый код.");
+            } else {
+                setError("Неверный код. Попробуйте ещё раз.");
+            }
+
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            const data = await signUp(name, email, password);
+            saveToken(data.token);
+            navigate("/");
+        } catch (err) {
+            if (err.response?.status === 409) {
+                setError("Аккаунт с таким email уже существует. Попробуйте войти");
+            } else {
+                setError("Ошибка при регистрации. Попробуйте снова");
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleGoBack = () => {
@@ -102,16 +159,19 @@ const EmailVerification = () => {
                             <button
                                 type="submit"
                                 className={styles.primaryButton}
-                                disabled={verificationCode.length !== 6}
+                                disabled={verificationCode.length !== 6 || isBlocked || isLoading}
                             >
                                 <ArrowLeftIcon className={styles.buttonIcon}/>
                             </button>
                         </form>
                     </div>
 
+                    {error && (
+                        <div className={styles.errorMessage}>{error}</div>
+                    )}
 
                     <div className={styles.resendBlock}>
-                        {canResend ? (
+                        {(canResend || isBlocked) ? (
                             <button
                                 className={styles.resendButton}
                                 onClick={handleResendCode}

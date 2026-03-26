@@ -174,3 +174,10 @@
     border-radius: 4px;
   }
 }
+
+.errorMessage {
+  color: $color-error-base;
+  font-size: $font-xxs;
+  margin: -15px 0 10px;
+  text-align: center;
+}

@@ -198,3 +198,14 @@
 .checkboxError{
   border-color: $color-error-base;
 }
+
+.serverError {
+  color: $color-error-base;
+  background-color: $color-error-bg-light;
+  border: 1px solid $color-error-border;
+  padding: 12px;
+  border-radius: $radius-sm;
+  font-size: $font-xxs;
+  margin-bottom: 20px;
+  text-align: center;
+}
