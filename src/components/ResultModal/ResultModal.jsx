@@ -5,11 +5,13 @@ import ReloadIcon from "../../assets/images/reload.svg?react";
 import ArrowIcon from "../../assets/images/arrow_right.svg?react";
 import BellIcon from "../../assets/images/bell.svg?react";
 
-const ResultModal = ({ result, onRetry, onClose }) => {
+const ResultModal = ({ result, onRetry, onFixErrors, onClose }) => {
     if (!result) return null;
 
     const { progress, questionsCount } = result;
     const percent = Math.round((progress / questionsCount) * 100);
+
+    const hasErrors = progress < questionsCount;
 
     return (
         <div className={styles.overlay}>
@@ -37,10 +39,12 @@ const ResultModal = ({ result, onRetry, onClose }) => {
                         <ReloadIcon className={styles.reloadIcon} />
                     </button>
 
-                    <button className={styles.fixButton}>
-                        Исправить ошибки
-                        <ArrowIcon className={styles.arrowIcon} />
-                    </button>
+                    {hasErrors && (
+                        <button className={styles.fixButton} onClick={onFixErrors}>
+                            Исправить ошибки
+                            <ArrowIcon className={styles.arrowIcon} />
+                        </button>
+                    )}
 
                     <button className={styles.reminderButton}>
                         Настроить напоминания

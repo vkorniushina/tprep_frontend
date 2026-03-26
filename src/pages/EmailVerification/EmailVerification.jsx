@@ -118,7 +118,6 @@ const EmailVerification = () => {
         }
     };
 
-
     const handleGoBack = () => {
         navigate("/register");
     };
