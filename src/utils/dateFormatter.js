@@ -12,3 +12,22 @@ export const formatDate = (dateString) => {
         year: 'numeric'
     });
 };
+
+export const formatDateTime = (isoString) => {
+    if (!isoString) return '';
+
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return isoString;
+
+    const datePart = date.toLocaleDateString('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+    });
+
+    const timePart = date.toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+
+    return `${datePart}, ${timePart}`;
+};
