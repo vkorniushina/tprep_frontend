@@ -1,0 +1,19 @@
+@use "../../assets/styles/variables" as *;
+
+.card {
+  background-color: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 32px;
+}
+
+.cardTitle {
+  font-size: $font-lg;
+  font-weight: 600;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 25px;
+}

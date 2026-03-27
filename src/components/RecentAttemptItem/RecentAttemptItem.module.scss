@@ -1,0 +1,67 @@
+@use "../../assets/styles/variables" as *;
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 20px 14px 14px;
+  border: 1px solid transparent;
+  background-color: $color-bg-gray;
+  border-radius: $radius-md;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: $color-border;
+    cursor: pointer;
+  }
+}
+
+.icon {
+  width: 41px;
+  height: 41px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-bg-base;
+  border-radius: $radius-sm;
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.title {
+  font-size: $font-sm;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date {
+  font-size: $font-xxs;
+  color: $color-text-secondary;
+  font-weight: 400;
+}
+
+.score {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.scoreValue {
+  font-size: $font-md;
+  font-weight: 600;
+}
+
+.scorePercent {
+  font-size: $font-xxs;
+  color: $color-text-secondary;
+  font-weight: 500;
+}
