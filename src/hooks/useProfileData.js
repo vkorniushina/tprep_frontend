@@ -3,6 +3,10 @@ import {getProfile} from "../api/profile.js";
 
 export const useProfileData = () => {
     const [user, setUser] = useState(null);
+    const [stats, setStats] = useState(null);
+    const [activity, setActivity] = useState([]);
+    const [recentAttempts, setRecentAttempts] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -11,6 +15,9 @@ export const useProfileData = () => {
             try {
                 const data = await getProfile();
                 setUser(data.user);
+                setStats(data.stats);
+                setActivity(data.activity);
+                setRecentAttempts(data.recentAttempts);
             } catch (err) {
                 setError("Не удалось загрузить данные профиля");
                 console.error("Error fetching profile:", err);
@@ -22,5 +29,5 @@ export const useProfileData = () => {
         fetchProfile();
     }, []);
 
-    return {user, loading, error};
+    return {user, stats, activity, recentAttempts, loading, error};
 }
