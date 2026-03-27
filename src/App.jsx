@@ -8,6 +8,7 @@ import Login from "./pages/Login/Login.jsx";
 import EmailVerification from "./pages/EmailVerification/EmailVerification.jsx";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute/PublicRoute.jsx";
+import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
 
 function App() {
 
@@ -25,6 +26,9 @@ function App() {
                 } />
                 <Route path="/test/:id/edit" element={
                     <ProtectedRoute><EditTestPage /></ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                    <ProtectedRoute><ProfilePage /></ProtectedRoute>
                 } />
                 <Route path="/register" element={
                     <PublicRoute><Register /></PublicRoute>
