@@ -6,11 +6,15 @@ const RecentAttemptsSection = ({attempts}) => {
     return (
         <div className={styles.card}>
             <h2 className={styles.cardTitle}>Последние попытки</h2>
-            <div className={styles.list}>
-                {attempts.map((attempt) => (
-                    <AttemptItem key={attempt.testId} attempt={attempt}/>
-                ))}
-            </div>
+            {attempts.length === 0 ? (
+                <p className={styles.empty}>Вы пока не проходили тесты</p>
+            ) : (
+                <div className={styles.list}>
+                    {attempts.map((attempt) => (
+                        <AttemptItem key={attempt.testId} attempt={attempt}/>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
