@@ -6,12 +6,24 @@ import HeaderProfile from "../../components/HeaderProfile/HeaderProfile.jsx";
 import {removeToken} from "../../utils/tokenStorage.js";
 import {useNavigate} from "react-router-dom";
 import classNames from "classnames";
+import StatsCards from "../../components/StatsCards/StatsCards.jsx";
+import RecentAttemptsSection from "../../components/RecentAttemptsSection/RecentAttemptsSection.jsx";
+import ActivitySection from "../../components/ActivitySection/ActivitySection.jsx";
+import {PROFILE_TABS} from "../../constants/profileConstants.js";
 
 const ProfilePage = () => {
     const navigate = useNavigate();
 
-    const {user, loading, error} = useProfileData();
-    const [activeTab, setActiveTab] = useState("stats");
+    const {
+        user,
+        stats,
+        activity,
+        recentAttempts,
+        loading,
+        error
+    } = useProfileData();
+
+    const [activeTab, setActiveTab] = useState(PROFILE_TABS.STATS);
 
     const handleLogout = () => {
         removeToken();
@@ -44,21 +56,30 @@ const ProfilePage = () => {
                             <div className={styles.tabs}>
                                 <button
                                     className={classNames(styles.tab, {
-                                        [styles.tabInactive]: activeTab !== "stats",
+                                        [styles.tabInactive]: activeTab !== PROFILE_TABS.STATS,
                                     })}
-                                    onClick={() => setActiveTab("stats")}
+                                    onClick={() => setActiveTab(PROFILE_TABS.STATS)}
                                 >
                                     Статистика
                                 </button>
                                 <button
                                     className={classNames(styles.tab, {
-                                        [styles.tabInactive]: activeTab !== "reminders",
+                                        [styles.tabInactive]: activeTab !== PROFILE_TABS.REMINDERS,
                                     })}
-                                    onClick={() => setActiveTab("reminders")}
+                                    onClick={() => setActiveTab(PROFILE_TABS.REMINDERS)}
                                 >
                                     Напоминания
                                 </button>
                             </div>
+
+                            {activeTab === PROFILE_TABS.STATS && (
+                                <div className={styles.block}>
+                                    <StatsCards stats={stats}/>
+                                    <ActivitySection activity={activity}/>
+                                    <RecentAttemptsSection attempts={recentAttempts}/>
+                                </div>
+                            )}
+
                         </section>
                     </>
                 )}
