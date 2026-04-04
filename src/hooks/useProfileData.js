@@ -22,5 +22,9 @@ export const useProfileData = () => {
         fetchProfile();
     }, []);
 
-    return {user, loading, error};
+    const updateUser = (fields) => {
+        setUser(prev => ({...prev, ...fields}));
+    };
+
+    return {user, loading, error, updateUser};
 }
