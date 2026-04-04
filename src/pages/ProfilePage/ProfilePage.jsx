@@ -6,16 +6,27 @@ import HeaderProfile from "../../components/HeaderProfile/HeaderProfile.jsx";
 import {removeToken} from "../../utils/tokenStorage.js";
 import {useNavigate} from "react-router-dom";
 import classNames from "classnames";
+import {useToast} from "../../hooks/useToast.js";
+import EditProfileModal from "../../components/EditProfileModal/EditProfileModal.jsx";
+import ToastNotification from "../../components/ToastNotification/ToastNotification.jsx";
+import {PROFILE_TABS} from "../../constants/profileConstants.js";
 
 const ProfilePage = () => {
     const navigate = useNavigate();
 
-    const {user, loading, error} = useProfileData();
-    const [activeTab, setActiveTab] = useState("stats");
+    const {user, loading, error, updateUser} = useProfileData();
+    const [activeTab, setActiveTab] = useState(PROFILE_TABS.STATS);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const {toast, showToast, hideToast} = useToast();
 
     const handleLogout = () => {
         removeToken();
         navigate("/login");
+    };
+
+    const handleSaved = (updatedFields) => {
+        updateUser(updatedFields);
+        showToast("Профиль успешно обновлён");
     };
 
     return (
@@ -36,6 +47,7 @@ const ProfilePage = () => {
                         <aside className={styles.sidebar}>
                             <ProfileCard
                                 user={user}
+                                onEditClick={() => setIsEditOpen(true)}
                                 onLogout={handleLogout}
                             />
                         </aside>
@@ -44,17 +56,17 @@ const ProfilePage = () => {
                             <div className={styles.tabs}>
                                 <button
                                     className={classNames(styles.tab, {
-                                        [styles.tabInactive]: activeTab !== "stats",
+                                        [styles.tabInactive]: activeTab !== PROFILE_TABS.STATS,
                                     })}
-                                    onClick={() => setActiveTab("stats")}
+                                    onClick={() => setActiveTab(PROFILE_TABS.STATS)}
                                 >
                                     Статистика
                                 </button>
                                 <button
                                     className={classNames(styles.tab, {
-                                        [styles.tabInactive]: activeTab !== "reminders",
+                                        [styles.tabInactive]: activeTab !== PROFILE_TABS.REMINDERS,
                                     })}
-                                    onClick={() => setActiveTab("reminders")}
+                                    onClick={() => setActiveTab(PROFILE_TABS.REMINDERS)}
                                 >
                                     Напоминания
                                 </button>
@@ -63,6 +75,21 @@ const ProfilePage = () => {
                     </>
                 )}
             </main>
+            {isEditOpen && (
+                <EditProfileModal
+                    user={user}
+                    onClose={() => setIsEditOpen(false)}
+                    onSaved={handleSaved}
+                />
+            )}
+
+            {toast && (
+                <ToastNotification
+                    type={toast.type}
+                    message={toast.message}
+                    onClose={hideToast}
+                />
+            )}
         </div>
     );
 };
