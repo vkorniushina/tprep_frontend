@@ -5,7 +5,7 @@ export const CHART_CONFIG = {
 };
 
 export function buildWeekData(activity) {
-    const map = Object.fromEntries(activity.map(d => [d.date, d.count]));
+    const activityByDate = Object.fromEntries(activity.map(d => [d.date, d.count]));
     const today = new Date();
 
     return Array.from({ length: 7 }, (_, i) => {
@@ -14,7 +14,7 @@ export function buildWeekData(activity) {
         const key = date.toISOString().slice(0, 10);
         return {
             date: key,
-            count: map[key] || 0,
+            count: activityByDate[key] || 0,
             rawDate: date
         };
     });

@@ -10,12 +10,12 @@ export function getActivityLevel(count) {
 }
 
 export function generateHeatmapData(activity) {
-    const map = Object.fromEntries(activity.map(d => [d.date, d.count]));
+    const activityByDate = Object.fromEntries(activity.map(d => [d.date, d.count]));
 
     const today = new Date();
-    const dow = (today.getDay() + 6) % 7;
+    const dayOfWeek = (today.getDay() + 6) % 7;
     const startDate = new Date(today);
-    startDate.setDate(today.getDate() - dow - (WEEKS - 1) * 7);
+    startDate.setDate(today.getDate() - dayOfWeek - (WEEKS - 1) * 7);
 
     const columns = [];
     const monthLabels = {};
@@ -40,7 +40,7 @@ export function generateHeatmapData(activity) {
                 lastMonth = month;
             }
 
-            cells.push({key, count: map[key] ?? 0, date});
+            cells.push({key, count: activityByDate[key] ?? 0, date});
         }
         columns.push(cells);
     }
