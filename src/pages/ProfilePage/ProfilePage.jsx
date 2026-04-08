@@ -33,12 +33,12 @@ const ProfilePage = () => {
 
                 {!loading && !error && (
                     <>
-                        <aside className={styles.sidebar}>
+                        <section className={styles.sidebar}>
                             <ProfileCard
                                 user={user}
                                 onLogout={handleLogout}
                             />
-                        </aside>
+                        </section>
 
                         <section className={styles.main}>
                             <div className={styles.tabs}>
