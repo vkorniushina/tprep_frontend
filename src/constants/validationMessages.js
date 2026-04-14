@@ -14,7 +14,10 @@ export const VALIDATION_MESSAGES = {
     PASSWORD_ADD_SPECIAL: "Добавьте спецсимволы (!@#$%^&*)",
     PASSWORD_ADD_DIGITS: "Добавьте цифры для усиления пароля",
     PASSWORD_ADD_CASE: "Используйте буквы разного регистра",
-    PASSWORD_STRONG: "Надежный пароль"
+    PASSWORD_STRONG: "Надежный пароль",
+    REMINDER_EMPTY: "Заполните все поля даты и времени",
+    REMINDER_PAST: "Нельзя устанавливать прошедшие даты",
+    REMINDER_DUPLICATE: "Напоминания для этого теста уже установлены"
 };
 
 export const REGEX = {
