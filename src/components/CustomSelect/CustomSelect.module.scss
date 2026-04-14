@@ -1,0 +1,91 @@
+@use "../../assets/styles/variables" as *;
+
+.wrapper {
+  position: relative;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  font-size: $font-sm;
+  background: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: border-color $transition-speed;
+}
+
+.triggerOpen {
+  border-color: $color-border-hover;
+}
+
+.triggerError {
+  border-color: $color-error-border;
+}
+
+.triggerValue{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.triggerPlaceholder {
+  color: $color-text-muted;
+}
+
+.arrow {
+  width: 25px;
+  height: 25px;
+  color: $color-text-muted;
+  flex-shrink: 0;
+  transform: rotate(270deg);
+  transition: transform $transition-speed;
+}
+
+.arrowOpen {
+  transform: rotate(90deg);
+}
+
+.dropdown {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: $color-bg-base;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  list-style: none;
+  margin-top: 1px;
+  padding: 8px 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.option {
+  padding: 12px;
+  font-size: $font-xs;
+  font-weight: 400;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background: $color-bg-gray;
+  }
+}
+
+.optionActive {
+  background: $color-border;
+
+  &:hover {
+    background: $color-border;
+  }
+}
