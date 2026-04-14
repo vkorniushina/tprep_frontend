@@ -1,0 +1,105 @@
+@use "../../assets/styles/variables" as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  background: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 21px;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  width: 100%;
+}
+
+.block {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 500;
+  font-size: $font-md;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  background: $color-bg-gray;
+  border-radius: $radius-md;
+  color: $color-text-secondary;
+  flex-shrink: 0;
+}
+
+.dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: $radius-md;
+  font-size: $font-xxs;
+  font-weight: 400;
+  white-space: nowrap;
+  color: $color-text-secondary;
+  background: $color-border;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    color: $color-text-secondary;
+  }
+}
+
+.badgeActive {
+  background: rgba(255, 221, 45, 0.3);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  color: $color-text-secondary;
+  transition: $transition-base;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: $color-bg-gray;
+    color: $color-text-secondary;
+  }
+}
