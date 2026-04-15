@@ -1,0 +1,207 @@
+@use "../../assets/styles/variables" as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: $color-backdrop;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  position: relative;
+  background-color: $color-bg-base;
+  border-radius: $radius-lg;
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: $shadow-base;
+  padding: 35px;
+}
+
+.modalTitle {
+  text-align: center;
+  font-size: $font-xl;
+  font-weight: 500;
+  color: $color-text;
+  margin-bottom: 20px;
+}
+
+.closeBtn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  .closeIcon {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5px;
+    color: $color-text-secondary;
+    transition: color $transition-speed;
+
+    &:hover {
+      color: $color-dark;
+    }
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  max-height: calc(90vh - 200px);
+  flex: 1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font-weight: 500;
+  font-size: $font-sm;
+  color: $color-text-secondary;
+}
+
+.modeToggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.modeBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 15px 16px;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: $color-bg-gray;
+  cursor: pointer;
+  text-align: left;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: $color-border-hover;
+  }
+}
+
+.modeBtnActive {
+  border-color: $color-dark;
+  background: $color-bg-base;
+
+  &:hover {
+    border-color: $color-dark;
+  }
+}
+
+.modeBtnTitle {
+  font-weight: 500;
+  font-size: $font-sm;
+  color: $color-text;
+  margin-bottom: 2px;
+}
+
+.modeBtnSub {
+  font-weight: 400;
+  font-size: $font-xxs;
+  text-align: center;
+  color: $color-text-secondary;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.addRowBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 15px;
+  border: 2px dashed $color-border;
+  border-radius: $radius-md;
+  background: transparent;
+  font-weight: 400;
+  font-size: $font-xs;
+  color: $color-text-secondary;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: $color-border-hover;
+    color: $color-text;
+  }
+}
+
+.addIcon {
+  width: 10px;
+  height: 10px;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-top: 25px;
+}
+
+.saveBtn {
+  padding: 14px;
+  background: $color-primary;
+  border: none;
+  border-radius: $radius-md;
+  font-weight: 500;
+  font-size: $font-sm;
+  cursor: pointer;
+  transition: background $transition-speed;
+
+  &:hover {
+    background: $color-primary-hover;
+  }
+}
+
+.cancelBtn {
+  padding: 14px;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background $transition-speed;
+
+  &:hover {
+    background: $color-bg-gray;
+  }
+}
+
+.errorMessage {
+  font-size: $font-xs;
+  color: $color-error-base;
+  margin-top: -4px;
+}
+
+.validationMessage {
+  color: $color-error-base;
+  background-color: $color-error-bg-light;
+  border: 1px solid $color-error-border;
+  padding: 12px;
+  border-radius: $radius-sm;
+  font-size: $font-xxs;
+  margin-bottom: 5px;
+  text-align: center;
+}
