@@ -10,6 +10,7 @@ import StatsCards from "../../components/StatsCards/StatsCards.jsx";
 import RecentAttemptsSection from "../../components/RecentAttemptsSection/RecentAttemptsSection.jsx";
 import ActivitySection from "../../components/ActivitySection/ActivitySection.jsx";
 import {PROFILE_TABS} from "../../constants/profileConstants.js";
+import RemindersSection from "../../components/RemindersSection/RemindersSection.jsx";
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -68,7 +69,7 @@ const ProfilePage = () => {
                                     })}
                                     onClick={() => setActiveTab(PROFILE_TABS.REMINDERS)}
                                 >
-                                    Напоминания
+                                    Уведомления
                                 </button>
                             </div>
 
@@ -80,6 +81,11 @@ const ProfilePage = () => {
                                 </div>
                             )}
 
+                            {activeTab === PROFILE_TABS.REMINDERS && (
+                                <div className={styles.block}>
+                                    <RemindersSection />
+                                </div>
+                            )}
                         </section>
                     </>
                 )}
