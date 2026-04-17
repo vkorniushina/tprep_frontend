@@ -4,7 +4,7 @@ import {useProfileData} from "../../hooks/useProfileData.js";
 import ProfileCard from "../../components/ProfileCard/ProfileCard.jsx";
 import HeaderProfile from "../../components/HeaderProfile/HeaderProfile.jsx";
 import {removeToken} from "../../utils/tokenStorage.js";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import classNames from "classnames";
 import StatsCards from "../../components/StatsCards/StatsCards.jsx";
 import RecentAttemptsSection from "../../components/RecentAttemptsSection/RecentAttemptsSection.jsx";
@@ -14,6 +14,7 @@ import RemindersSection from "../../components/RemindersSection/RemindersSection
 
 const ProfilePage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const {
         user,
@@ -24,7 +25,7 @@ const ProfilePage = () => {
         error
     } = useProfileData();
 
-    const [activeTab, setActiveTab] = useState(PROFILE_TABS.STATS);
+    const [activeTab, setActiveTab] = useState(location.state?.tab ?? PROFILE_TABS.STATS);
 
     const handleLogout = () => {
         removeToken();

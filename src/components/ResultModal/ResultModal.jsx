@@ -5,7 +5,7 @@ import ReloadIcon from "../../assets/images/reload.svg?react";
 import ArrowIcon from "../../assets/images/arrow_right.svg?react";
 import BellIcon from "../../assets/images/bell.svg?react";
 
-const ResultModal = ({ result, onRetry, onFixErrors, onClose }) => {
+const ResultModal = ({ result, onRetry, onFixErrors, onClose, onOpenReminders }) => {
     if (!result) return null;
 
     const { progress, questionsCount } = result;
@@ -46,7 +46,7 @@ const ResultModal = ({ result, onRetry, onFixErrors, onClose }) => {
                         </button>
                     )}
 
-                    <button className={styles.reminderButton}>
+                    <button className={styles.reminderButton} onClick={onOpenReminders}>
                         Настроить напоминания
                         <BellIcon className={styles.bellIcon} />
                     </button>
