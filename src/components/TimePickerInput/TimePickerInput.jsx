@@ -21,7 +21,7 @@ const TimePickerInput = ({value, onChange, hasError = false}) => {
     const hourRef = useRef(null);
     const minRef = useRef(null);
 
-    const [h, m] = value ? value.split(":") : ["", ""];
+    const [selectedHour, selectedMinute] = value ? value.split(":") : ["", ""];
 
     useEffect(() => {
         setInputStr(value || "");
@@ -35,8 +35,8 @@ const TimePickerInput = ({value, onChange, hasError = false}) => {
             if (idx !== -1) ref.current.children[idx]?.scrollIntoView({block: "center"});
         };
         setTimeout(() => {
-            scrollTo(hourRef, HOURS, h);
-            scrollTo(minRef, MINUTES, m);
+            scrollTo(hourRef, HOURS, selectedHour);
+            scrollTo(minRef, MINUTES, selectedMinute);
         }, 0);
     }, [open]);
 
@@ -60,13 +60,13 @@ const TimePickerInput = ({value, onChange, hasError = false}) => {
     };
 
     const selectHour = (hour) => {
-        const time = `${hour}:${m || "00"}`;
+        const time = `${hour}:${selectedMinute || "00"}`;
         onChange(time);
         setInputStr(time);
     };
 
     const selectMin = (min) => {
-        const time = `${h || "00"}:${min}`;
+        const time = `${selectedHour || "00"}:${min}`;
         onChange(time);
         setInputStr(time);
     };
@@ -100,7 +100,7 @@ const TimePickerInput = ({value, onChange, hasError = false}) => {
                         {HOURS.map((hour) => (
                             <li
                                 key={hour}
-                                className={`${styles.item} ${hour === h ? styles.itemActive : ""}`}
+                                className={`${styles.item} ${hour === selectedHour ? styles.itemActive : ""}`}
                                 onClick={() => selectHour(hour)}
                             >
                                 {hour}
@@ -112,7 +112,7 @@ const TimePickerInput = ({value, onChange, hasError = false}) => {
                         {MINUTES.map((min) => (
                             <li
                                 key={min}
-                                className={`${styles.item} ${min === m ? styles.itemActive : ""}`}
+                                className={`${styles.item} ${min === selectedMinute ? styles.itemActive : ""}`}
                                 onClick={() => selectMin(min)}
                             >
                                 {min}
