@@ -16,6 +16,7 @@ import {toUTCISO} from "../../utils/dateFormatter.js";
 import ReminderRow from "../ReminderRow/ReminderRow.jsx";
 import {VALIDATION_MESSAGES} from "../../constants/validationMessages.js";
 import ModeSelector from "../ModeSelector/ModeSelector.jsx";
+import ReminderFooter from "../ReminderFooter/ReminderFooter.jsx";
 
 const ReminderModal = ({mode = MODAL_MODES.EDIT, reminder, tests = [], onClose, onSave}) => {
     const isEdit = mode === MODAL_MODES.EDIT;
@@ -167,13 +168,11 @@ const ReminderModal = ({mode = MODAL_MODES.EDIT, reminder, tests = [], onClose, 
                     </div>
                 </div>
 
-                <div className={styles.footer}>
-                    {validationMessage && (
-                        <div className={styles.validationMessage}>{validationMessage}</div>
-                    )}
-                    <button className={styles.saveBtn} onClick={handleSave}>Сохранить</button>
-                    <button className={styles.cancelBtn} onClick={onClose}>Отмена</button>
-                </div>
+                <ReminderFooter
+                    onSave={handleSave}
+                    onCancel={onClose}
+                    validationMessage={validationMessage}
+                />
             </div>
         </div>
     );
