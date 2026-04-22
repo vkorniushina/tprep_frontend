@@ -11,7 +11,7 @@ export const useEmailVerification = (email) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [attempts, setAttempts] = useState(0);
-    const [isBlocked, setIsBlocked] = useState(false);
+    const [needsNewCode, setNeedsNewCode] = useState(false);
 
     const timerRef = useRef(null);
 
@@ -49,14 +49,14 @@ export const useEmailVerification = (email) => {
             startTimer();
             setCode("");
             setAttempts(0);
-            setIsBlocked(false);
+            setNeedsNewCode(false);
         } catch {
             setError("Не удалось отправить код повторно. Попробуйте позже.");
         }
     };
 
     const handleVerify = async () => {
-        if (code.length !== 6 || isBlocked) return false;
+        if (code.length !== 6 || needsNewCode) return false;
 
         setIsLoading(true);
         setError("");
@@ -70,10 +70,10 @@ export const useEmailVerification = (email) => {
             setAttempts(newAttempts);
 
             if (err.response?.status === 410) {
-                setIsBlocked(true);
+                setNeedsNewCode(true);
                 setError("Срок действия кода истёк. Запросите новый.");
             } else if (newAttempts >= MAX_ATTEMPTS) {
-                setIsBlocked(true);
+                setNeedsNewCode(true);
                 setError("Код введён неверно. Запросите новый код.");
             } else {
                 setError("Неверный код. Попробуйте ещё раз.");
@@ -91,7 +91,7 @@ export const useEmailVerification = (email) => {
         canResend,
         isLoading,
         error,
-        isBlocked,
+        needsNewCode,
         startTimer,
         stopTimer,
         handleCodeChange,

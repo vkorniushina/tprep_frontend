@@ -10,7 +10,7 @@ const EmailVerificationStep = ({email, isSubmitting, onSuccess, onBack}) => {
         canResend,
         isLoading,
         error,
-        isBlocked,
+        needsNewCode,
         startTimer,
         stopTimer,
         handleCodeChange,
@@ -56,7 +56,7 @@ const EmailVerificationStep = ({email, isSubmitting, onSuccess, onBack}) => {
                 <button
                     className={styles.codeSubmitBtn}
                     onClick={handleSubmit}
-                    disabled={code.length !== 6 || isBlocked || isLoading || isSubmitting}
+                    disabled={code.length !== 6 || needsNewCode || isLoading || isSubmitting}
                 >
                     <ArrowLeftIcon className={styles.buttonIcon}/>
                 </button>
@@ -65,7 +65,7 @@ const EmailVerificationStep = ({email, isSubmitting, onSuccess, onBack}) => {
             {error && <p className={styles.verifyError}>{error}</p>}
 
             <div className={styles.resendBlock}>
-                {(canResend || isBlocked) ? (
+                {(canResend || needsNewCode) ? (
                     <button className={styles.resendBtn} onClick={handleResend}>
                         Отправить повторно
                     </button>
