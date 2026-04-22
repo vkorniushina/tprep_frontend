@@ -72,54 +72,6 @@
   color: $color-text-secondary;
 }
 
-.modeToggle {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.modeBtn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 15px 16px;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  background: $color-bg-gray;
-  cursor: pointer;
-  text-align: left;
-  transition: $transition-base;
-
-  &:hover {
-    border-color: $color-border-hover;
-  }
-}
-
-.modeBtnActive {
-  border-color: $color-dark;
-  background: $color-bg-base;
-
-  &:hover {
-    border-color: $color-dark;
-  }
-}
-
-.modeBtnTitle {
-  font-weight: 500;
-  font-size: $font-sm;
-  color: $color-text;
-  margin-bottom: 2px;
-}
-
-.modeBtnSub {
-  font-weight: 400;
-  font-size: $font-xxs;
-  text-align: center;
-  color: $color-text-secondary;
-}
-
 .rows {
   display: flex;
   flex-direction: column;

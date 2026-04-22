@@ -3,7 +3,6 @@ import styles from "./ReminderModal.module.scss";
 import CloseIcon from "../../assets/images/close.svg?react";
 import AddIcon from "../../assets/images/add.svg?react";
 import CustomSelect from "../CustomSelect/CustomSelect.jsx";
-import classNames from "classnames";
 import {
     buildIntervalRows,
     getValidationMessage,
@@ -11,12 +10,12 @@ import {
     sortRowsByDate,
     validateRows
 } from "../../utils/reminderUtils.js";
-import {MODAL_MODES, REMINDER_MODES, MODE_BUTTONS} from "../../constants/reminderConstants.js";
+import {MODAL_MODES, REMINDER_MODES} from "../../constants/reminderConstants.js";
 import {v4 as uuidv4} from 'uuid';
 import {toUTCISO} from "../../utils/dateFormatter.js";
 import ReminderRow from "../ReminderRow/ReminderRow.jsx";
 import {VALIDATION_MESSAGES} from "../../constants/validationMessages.js";
-
+import ModeSelector from "../ModeSelector/ModeSelector.jsx";
 
 const ReminderModal = ({mode = MODAL_MODES.EDIT, reminder, tests = [], onClose, onSave}) => {
     const isEdit = mode === MODAL_MODES.EDIT;
@@ -138,23 +137,10 @@ const ReminderModal = ({mode = MODAL_MODES.EDIT, reminder, tests = [], onClose, 
                         </div>
                     )}
 
-                    <div className={styles.field}>
-                        <label className={styles.label}>Режим напоминаний</label>
-                        <div className={styles.modeToggle}>
-                            {MODE_BUTTONS.map((btn) => (
-                                <button
-                                    key={btn.id}
-                                    className={classNames(styles.modeBtn, {
-                                        [styles.modeBtnActive]: reminderMode === btn.id,
-                                    })}
-                                    onClick={() => switchMode(btn.id)}
-                                >
-                                    <div className={styles.modeBtnTitle}>{btn.title}</div>
-                                    <p className={styles.modeBtnSub}>{btn.sub}</p>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    <ModeSelector
+                        activeMode={reminderMode}
+                        onModeChange={switchMode}
+                    />
 
                     <div className={styles.field}>
                         <label className={styles.label}>График повторений</label>
