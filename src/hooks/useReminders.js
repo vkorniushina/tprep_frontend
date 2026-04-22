@@ -5,6 +5,7 @@ import {
     updateReminders,
     deleteReminders
 } from "../api/reminders.js";
+import {sortRemindersByNearest} from "../utils/reminderUtils.js";
 
 export const useReminders = () => {
     const [reminders, setReminders] = useState([]);
@@ -15,22 +16,7 @@ export const useReminders = () => {
         try {
             setLoading(true);
             const data = await getReminders();
-
-            const sortedData = [...data].sort((a, b) => {
-                const now = Date.now();
-                const timeA = Math.min(
-                    ...a.reminders
-                        .map(r => new Date(r.datetime).getTime())
-                        .filter(t => t >= now)
-                );
-                const timeB = Math.min(
-                    ...b.reminders
-                        .map(r => new Date(r.datetime).getTime())
-                        .filter(t => t >= now)
-                );
-                return timeA - timeB;
-            });
-
+            const sortedData = sortRemindersByNearest(data);
             setReminders(sortedData);
         } catch {
             setError("Не удалось загрузить напоминания");

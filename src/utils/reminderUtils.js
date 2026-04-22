@@ -58,3 +58,20 @@ export const getValidationMessage = (rowErrors) => {
 export const sortRowsByDate = (rows) => {
     return [...rows].sort((a, b) => (a.dateObj?.getTime() ?? 0) - (b.dateObj?.getTime() ?? 0));
 };
+
+const getNearestFutureTime = (reminders) => {
+    const now = Date.now();
+    const futureTimes = reminders
+        .map(r => new Date(r.datetime).getTime())
+        .filter(t => t >= now);
+
+    return futureTimes.length > 0 ? Math.min(...futureTimes) : Infinity;
+};
+
+export const sortRemindersByNearest = (data) => {
+    return [...data].sort((a, b) => {
+        const timeA = getNearestFutureTime(a.reminders || []);
+        const timeB = getNearestFutureTime(b.reminders || []);
+        return timeA - timeB;
+    });
+};
