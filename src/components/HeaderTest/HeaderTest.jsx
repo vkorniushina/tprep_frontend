@@ -13,6 +13,7 @@ const HeaderTest = ({name, id, disabledStart = false}) => {
     };
 
     const handleStartTest = () => {
+        sessionStorage.removeItem(`quiz_locked_${id}`);
         navigate(`/test/${id}/quiz`);
     };
 

@@ -1,0 +1,111 @@
+@use "../../assets/styles/variables" as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: $color-backdrop;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  position: relative;
+  background-color: $color-bg-base;
+  border-radius: $radius-lg;
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  box-shadow: $shadow-base;
+  padding: 35px;
+}
+
+.modalTitle {
+  text-align: center;
+  font-size: $font-xl;
+  font-weight: 500;
+  color: $color-text;
+  margin-bottom: 20px;
+}
+
+.closeBtn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  .closeIcon {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5px;
+    color: $color-text-secondary;
+    transition: color $transition-speed;
+
+    &:hover {
+      color: $color-dark;
+    }
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  min-height: 0;
+  flex: 1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font-weight: 500;
+  font-size: $font-sm;
+  color: $color-text-secondary;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.addRowBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 15px;
+  border: 2px dashed $color-border;
+  border-radius: $radius-md;
+  background: transparent;
+  font-weight: 400;
+  font-size: $font-xs;
+  color: $color-text-secondary;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: $color-border-hover;
+    color: $color-text;
+  }
+}
+
+.addIcon {
+  width: 10px;
+  height: 10px;
+}
+
+.errorMessage {
+  font-size: $font-xs;
+  color: $color-error-base;
+  margin-top: -4px;
+}

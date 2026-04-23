@@ -1,0 +1,50 @@
+@use "../../assets/styles/variables" as *;
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-top: 25px;
+}
+
+.saveBtn {
+  padding: 14px;
+  background: $color-primary;
+  border: none;
+  border-radius: $radius-md;
+  font-weight: 500;
+  font-size: $font-sm;
+  cursor: pointer;
+  transition: background $transition-speed;
+
+  &:hover {
+    background: $color-primary-hover;
+  }
+}
+
+.cancelBtn {
+  padding: 14px;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background $transition-speed;
+
+  &:hover {
+    background: $color-bg-gray;
+  }
+}
+
+.validationMessage {
+  color: $color-error-base;
+  background-color: $color-error-bg-light;
+  border: 1px solid $color-error-border;
+  padding: 12px;
+  border-radius: $radius-sm;
+  font-size: $font-xxs;
+  margin-bottom: 5px;
+  text-align: center;
+}
