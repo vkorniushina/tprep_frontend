@@ -1,0 +1,56 @@
+@use "../../assets/styles/variables" as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: $font-lg;
+  font-weight: 500;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px 10px 15px;
+  font-weight: 400;
+  font-size: $font-sm;
+  color: $color-white;
+  background-color: $color-dark;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color $transition-speed;
+
+  &:hover {
+    background-color: $color-dark-hover;
+  }
+}
+
+.addIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.empty {
+  text-align: center;
+  color: $color-text-muted;
+  font-size: $font-sm;
+  padding: 30px 0;
+}

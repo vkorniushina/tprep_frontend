@@ -12,6 +12,7 @@ import useBackButtonGuard from "../../hooks/useBackButtonGuard.js";
 import useQuizAnswer from "../../hooks/useQuizAnswer.js";
 import useQuizNavigation from "../../hooks/useQuizNavigation.js";
 import useQuizSession from "../../hooks/useQuizSession.js";
+import {PROFILE_TABS} from "../../constants/profileConstants.js";
 
 const QuizPage = () => {
     const {id} = useParams();
@@ -73,6 +74,12 @@ const QuizPage = () => {
     useBackButtonGuard(() => setExitOpen(true));
 
     useEffect(() => {
+        if (sessionStorage.getItem(`quiz_locked_${id}`)) {
+            navigate(`/test/${id}`, { replace: true });
+        }
+    }, [id, navigate]);
+
+    useEffect(() => {
         if (passedSession) {
             setUserAnswers({});
             setCurrentIndex(0);
@@ -104,6 +111,7 @@ const QuizPage = () => {
     const handleExit = async () => {
         await exitSession();
         sessionStorage.removeItem(STORAGE_KEY);
+        sessionStorage.setItem(`quiz_locked_${id}`, "true");
         navigate(`/test/${id}`);
     };
 
@@ -155,6 +163,16 @@ const QuizPage = () => {
         window.location.reload();
     };
 
+    const handleOpenReminders = () => {
+        sessionStorage.removeItem(STORAGE_KEY);
+        sessionStorage.setItem(`quiz_locked_${id}`, "true");
+
+        navigate("/profile", {
+            state: { tab: PROFILE_TABS.REMINDERS },
+            replace: true
+        });
+    };
+
     if (loading) return <TestState type="loading" message="Загрузка теста..."/>;
     if (error || navError || sessionError) return <TestState type="error" message={error || navError || sessionError}/>;
     if (!currentQuestion) return <TestState type="loading" message="Загрузка вопроса..."/>;
@@ -204,6 +222,7 @@ const QuizPage = () => {
                     onRetry={handleRetry}
                     onFixErrors={handleFixErrors}
                     onClose={handleExit}
+                    onOpenReminders={handleOpenReminders}
                 />
             )}
         </div>

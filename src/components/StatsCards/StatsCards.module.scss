@@ -1,0 +1,12 @@
+@use "../../assets/styles/variables" as *;
+
+.title{
+  font-size: $font-xl;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.cards {
+  display: flex;
+  gap: 25px;
+}
