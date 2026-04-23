@@ -7,7 +7,7 @@ const PasswordStrengthIndicator = ({ strength, hint }) => {
     if (!hint) return null;
 
     return (
-        <>
+        <div>
             <div className={styles.passwordStrengthBar}>
                 <div
                     className={classNames(styles.passwordStrengthFill, {
@@ -32,7 +32,7 @@ const PasswordStrengthIndicator = ({ strength, hint }) => {
             {strength === PASSWORD_STRENGTH.STRONG && (
                 <div className={styles.passwordMessage}>{hint}</div>
             )}
-        </>
+        </div>
     );
 };
 

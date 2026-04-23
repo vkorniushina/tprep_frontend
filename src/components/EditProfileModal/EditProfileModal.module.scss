@@ -1,0 +1,120 @@
+@use '../../assets/styles/variables' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: $color-backdrop;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background-color: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.closeBtn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  .closeIcon {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5px;
+    color: $color-text-secondary;
+    transition: color $transition-speed;
+
+    &:hover {
+      color: $color-dark;
+    }
+  }
+}
+
+.title {
+  font-size: $font-xl;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 38px;
+}
+
+.passwordLabel {
+  font-size: $font-sm;
+  font-weight: 400;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.passwordBlock {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+  gap: 16px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btnSave {
+  width: 100%;
+  padding: 15px;
+  border-radius: $radius-md;
+  background: $color-primary;
+  font-size: $font-sm;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.btnCancel {
+  width: 100%;
+  padding: 15px;
+  border: 1.5px solid $color-border;
+  border-radius: $radius-md;
+  background-color: $color-bg-base;
+  font-size: $font-sm;
+  font-weight: 500;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background-color: $color-bg-gray;
+  }
+}
+
+.submitError {
+  color: $color-error-base;
+  background-color: $color-error-bg-light;
+  border: 1px solid $color-error-border;
+  padding: 12px;
+  border-radius: $radius-sm;
+  font-size: $font-xxs;
+  margin-bottom: 20px;
+  text-align: center;
+}

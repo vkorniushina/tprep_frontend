@@ -29,5 +29,9 @@ export const useProfileData = () => {
         fetchProfile();
     }, []);
 
-    return {user, stats, activity, recentAttempts, loading, error};
+    const updateUser = (fields) => {
+        setUser(prev => ({...prev, ...fields}));
+    };
+
+    return {user, stats, activity, recentAttempts, loading, error, updateUser};
 }

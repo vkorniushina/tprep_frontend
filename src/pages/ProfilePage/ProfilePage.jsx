@@ -11,6 +11,9 @@ import RecentAttemptsSection from "../../components/RecentAttemptsSection/Recent
 import ActivitySection from "../../components/ActivitySection/ActivitySection.jsx";
 import {PROFILE_TABS} from "../../constants/profileConstants.js";
 import RemindersSection from "../../components/RemindersSection/RemindersSection.jsx";
+import {useToast} from "../../hooks/useToast.js";
+import EditProfileModal from "../../components/EditProfileModal/EditProfileModal.jsx";
+import ToastNotification from "../../components/ToastNotification/ToastNotification.jsx";
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -22,14 +25,22 @@ const ProfilePage = () => {
         activity,
         recentAttempts,
         loading,
-        error
+        error,
+        updateUser
     } = useProfileData();
 
     const [activeTab, setActiveTab] = useState(location.state?.tab ?? PROFILE_TABS.STATS);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const {toast, showToast, hideToast} = useToast();
 
     const handleLogout = () => {
         removeToken();
         navigate("/login");
+    };
+
+    const handleSaved = (updatedFields) => {
+        updateUser(updatedFields);
+        showToast("Профиль успешно обновлён");
     };
 
     return (
@@ -50,6 +61,7 @@ const ProfilePage = () => {
                         <section className={styles.sidebar}>
                             <ProfileCard
                                 user={user}
+                                onEditClick={() => setIsEditOpen(true)}
                                 onLogout={handleLogout}
                             />
                         </section>
@@ -91,6 +103,21 @@ const ProfilePage = () => {
                     </>
                 )}
             </main>
+            {isEditOpen && (
+                <EditProfileModal
+                    user={user}
+                    onClose={() => setIsEditOpen(false)}
+                    onSaved={handleSaved}
+                />
+            )}
+
+            {toast && (
+                <ToastNotification
+                    type={toast.type}
+                    message={toast.message}
+                    onClose={hideToast}
+                />
+            )}
         </div>
     );
 };
