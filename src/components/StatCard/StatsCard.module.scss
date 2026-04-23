@@ -1,0 +1,36 @@
+@use "../../assets/styles/variables" as *;
+
+.card {
+  flex: 1;
+  background-color: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 28px;
+}
+
+.cardContent {
+  position: relative;
+}
+
+.value {
+  font-size: $font-xxl;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.label {
+  font-weight: 400;
+  font-size: $font-sm;
+}
+
+.icon {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 221, 45, 0.6);
+  border-radius: $radius-sm;
+}

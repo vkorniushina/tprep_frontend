@@ -1,0 +1,146 @@
+@use '../../assets/styles/variables' as *;
+
+.backBtn {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: $color-text;
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.title {
+  font-size: $font-xl;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.verifyDescription {
+  text-align: center;
+  margin-bottom: 30px;
+  color: $color-text-secondary;
+  line-height: 1.5;
+}
+
+.verifyEmail {
+  font-weight: 500;
+  color: $color-text;
+}
+
+.codeRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 5px;
+}
+
+.codeInput {
+  background: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-size: $font-xs;
+  color: $color-text;
+  padding: 14px;
+  transition: $transition-base;
+
+  &:focus {
+    outline: none;
+    border-color: $color-border-hover;
+    background-color: $color-bg-base;
+  }
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
+.codeSubmitBtn {
+  height: 48px;
+  min-width: 48px;
+  padding: 0;
+  border-radius: $radius-md;
+  background: $color-primary;
+  border: none;
+  cursor: pointer;
+  transition: $transition-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.buttonIcon {
+  width: 25px;
+  height: 25px;
+  transform: rotate(180deg);
+}
+
+.resendBlock {
+  text-align: center;
+}
+
+.resendTimer {
+  color: $color-text-secondary;
+  font-size: $font-xxs;
+}
+
+.resendBtn {
+  background: none;
+  border: none;
+  color: $color-text-secondary;
+  font-size: $font-xxs;
+  cursor: pointer;
+  padding: 0;
+  transition: $transition-base;
+  text-decoration: underline;
+
+  &:hover {
+    color: $color-text;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.verifyError {
+  color: $color-error-base;
+  font-size: $font-xxs;
+  margin: -15px 0 10px;
+  text-align: center;
+}

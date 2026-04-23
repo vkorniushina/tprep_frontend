@@ -1,0 +1,47 @@
+@use "../../assets/styles/variables" as *;
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $color-bg-gray;
+  border-radius: $radius-md;
+  padding: 10px 14px;
+}
+
+.rowLabel {
+  font-size: $font-sm;
+  color: $color-text;
+  flex: 1;
+  min-width: 0;
+}
+
+.rowInputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deleteRowBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  color: $color-dark-hover;
+  flex-shrink: 0;
+  transition: $transition-base;
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  &:hover {
+    background: $color-border;
+  }
+}

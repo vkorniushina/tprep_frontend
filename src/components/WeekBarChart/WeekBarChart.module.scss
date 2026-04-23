@@ -1,0 +1,164 @@
+@use '../../assets/styles/variables' as *;
+
+.container {
+  position: relative;
+}
+
+.wrap {
+  display: flex;
+  max-width: 600px;
+  margin: 0 25px;
+}
+
+.yAxis {
+  width: 36px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1.5px solid $color-dark;
+}
+
+.yTick {
+  font-size: $font-xxs;
+  color: $color-text;
+  font-weight: 400;
+  text-align: right;
+  line-height: 0.1;
+  padding-right: 9px;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 1px;
+    background: $color-dark;
+  }
+}
+
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.plot {
+  position: relative;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.gridLine {
+  width: 100%;
+  height: 1px;
+  background: $color-border;
+}
+
+.gridLine:last-child {
+  background: $color-dark;
+  z-index: 2;
+}
+
+.bars {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 10px;
+  padding: 0 12px;
+}
+
+.barCol {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+
+.bar {
+  width: 100%;
+  border-radius: $radius-sm $radius-sm 0 0;
+}
+
+.barEmpty {
+  background: $color-border;
+  border-radius: 4px 4px 0 0;
+}
+
+.barFilled {
+  background: $color-border-hover;
+
+  &:hover {
+    background-color: $color-text-muted;
+  }
+}
+
+.barToday {
+  background: $color-primary;
+
+  &:hover {
+    background-color: $color-primary-hover;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: $color-text;
+  color: $color-white;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+  padding: 8px 12px;
+  border-radius: $radius-sm;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease, left 0.2s ease, top 0.2s ease;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.xAxis {
+  height: 28px;
+  display: flex;
+  gap: 10px;
+  padding: 0 12px;
+}
+
+.xTick {
+  flex: 1;
+  text-align: center;
+  font-weight: 400;
+  font-size: $font-xxs;
+  padding-top: 6px;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1.5px;
+    height: 6px;
+    background: $color-dark;
+  }
+}

@@ -1,0 +1,45 @@
+@use "../../assets/styles/variables" as *;
+
+.card {
+  background-color: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 32px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 38px;
+}
+
+.title {
+  font-size: $font-lg;
+  font-weight: 600;
+}
+
+.toggle {
+  display: flex;
+  gap: 3px;
+  background-color: $color-bg-gray;
+  border-radius: $radius-sm;
+  padding: 5px;
+}
+
+.toggleBtn {
+  padding: 5px;
+  min-width: 66px;
+  border: none;
+  background: none;
+  font-size: $font-xxs;
+  color: $color-text-muted;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: $transition-base;
+
+  &.active {
+    background-color: $color-bg-base;
+    color: $color-text;
+    box-shadow: 0 0 3px $color-border;
+  }
+}

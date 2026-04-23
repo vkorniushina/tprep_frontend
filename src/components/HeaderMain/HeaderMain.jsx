@@ -11,7 +11,7 @@ const HeaderMain = ({ searchQuery, setSearchQuery }) => {
     };
 
     const handleProfileClick = () => {
-        navigate("/register");
+        navigate("/profile");
     };
 
     return (

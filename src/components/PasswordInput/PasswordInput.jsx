@@ -18,7 +18,7 @@ const PasswordInput = ({
                            hasError
                        }) => {
     return (
-        <>
+        <div>
             <div className={styles.inputWrapper}>
                 <LockIcon className={styles.inputIcon} />
                 <input
@@ -53,7 +53,7 @@ const PasswordInput = ({
             {error && (
                 <div className={styles.errorMessage}>{error}</div>
             )}
-        </>
+        </div>
     );
 };
 

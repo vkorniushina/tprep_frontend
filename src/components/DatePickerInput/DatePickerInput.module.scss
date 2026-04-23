@@ -1,0 +1,167 @@
+@use "../../assets/styles/variables" as *;
+
+.inputInner {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputDate {
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  padding: 8px;
+  font-size: $font-xs;
+  color: $color-text;
+  background: $color-bg-base;
+  cursor: pointer;
+  transition: $transition-base;
+  width: 125px;
+
+  &:focus {
+    outline: none;
+    border-color: $color-border-hover;
+  }
+}
+
+.inputIcon {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+  width: 14px;
+  height: 14px;
+  color: $color-dark-hover;
+}
+
+.popover {
+  background: $color-bg-base;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-base;
+  padding: 15px;
+  border: 1px solid $color-border;
+  z-index: 1000;
+}
+
+.root {
+  --rdp-day-height: 36px;
+  --rdp-day-width: 36px;
+  margin: 0;
+}
+
+.month {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.monthCaption {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 32px;
+  margin-bottom: 12px;
+}
+
+.captionLabel {
+  font-size: $font-xs;
+  font-weight: 500;
+  color: $color-text;
+  text-transform: capitalize;
+}
+
+.navBtnPrev,
+.navBtnNext {
+  position: absolute;
+  top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  color: $color-dark;
+  transition: background $transition-speed;
+  z-index: 1;
+
+  &:hover {
+    background: $color-bg-gray;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.navBtnPrev {
+  left: 16px;
+}
+
+.navBtnNext {
+  right: 16px;
+}
+
+.grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.weekday {
+  font-size: 13px;
+  color: $color-text-muted;
+  font-weight: 400;
+  text-align: center;
+  padding-bottom: 8px;
+  width: 36px;
+}
+
+.day {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  text-align: center;
+}
+
+.dayBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-sm;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: $font-xs;
+  color: $color-text;
+  transition: background $transition-speed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: $color-bg-gray;
+  }
+}
+
+.daySelected .dayBtn {
+  background: $color-dark;
+  color: $color-white;
+
+  &:hover {
+    background: $color-dark-hover;
+  }
+}
+
+.dayToday .dayBtn {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.dayToday.daySelected .dayBtn {
+  color: $color-white;
+  text-decoration-color: $color-text-muted;
+}
+
+.inputError .inputDate {
+  border-color: $color-error-base;
+}
