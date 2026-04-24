@@ -3,7 +3,6 @@ import styles from "./EmailVerification.module.scss";
 import ArrowLeftIcon from "../../assets/images/arrow_left.svg?react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {sendVerificationCode, signUp, verifyEmail} from "../../api/auth.js";
-import {saveToken} from "../../utils/tokenStorage.js";
 
 const MAX_ATTEMPTS = 3;
 
@@ -104,8 +103,7 @@ const EmailVerification = () => {
         }
 
         try {
-            const data = await signUp(name, email, password);
-            saveToken(data.token);
+            await signUp(name, email, password);
             navigate("/");
         } catch (err) {
             if (err.response?.status === 409) {

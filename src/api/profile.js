@@ -1,4 +1,5 @@
 import apiClient from './apiClient.js';
+import {saveTokens} from "../utils/tokenStorage.js";
 
 export const getProfile = async () => {
     try {
@@ -16,6 +17,10 @@ export const updateProfile = async ({username, email}) => {
             username,
             email
         });
+
+        const {accessToken, refreshToken} = response.data;
+        saveTokens(accessToken, refreshToken);
+
         return response.data;
     } catch (error) {
         console.error('Error updating user data:', error);
@@ -29,6 +34,10 @@ export const changePassword = async ({currentPassword, newPassword}) => {
             currentPassword,
             newPassword
         });
+
+        const {accessToken, refreshToken} = response.data;
+        saveTokens(accessToken, refreshToken);
+
         return response.data;
     } catch (error) {
         console.error('Error updating password:', error);
