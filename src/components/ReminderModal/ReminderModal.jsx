@@ -123,6 +123,7 @@ const ReminderModal = ({mode = MODAL_MODES.EDIT, reminder, tests = [], onClose, 
                                 value={selectedTestId}
                                 onChange={handleTestChange}
                                 placeholder="Выберите тест"
+                                emptyMessage="У вас нет тестов, для которых можно настроить напоминания"
                                 hasError={isDuplicateError || (submitted && noTest)}
                             />
                             {isDuplicateError && (

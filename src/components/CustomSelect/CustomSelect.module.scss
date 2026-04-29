@@ -89,3 +89,11 @@
     background: $color-border;
   }
 }
+
+.empty {
+  padding: 12px;
+  color: $color-text-secondary;
+  font-size: $font-xs;
+  text-align: center;
+  cursor: default;
+}

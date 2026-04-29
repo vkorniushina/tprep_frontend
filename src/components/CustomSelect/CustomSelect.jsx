@@ -3,7 +3,14 @@ import styles from "./CustomSelect.module.scss";
 import classNames from "classnames";
 import Arrow from "../../assets/images/arrow_left.svg?react";
 
-const CustomSelect = ({options = [], value, onChange, placeholder = "Выберите...", hasError = false}) => {
+const CustomSelect = ({
+                          options = [],
+                          value,
+                          onChange,
+                          placeholder = "Выберите...",
+                          emptyMessage = "Список пуст",
+                          hasError = false
+                      }) => {
     const [open, setOpen] = useState(false);
     const ref = useRef(null);
 
@@ -44,18 +51,24 @@ const CustomSelect = ({options = [], value, onChange, placeholder = "Выбер�
 
             {open && (
                 <ul className={styles.dropdown}>
-                    {options.map((opt) => {
-                        const isActive = String(opt.value) === String(value);
-                        return (
-                            <li
-                                key={opt.value}
-                                className={classNames(styles.option, {[styles.optionActive]: isActive})}
-                                onClick={() => handleSelect(opt.value)}
-                            >
-                                {opt.label}
-                            </li>
-                        );
-                    })}
+                    {options.length > 0 ? (
+                        options.map((opt) => {
+                            const isActive = String(opt.value) === String(value);
+                            return (
+                                <li
+                                    key={opt.value}
+                                    className={classNames(styles.option, {[styles.optionActive]: isActive})}
+                                    onClick={() => handleSelect(opt.value)}
+                                >
+                                    {opt.label}
+                                </li>
+                            );
+                        })
+                    ) : (
+                        <li className={styles.empty}>
+                            {emptyMessage}
+                        </li>
+                    )}
                 </ul>
             )}
         </div>
