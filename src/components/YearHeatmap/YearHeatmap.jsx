@@ -3,6 +3,7 @@ import classNames from "classnames";
 import styles from "./YearHeatmap.module.scss";
 import {generateHeatmapData, getActivityLevel} from "../../utils/yearHeatmapUtils.js";
 import {DAY_NAMES_SHORT, MONTH_NAMES_LONG} from "../../constants/dateConstants.js";
+import {formatPassings} from "../../utils/pluralize.js";
 
 const LEVEL_CLASSES = [styles.l0, styles.l1, styles.l2, styles.l3];
 
@@ -28,7 +29,7 @@ const YearHeatmap = ({activity}) => {
         const cellRect = e.currentTarget.getBoundingClientRect();
 
         const {date, count} = cell;
-        const text = `${DAY_NAMES_SHORT[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES_LONG[date.getMonth()]} - ${count} прохождений`;
+        const text = `${DAY_NAMES_SHORT[date.getDay()]}, ${date.getDate()} ${MONTH_NAMES_LONG[date.getMonth()]} - ${formatPassings(count)}`;
 
         setTooltip({
             text,

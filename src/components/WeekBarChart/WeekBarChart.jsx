@@ -3,6 +3,7 @@ import classNames from "classnames";
 import styles from "./WeekBarChart.module.scss";
 import {buildWeekData, CHART_CONFIG, computeTicks} from "../../utils/weekChartUtils";
 import {DAY_NAMES_SHORT, MONTH_NAMES_LONG} from "../../constants/dateConstants.js";
+import {formatPassings} from "../../utils/pluralize.js";
 
 const WeekBarChart = ({activity}) => {
     const containerRef = useRef(null);
@@ -25,7 +26,7 @@ const WeekBarChart = ({activity}) => {
             x,
             y,
             line1: `${DAY_NAMES_SHORT[item.rawDate.getDay()]}, ${item.rawDate.getDate()} ${MONTH_NAMES_LONG[item.rawDate.getMonth()]}`,
-            line2: `${item.count} прохождений`,
+            line2: formatPassings(item.count),
             visible: true,
         });
     }, []);

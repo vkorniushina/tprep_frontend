@@ -7,3 +7,7 @@ export const getPluralForm = (count, one, few, many) => {
 
     return many;
 };
+
+export const formatPassings = (count) => {
+    return `${count} ${getPluralForm(count, 'прохождение', 'прохождения', 'прохождений')}`;
+};
