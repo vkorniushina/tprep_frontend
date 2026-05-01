@@ -4,13 +4,24 @@ import HeaderMain from "../../components/HeaderMain/HeaderMain.jsx";
 import plusIcon from "../../assets/images/plus.svg";
 import styles from "../MainPage/MainPage.module.scss";
 import Card from "../../components/Card/Card.jsx";
-import {createModuleByFile, createModuleManual, deleteModule, getAllModules, searchModules} from "../../api/modules.js";
+import {
+    createModuleByFile,
+    createModuleManual,
+    deleteModule,
+    getAllModules,
+    getPublicModules,
+    searchModules
+} from "../../api/modules.js";
 import CreateTestModal from "../../components/CreateTestModal/CreateTestModal.jsx";
 import ToastNotification from "../../components/ToastNotification/ToastNotification.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
+import classNames from "classnames";
+import {TABS} from "../../constants/testConstants.js";
 
 const MainPage = () => {
     const navigate = useNavigate();
+
+    const [activeTab, setActiveTab] = useState(TABS.MY);
 
     const [tests, setTests] = useState([]);
     const [page, setPage] = useState(0);
@@ -33,16 +44,18 @@ const MainPage = () => {
         try {
             setLoading(true);
 
-            const data = searchQuery.trim()
-                ? await searchModules({
-                    keyword: searchQuery,
+            let data;
+            if (activeTab === TABS.MY) {
+                data = searchQuery.trim()
+                    ? await searchModules({keyword: searchQuery, page, size})
+                    : await getAllModules({page, size});
+            } else {
+                data = await getPublicModules({
                     page,
-                    size
-                })
-                : await getAllModules({
-                    page,
-                    size
+                    size,
+                    keyword: searchQuery.trim() || undefined,
                 });
+            }
 
             setTests(data.items);
             setTotalPages(data.totalPages);
@@ -53,7 +66,7 @@ const MainPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [page, searchQuery]);
+    }, [activeTab, page, searchQuery]);
 
     useEffect(() => {
         fetchTests();
@@ -61,7 +74,7 @@ const MainPage = () => {
 
     useEffect(() => {
         setPage(0);
-    }, [searchQuery]);
+    }, [activeTab, searchQuery]);
 
     useEffect(() => {
         document.body.style.overflow = isModalOpen ? 'hidden' : 'unset';
@@ -127,18 +140,42 @@ const MainPage = () => {
         }
     };
 
+    const isMyTab = activeTab === TABS.MY;
+
+    const emptyMessage = searchQuery.trim()
+        ? "По вашему запросу ничего не найдено"
+        : isMyTab ? "У вас пока нет тестов" : "Публичных тестов пока нет";
+
+    const emptySubMessage = searchQuery.trim()
+        ? "Попробуйте изменить поисковый запрос"
+        : isMyTab ? "Создайте первый тест, чтобы начать обучение" : "Следите за обновлениями";
+
     return (
         <>
             <HeaderMain searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
             <main className={`container ${styles.main}`}>
                 <div className={styles.headerRow}>
-                    <h1 className={styles.title}>Мои тесты</h1>
-                    <button className={styles.createBtn}
-                            onClick={() => setIsModalOpen(true)}
-                    >
-                        <img src={plusIcon} alt="Plus"/>
-                        Создать тест
-                    </button>
+                    <div className={styles.tabs}>
+                        <button
+                            className={classNames(styles.tab, {[styles.activeTab]: activeTab === TABS.MY})}
+                            onClick={() => setActiveTab(TABS.MY)}
+                        >
+                            Мои тесты
+                        </button>
+                        <button
+                            className={classNames(styles.tab, {[styles.activeTab]: activeTab === TABS.PUBLIC})}
+                            onClick={() => setActiveTab(TABS.PUBLIC)}
+                        >
+                            Все тесты
+                        </button>
+                    </div>
+
+                    {activeTab === TABS.MY && (
+                        <button className={styles.createBtn} onClick={() => setIsModalOpen(true)}>
+                            <img src={plusIcon} alt="Plus"/>
+                            Создать тест
+                        </button>
+                    )}
                 </div>
 
                 {loading && <div className={styles.loadingEmptyState}>Загрузка тестов...</div>}
@@ -155,6 +192,7 @@ const MainPage = () => {
                                     description={test.description}
                                     questionsCount={test.questionsCount}
                                     progress={test.progress}
+                                    isOwner={isMyTab}
                                     isMenuOpen={test.id === activeMenuId}
                                     onMenuToggle={setActiveMenuId}
                                     onDelete={handleDelete}
@@ -163,16 +201,8 @@ const MainPage = () => {
                         </div>
                     ) : (
                         <div className={styles.emptyState}>
-                            <p className={styles.emptyMessage}>
-                                {searchQuery.trim()
-                                    ? "По вашему запросу ничего не найдено"
-                                    : "У вас пока нет тестов"}
-                            </p>
-                            <p className={styles.emptySubMessage}>
-                                {searchQuery.trim()
-                                    ? "Попробуйте изменить поисковый запрос"
-                                    : "Создайте первый тест, чтобы начать обучение"}
-                            </p>
+                            <p className={styles.emptyMessage}>{emptyMessage}</p>
+                            <p className={styles.emptySubMessage}>{emptySubMessage}</p>
                         </div>
                     )
                 )}

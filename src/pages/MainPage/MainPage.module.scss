@@ -1,6 +1,6 @@
 @use '../../assets/styles/variables' as *;
 
-.main{
+.main {
   padding-bottom: 60px;
 }
 
@@ -11,10 +11,34 @@
   margin: 45px 0;
 }
 
-.title {
-  font-weight: 700;
+.tabs {
+  display: flex;
+  gap: 20px;
+}
+
+.tab {
+  font-weight: 500;
+  font-size: $font-xl;
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  cursor: pointer;
+  color: $color-border-hover;
+  transition: color $transition-speed;
+
+  &:hover {
+    color: $color-text-secondary;
+  }
+}
+
+.activeTab {
+  color: $color-text;
   font-size: $font-xxl;
-  color: $color-text
+  font-weight: 700;
+
+  &:hover {
+    color: $color-text;
+  }
 }
 
 .createBtn {
@@ -35,12 +59,12 @@
     background: $color-primary-hover;
   }
 
-  img{
+  img {
     margin-right: 15px;
   }
 }
 
-.cards{
+.cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
@@ -67,7 +91,7 @@
   color: $color-text-secondary;
 }
 
-.loadingEmptyState{
+.loadingEmptyState {
   display: flex;
   justify-content: center;
 }
