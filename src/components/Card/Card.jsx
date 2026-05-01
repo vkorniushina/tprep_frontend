@@ -5,7 +5,17 @@ import {useNavigate} from 'react-router-dom';
 import menuIcon from "../../assets/images/menu.svg";
 import {getPluralForm} from "../../utils/pluralize.js";
 
-const Card = ({id, name, description, questionsCount, progress, onDelete, isMenuOpen, onMenuToggle}) => {
+const Card = ({
+                  id,
+                  name,
+                  isOwner = false,
+                  description,
+                  questionsCount,
+                  progress,
+                  onDelete,
+                  isMenuOpen,
+                  onMenuToggle
+              }) => {
     const navigate = useNavigate();
     const menuRef = useRef();
 
@@ -48,27 +58,29 @@ const Card = ({id, name, description, questionsCount, progress, onDelete, isMenu
 
     return (
         <div className={styles.card}>
-            <div className={styles.menuWrapper} ref={menuRef}>
-                <button
-                    className={styles.menuBtn}
-                    onClick={handleMenuToggle}
-                >
-                    <img src={menuIcon} alt="Menu"/>
-                </button>
+            {isOwner && (
+                <div className={styles.menuWrapper} ref={menuRef}>
+                    <button
+                        className={styles.menuBtn}
+                        onClick={handleMenuToggle}
+                    >
+                        <img src={menuIcon} alt="Menu"/>
+                    </button>
 
-                {isMenuOpen && (
-                    <div className={styles.menu}>
-                        <button className={styles.menuItem}
-                                onClick={handleDelete}
-                        >
-                            <span>Удалить</span>
-                        </button>
-                        <button className={styles.menuItem} onClick={handleOpenEdit}>
-                            Редактировать
-                        </button>
-                    </div>
-                )}
-            </div>
+                    {isMenuOpen && (
+                        <div className={styles.menu}>
+                            <button className={styles.menuItem}
+                                    onClick={handleDelete}
+                            >
+                                <span>Удалить</span>
+                            </button>
+                            <button className={styles.menuItem} onClick={handleOpenEdit}>
+                                Редактировать
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className={styles.topContent}>
                 <h3 className={styles.name}>{name}</h3>
