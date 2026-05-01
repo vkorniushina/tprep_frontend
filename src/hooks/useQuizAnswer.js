@@ -1,8 +1,8 @@
 import {useState, useEffect} from 'react';
-import {submitAnswer} from '../api/testSessions.js';
+import {submitAnswer, submitSharedAnswer} from '../api/testSessions.js';
 import {QUESTION_TYPES} from '../constants/questionTypes.js';
 
-const useQuizAnswer = (currentQuestion, sessionId, userAnswers) => {
+const useQuizAnswer = (currentQuestion, sessionId, userAnswers, shareToken) => {
     const [userAnswer, setUserAnswer] = useState('');
     const [selectedAnswers, setSelectedAnswers] = useState([]);
     const [isChecked, setIsChecked] = useState(false);
@@ -47,12 +47,19 @@ const useQuizAnswer = (currentQuestion, sessionId, userAnswers) => {
     const handleCheckAnswer = async () => {
         if (!currentQuestion || !sessionId) return null;
 
-        const result = await submitAnswer(sessionId, {
+        const answerData = {
             questionId: currentQuestion.id,
             userAnswer: currentQuestion.type === QUESTION_TYPES.INPUT
                 ? [userAnswer]
                 : selectedAnswers.map(Number),
-        });
+        };
+
+        let result;
+        if (shareToken) {
+            result = await submitSharedAnswer(shareToken, sessionId, answerData);
+        } else {
+            result = await submitAnswer(sessionId, answerData);
+        }
 
         const {isCorrect, correctAnswer} = result;
         setIsCorrect(isCorrect);

@@ -1,8 +1,13 @@
 import {useState, useEffect} from 'react';
-import {getModuleQuestionsLight} from '../api/modules.js';
-import {createTestSession, finishTestSession} from '../api/testSessions.js';
+import {getModuleByToken, getModuleQuestionsLight, getModuleQuestionsLightByToken} from '../api/modules.js';
+import {
+    createSharedTestSession,
+    createTestSession,
+    finishSharedTestSession,
+    finishTestSession
+} from '../api/testSessions.js';
 
-const useQuizSession = (id, savedState, passedSession) => {
+const useQuizSession = (id, shareToken, savedState, passedSession) => {
     const [sessionId, setSessionId] = useState(savedState?.sessionId || null);
     const [testName, setTestName] = useState(savedState?.testName || '');
     const [currentTestId, setCurrentTestId] = useState(savedState?.currentTestId || null);
@@ -20,9 +25,11 @@ const useQuizSession = (id, savedState, passedSession) => {
                     setTestName(passedSession.testName);
                     setCurrentTestId(passedSession.testId);
 
-                    const meta = await getModuleQuestionsLight(passedSession.testId);
-                    setQuestionsMeta(meta.questions);
+                    const meta = shareToken
+                        ? await getModuleQuestionsLightByToken(shareToken)
+                        : await getModuleQuestionsLight(passedSession.testId);
 
+                    setQuestionsMeta(meta.questions);
                     setSessionError(null);
                     setLoading(false);
                     return;
@@ -33,14 +40,25 @@ const useQuizSession = (id, savedState, passedSession) => {
                     return;
                 }
 
-                const session = await createTestSession(Number(id));
+                let targetId = id;
+                let session;
+                let meta;
+
+                if (shareToken) {
+                    const moduleInfo = await getModuleByToken(shareToken);
+                    targetId = moduleInfo.id;
+
+                    session = await createSharedTestSession(shareToken, Number(targetId));
+                    meta = await getModuleQuestionsLightByToken(shareToken);
+                } else {
+                    session = await createTestSession(Number(id));
+                    meta = await getModuleQuestionsLight(Number(id));
+                }
+
                 setSessionId(session.sessionId);
                 setTestName(session.testName);
-                setCurrentTestId(Number(id));
-
-                const meta = await getModuleQuestionsLight(Number(id));
+                setCurrentTestId(Number(targetId));
                 setQuestionsMeta(meta.questions);
-
                 setSessionError(null);
             } catch (err) {
                 console.error(err);
@@ -50,19 +68,29 @@ const useQuizSession = (id, savedState, passedSession) => {
             }
         };
 
-        if (id) initTest();
-    }, [id, passedSession?.sessionId]);
+        if (id || shareToken) {
+            initTest();
+        }
+    }, [id, shareToken, passedSession?.sessionId]);
 
     const exitSession = async () => {
         try {
-            await finishTestSession(sessionId);
+            if (shareToken) {
+                await finishSharedTestSession(shareToken, sessionId);
+            } else {
+                await finishTestSession(sessionId);
+            }
         } catch (err) {
             console.error('Error finishing session on exit', err);
         }
     };
 
     const finishSession = async () => {
-        return await finishTestSession(sessionId);
+        if (shareToken) {
+            return await finishSharedTestSession(shareToken, sessionId);
+        } else {
+            return await finishTestSession(sessionId);
+        }
     };
 
     return {

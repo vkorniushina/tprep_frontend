@@ -3,7 +3,7 @@ import {useParams, useNavigate, useLocation} from 'react-router-dom';
 import styles from './QuizPage.module.scss';
 import HeaderQuiz from '../../components/HeaderQuiz/HeaderQuiz';
 import FooterQuiz from '../../components/FooterQuiz/FooterQuiz';
-import {startWrongTestSession} from "../../api/testSessions.js";
+import {startSharedWrongTestSession, startWrongTestSession} from "../../api/testSessions.js";
 import TestState from "../../components/TestState/TestState.jsx";
 import ExitConfirmModal from "../../components/ExitConfirmModal/ExitConfirmModal.jsx";
 import ResultModal from "../../components/ResultModal/ResultModal.jsx";
@@ -15,13 +15,17 @@ import useQuizSession from "../../hooks/useQuizSession.js";
 import {PROFILE_TABS} from "../../constants/profileConstants.js";
 
 const QuizPage = () => {
-    const {id} = useParams();
+    const {id, shareToken} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
 
+    const identifier = id || shareToken;
+    const basePath = shareToken ? `/share/${shareToken}` : `/test/${id}`;
+
     const passedSession = location.state?.session;
 
-    const STORAGE_KEY = `quizState_${id}`;
+    const STORAGE_KEY = `quizState_${identifier}`;
+    const LOCK_KEY = `quiz_locked_${identifier}`;
 
     const savedState = useMemo(() => {
         if (passedSession) return null;
@@ -44,7 +48,7 @@ const QuizPage = () => {
         sessionError,
         exitSession,
         finishSession,
-    } = useQuizSession(id, savedState, passedSession);
+    } = useQuizSession(id, shareToken, savedState, passedSession);
 
     const {
         currentIndex,
@@ -56,7 +60,7 @@ const QuizPage = () => {
         navError,
         isFirstQuestion,
         isLastQuestion,
-    } = useQuizNavigation(questionsMeta, savedState);
+    } = useQuizNavigation(questionsMeta, savedState, shareToken);
 
     const {
         userAnswer,
@@ -69,15 +73,15 @@ const QuizPage = () => {
         handleInputChange,
         handleChoiceSelect,
         handleCheckAnswer,
-    } = useQuizAnswer(currentQuestion, sessionId, userAnswers);
+    } = useQuizAnswer(currentQuestion, sessionId, userAnswers, shareToken);
 
     useBackButtonGuard(() => setExitOpen(true));
 
     useEffect(() => {
-        if (sessionStorage.getItem(`quiz_locked_${id}`)) {
-            navigate(`/test/${id}`, { replace: true });
+        if (sessionStorage.getItem(LOCK_KEY)) {
+            navigate(basePath, { replace: true });
         }
-    }, [id, navigate]);
+    }, [basePath, navigate]);
 
     useEffect(() => {
         if (passedSession) {
@@ -111,8 +115,8 @@ const QuizPage = () => {
     const handleExit = async () => {
         await exitSession();
         sessionStorage.removeItem(STORAGE_KEY);
-        sessionStorage.setItem(`quiz_locked_${id}`, "true");
-        navigate(`/test/${id}`);
+        sessionStorage.setItem(LOCK_KEY, "true");
+        navigate(basePath);
     };
 
     const handleFinishTest = async () => {
@@ -143,9 +147,11 @@ const QuizPage = () => {
             setShowResultModal(false);
             sessionStorage.removeItem(STORAGE_KEY);
 
-            const newSession = await startWrongTestSession(sessionId);
+            const newSession = shareToken
+                ? await startSharedWrongTestSession(shareToken, sessionId)
+                : await startWrongTestSession(sessionId);
 
-            navigate(`/test/${id}/quiz`, {
+            navigate(`${basePath}/quiz`, {
                 replace: true,
                 state: {
                     session: newSession
@@ -159,13 +165,17 @@ const QuizPage = () => {
 
     const handleRetry = () => {
         sessionStorage.removeItem(STORAGE_KEY);
-        navigate(`/test/${id}/quiz`, {replace: true, state: null});
+        navigate(`${basePath}/quiz`, {replace: true, state: null});
         window.location.reload();
     };
 
     const handleOpenReminders = () => {
+        if (shareToken) {
+            return;
+        }
+
         sessionStorage.removeItem(STORAGE_KEY);
-        sessionStorage.setItem(`quiz_locked_${id}`, "true");
+        sessionStorage.setItem(LOCK_KEY, "true");
 
         navigate("/profile", {
             state: { tab: PROFILE_TABS.REMINDERS },
@@ -222,7 +232,7 @@ const QuizPage = () => {
                     onRetry={handleRetry}
                     onFixErrors={handleFixErrors}
                     onClose={handleExit}
-                    onOpenReminders={handleOpenReminders}
+                    onOpenReminders={!shareToken ? handleOpenReminders : undefined}
                 />
             )}
         </div>

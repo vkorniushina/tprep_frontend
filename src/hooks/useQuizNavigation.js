@@ -1,7 +1,8 @@
 import {useState, useEffect} from 'react';
 import {getQuestionById} from '../api/questions.js';
+import {getQuestionByToken} from "../api/modules.js";
 
-const useQuizNavigation = (questionsMeta, savedState) => {
+const useQuizNavigation = (questionsMeta, savedState, shareToken) => {
     const [currentIndex, setCurrentIndex] = useState(savedState?.currentIndex || 0);
     const [questionsCache, setQuestionsCache] = useState(savedState?.questionsCache || {});
     const [error, setError] = useState(null);
@@ -20,7 +21,10 @@ const useQuizNavigation = (questionsMeta, savedState) => {
 
             if (!questionsCache[questionId]) {
                 try {
-                    const data = await getQuestionById(questionId);
+                    const data = shareToken
+                        ? await getQuestionByToken(shareToken, questionId)
+                        : await getQuestionById(questionId);
+
                     setQuestionsCache(prev => ({...prev, [questionId]: data}));
                 } catch (err) {
                     console.error(`Error loading question ${questionId}`, err);
@@ -30,7 +34,7 @@ const useQuizNavigation = (questionsMeta, savedState) => {
         };
 
         if (questionsMeta.length > 0) fetchQuestion();
-    }, [currentIndex, questionsMeta]);
+    }, [currentIndex, questionsMeta, shareToken]);
 
     const handleNextQuestion = () => {
         if (currentIndex < questionsMeta.length - 1) setCurrentIndex(currentIndex + 1);
