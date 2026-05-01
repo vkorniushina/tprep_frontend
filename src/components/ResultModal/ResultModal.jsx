@@ -5,10 +5,10 @@ import ReloadIcon from "../../assets/images/reload.svg?react";
 import ArrowIcon from "../../assets/images/arrow_right.svg?react";
 import BellIcon from "../../assets/images/bell.svg?react";
 
-const ResultModal = ({ result, onRetry, onFixErrors, onClose, onOpenReminders }) => {
+const ResultModal = ({result, onRetry, onFixErrors, onClose, onOpenReminders}) => {
     if (!result) return null;
 
-    const { progress, questionsCount } = result;
+    const {progress, questionsCount} = result;
     const percent = Math.round((progress / questionsCount) * 100);
 
     const hasErrors = progress < questionsCount;
@@ -17,7 +17,7 @@ const ResultModal = ({ result, onRetry, onFixErrors, onClose, onOpenReminders })
         <div className={styles.overlay}>
             <div className={styles.modal}>
                 <button className={styles.closeButton} onClick={onClose}>
-                    <CloseIcon className={styles.closeIcon} />
+                    <CloseIcon className={styles.closeIcon}/>
                 </button>
 
                 <h2 className={styles.title}>Результаты теста</h2>
@@ -36,20 +36,22 @@ const ResultModal = ({ result, onRetry, onFixErrors, onClose, onOpenReminders })
                 <div className={styles.actions}>
                     <button className={styles.retryButton} onClick={onRetry}>
                         Пройти тест заново
-                        <ReloadIcon className={styles.reloadIcon} />
+                        <ReloadIcon className={styles.reloadIcon}/>
                     </button>
 
                     {hasErrors && (
                         <button className={styles.fixButton} onClick={onFixErrors}>
                             Исправить ошибки
-                            <ArrowIcon className={styles.arrowIcon} />
+                            <ArrowIcon className={styles.arrowIcon}/>
                         </button>
                     )}
 
-                    <button className={styles.reminderButton} onClick={onOpenReminders}>
-                        Настроить напоминания
-                        <BellIcon className={styles.bellIcon} />
-                    </button>
+                    {onOpenReminders && (
+                        <button className={styles.reminderButton} onClick={onOpenReminders}>
+                            Настроить напоминания
+                            <BellIcon className={styles.bellIcon}/>
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
