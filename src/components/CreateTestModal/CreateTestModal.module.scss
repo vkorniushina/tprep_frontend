@@ -97,6 +97,40 @@ textarea {
   min-height: 100px;
 }
 
+.tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 18px;
+  background: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  font-weight: 500;
+  color: $color-text-secondary;
+  cursor: pointer;
+  transition: $transition-base, color $transition-speed;
+
+  &:hover {
+    border-color: $color-border-hover;
+    color: $color-text;
+  }
+}
+
+.tabActive {
+  background: $color-bg-base;
+  border-color: $color-dark;
+  color: $color-text;
+}
+
+.fileUploadContainer {
+  margin-bottom: 20px;
+}
+
 .dropzone {
   display: flex;
   flex-direction: column;
@@ -111,10 +145,14 @@ textarea {
   position: relative;
 }
 
-.dropzone:hover,
 .dragging {
   border-color: $color-primary;
   background: rgba(255, 221, 45, 0.1);
+}
+
+.fileUploaded {
+  cursor: default;
+  border-style: solid;
 }
 
 .fileDisplay {
@@ -191,54 +229,44 @@ textarea {
   margin-top: 8px;
 }
 
-.howToPrepare {
+.hint {
   background-color: $color-bg-gray;
   border: 1px solid $color-border;
   border-radius: $radius-md;
   padding: 20px;
   margin-bottom: 25px;
-  margin-top: 25px;
-
-  h3 {
-    color: $color-text;
-    font-size: $font-sm;
-    font-weight: 400;
-    margin-bottom: 15px;
-  }
-
-  .howToPrepareIntro {
-    color: $color-text-secondary;
-    font-size: $font-xs;
-    font-weight: 400;
-    margin-bottom: 15px;
-  }
-
-  .instructionHeader{
-    color: $color-text;
-    font-size: $font-xs;
-    margin-bottom: 5px;
-  }
-
-  .instructionBlock{
-    margin-bottom: 10px;
-  }
-
-  .instructionLine {
-    color: $color-text-secondary;
-    display: block;
-    padding-left: 20px;
-    font-size: $font-xs;
-    line-height: 1.4;
-  }
-
-  .howToPrepareImportant {
-    font-size: $font-xs;
-    margin-top: 15px;
-  }
 }
 
-.createBtn,
-.manualBtn {
+.hintHeader{
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.hintIcon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.aiIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.hintTitle {
+  color: $color-text;
+  font-size: $font-sm;
+  font-weight: 400;
+}
+
+.hintDescription {
+  color: $color-text-secondary;
+  font-size: $font-sm;
+}
+
+.createBtn {
   width: 100%;
   padding: 15px;
   font-size: $font-sm;
@@ -247,24 +275,16 @@ textarea {
   border-radius: $radius-md;
   cursor: pointer;
   transition: $transition-base;
-}
-
-.createBtn {
   background-color: $color-primary;
   color: $color-text;
-  margin-bottom: 10px;
 
   &:hover {
     background-color: $color-primary-hover;
   }
-}
 
-.manualBtn {
-  background-color: $color-dark;
-  color: $color-white;
-
-  &:hover {
-    background-color: $color-dark-hover;
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 }
 

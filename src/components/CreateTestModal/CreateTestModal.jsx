@@ -3,7 +3,9 @@ import styles from "./CreateTestModal.module.scss";
 import CloseIcon from "../../assets/images/close.svg?react";
 import UploadIcon from "../../assets/images/upload.svg?react";
 import FileIcon from "../../assets/images/file.svg?react";
-import {ALLOWED_FILE_EXTENSIONS, MAX_FILE_SIZE_MB} from "../../constants/fileUpload.js";
+import Sparkles from "../../assets/images/sparkles.svg?react";
+import EmptyFile from "../../assets/images/empty_file.svg?react";
+import {ALLOWED_FILE_EXTENSIONS, CREATE_TABS, MAX_FILE_SIZE_MB} from "../../constants/fileUpload.js";
 import {formatFileSize} from "../../utils/formatFileSize.js";
 import {validateFile, validateTestForm} from "../../utils/validateCreateTest.js";
 import classNames from "classnames";
@@ -21,6 +23,9 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
 
     const [formErrors, setFormErrors] = useState({});
     const [fileErrorMessage, setFileErrorMessage] = useState(null);
+
+    const [activeTab, setActiveTab] = useState(CREATE_TABS.FILE);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const processFile = (selectedFile, inputRef) => {
         setFileErrorMessage(null);
@@ -96,45 +101,53 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
         }
     };
 
-    const handleCreateFile = async () => {
-        const {errors, isValid} = validateTestForm(name, description);
-        setFormErrors(errors);
-
-        const fileIsPresent = !!file;
-
-        if (!fileIsPresent && !fileErrorMessage) {
-            setFileErrorMessage("Прикрепите файл для создания теста");
-        }
-
-        if (!isValid || !fileIsPresent || fileErrorMessage) {
-            showToast("error", "Проверьте правильность заполнения формы");
-            return;
-        }
-
-        const result = await onCreateFromFile({name, description, file});
-
-        if (result.success) {
-            onClose();
-        } else {
-            showToast("error", result.message);
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        if (tab === CREATE_TABS.MANUAL) {
+            setFileErrorMessage(null);
         }
     };
 
-    const handleCreateManual = async () => {
+    const handleCreateTest = async () => {
         const {errors, isValid} = validateTestForm(name, description);
         setFormErrors(errors);
 
-        if (!isValid) {
-            showToast("error", "Проверьте правильность заполнения формы");
-            return;
-        }
+        if (activeTab === CREATE_TABS.FILE) {
+            const fileIsPresent = !!file;
 
-        const result = await onCreateManual({name, description});
+            if (!fileIsPresent && !fileErrorMessage) {
+                setFileErrorMessage("Прикрепите файл для создания теста");
+            }
 
-        if (result.success) {
-            onClose();
+            if (!isValid || !fileIsPresent || fileErrorMessage) {
+                showToast("error", "Проверьте правильность заполнения формы");
+                return;
+            }
+
+            setIsSubmitting(true);
+            const result = await onCreateFromFile({name, description, file});
+
+            if (result.success) {
+                onClose();
+            } else {
+                showToast("error", result.message);
+                setIsSubmitting(false);
+            }
         } else {
-            showToast("error", result.message);
+            if (!isValid) {
+                showToast("error", "Проверьте правильность заполнения формы");
+                return;
+            }
+
+            setIsSubmitting(true);
+            const result = await onCreateManual({name, description});
+
+            if (result.success) {
+                onClose();
+            } else {
+                showToast("error", result.message);
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -148,7 +161,7 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                 <h2 className={styles.title}>Создание теста</h2>
 
                 <div className={styles.inputGroup}>
-                    <label className={styles.label}>Шаг 1: Название</label>
+                    <label className={styles.label}>Название</label>
                     <input
                         className={formErrors.name && styles.inputError}
                         placeholder="Введите название теста"
@@ -159,7 +172,7 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                 </div>
 
                 <div className={styles.inputGroup}>
-                    <label className={styles.label}>Шаг 2: Описание (опционально)</label>
+                    <label className={styles.label}>Описание (опционально)</label>
                     <textarea
                         className={formErrors.description && styles.inputError}
                         placeholder="Введите краткое описание"
@@ -170,103 +183,114 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                 </div>
 
                 <div>
-                    <label className={styles.label}>Шаг 3: Загрузка файла</label>
-                    <div
-                        className={classNames(
-                            styles.dropzone,
-                            {
-                                [styles.dragging]: isDragging || isHovered || fileErrorMessage,
-                                [styles.dropzoneError]: fileErrorMessage
-                            }
-                        )}
-                        onClick={!file ? () => fileInputRef.current.click() : undefined}
-                        onDrop={handleDrop}
-                        onDragEnter={handleDragEnter}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        {file ? (
-                            <div className={styles.fileDisplay}>
-                                <FileIcon className={styles.fileIcon}/>
-                                <div className={styles.fileInfo}>
-                                    <p className={styles.fileName}>{file.name}</p>
-                                    <span className={styles.fileSize}>
-                                        {formatFileSize(file.size)}
-                                    </span>
-                                </div>
-                                <button
-                                    className={styles.removeFileBtn}
-                                    onClick={handleRemoveFile}
+                    <label className={styles.label}>Добавление вопросов</label>
+                    <div className={styles.tabs}>
+                        <button
+                            className={classNames(styles.tab, {[styles.tabActive]: activeTab === CREATE_TABS.FILE})}
+                            onClick={() => handleTabChange(CREATE_TABS.FILE)}
+                        >
+                            Из файла
+                        </button>
+                        <button
+                            className={classNames(styles.tab, {[styles.tabActive]: activeTab === CREATE_TABS.MANUAL})}
+                            onClick={() => handleTabChange(CREATE_TABS.MANUAL)}
+                        >
+                            Вручную
+                        </button>
+                    </div>
+
+                    {activeTab === CREATE_TABS.FILE ? (
+                        <>
+                            <div className={styles.fileUploadContainer}>
+                                <div
+                                    className={classNames(
+                                        styles.dropzone,
+                                        {
+                                            [styles.dragging]: (isDragging || isHovered) && !file,
+                                            [styles.dropzoneError]: fileErrorMessage,
+                                            [styles.fileUploaded]: !!file
+                                        }
+                                    )}
+                                    onClick={!file ? () => fileInputRef.current.click() : undefined}
+                                    onDrop={handleDrop}
+                                    onDragEnter={handleDragEnter}
+                                    onDragOver={handleDragOver}
+                                    onDragLeave={handleDragLeave}
+                                    onMouseEnter={handleMouseEnter}
+                                    onMouseLeave={handleMouseLeave}
                                 >
-                                    <CloseIcon className={styles.removeFileIcon}/>
-                                </button>
+                                    {file ? (
+                                        <div className={styles.fileDisplay}>
+                                            <FileIcon className={styles.fileIcon}/>
+                                            <div className={styles.fileInfo}>
+                                                <p className={styles.fileName}>{file.name}</p>
+                                                <span className={styles.fileSize}>
+                                                {formatFileSize(file.size)}
+                                            </span>
+                                            </div>
+                                            <button
+                                                className={styles.removeFileBtn}
+                                                onClick={handleRemoveFile}
+                                            >
+                                                <CloseIcon className={styles.removeFileIcon}/>
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className={styles.fileText}>
+                                            <UploadIcon className={styles.uploadIcon}/>
+                                            <p>Перетащите файл сюда или нажмите, чтобы загрузить</p>
+                                            <p className={styles.supportText}>
+                                                {ALLOWED_FILE_EXTENSIONS.join(', ')} (до {MAX_FILE_SIZE_MB} Мб)
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                                {fileErrorMessage && <div className={styles.errorMessageFile}>{fileErrorMessage}</div>}
                             </div>
-                        ) : (
-                            <div className={styles.fileText}>
-                                <UploadIcon className={styles.uploadIcon}/>
-                                <p>Перетащите файл сюда или нажмите, чтобы загрузить</p>
-                                <p className={styles.supportText}>
-                                    {ALLOWED_FILE_EXTENSIONS.join(', ')} (до {MAX_FILE_SIZE_MB} Мб)
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                className={styles.hiddenInput}
+                                accept={ALLOWED_FILE_EXTENSIONS.map(ext => `.${ext}`).join(',')}
+                                onChange={handleFileSelect}
+                            />
+
+                            <div className={styles.hint}>
+                                <div className={styles.hintHeader}>
+                                    <Sparkles className={classNames(styles.hintIcon, styles.aiIcon)}/>
+                                    <p className={styles.hintTitle}>
+                                        Система автоматически распознает вопросы и ответы и создаст тест на их основе
+                                    </p>
+                                </div>
+                                <p className={styles.hintDescription}>
+                                    Вам останется только проверить результат и отредактировать его при необходимости
                                 </p>
                             </div>
-                        )}
-                    </div>
-                    {fileErrorMessage && <div className={styles.errorMessageFile}>{fileErrorMessage}</div>}
+                        </>
+                    ) : (
+                        <div className={styles.hint}>
+                            <div className={styles.hintHeader}>
+                                <EmptyFile className={styles.hintIcon}/>
+                                <p className={styles.hintTitle}>Вопросы будут добавлены позже</p>
+                            </div>
+                            <p className={styles.hintDescription}>
+                                После создания теста вы перейдете на страницу редактирования, где сможете добавить
+                                вопросы вручную
+                            </p>
+                        </div>
+                    )}
                 </div>
 
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    className={styles.hiddenInput}
-                    accept={ALLOWED_FILE_EXTENSIONS.map(ext => `.${ext}`).join(',')}
-                    onChange={handleFileSelect}
-                />
-
-                <div className={styles.howToPrepare}>
-                    <h3>Как подготовить файл?</h3>
-                    <p className={styles.howToPrepareIntro}>
-                        Используйте заглавные ключевые слова на новой строке, чтобы разделить элементы теста.
-                    </p>
-
-                    <div className={styles.instructionBlock}>
-                        <p className={styles.instructionHeader}>1. Вопрос с вводом ответа:</p>
-                        <span className={styles.instructionLine}>
-                        ВОПРОС: Текст вопроса
-                        </span>
-                        <span className={styles.instructionLine}>
-                        ОТВЕТ: Верный ответ
-                        </span>
-                    </div>
-
-                    <div className={styles.instructionBlock}>
-                        <p className={styles.instructionHeader}>2. Вопрос с выбором варианта:</p>
-                        <span className={styles.instructionLine}>
-                        ВОПРОС: Текст вопроса
-                        </span>
-                        <span className={styles.instructionLine}>
-                        ОТВЕТ: Правильный вариант
-                        </span>
-                        <span className={styles.instructionLine}>
-                        ВАРИАНТ: Неправильный вариант
-                        </span>
-                        <span className={styles.instructionLine}>
-                        ВАРИАНТ: Другой неправильный вариант
-                        </span>
-                    </div>
-
-                    <p className={styles.howToPrepareImportant}>
-                        Важно: Разделяйте каждый отдельный вопрос пустой строкой
-                    </p>
-                </div>
-
-                <button className={styles.createBtn} onClick={handleCreateFile}>
-                    Создать тест из файла
-                </button>
-
-                <button className={styles.manualBtn} onClick={handleCreateManual}>
-                    Создать вручную
+                <button
+                    className={styles.createBtn}
+                    onClick={handleCreateTest}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? (
+                        activeTab === CREATE_TABS.FILE ? "Обработка файла..." : "Создание..."
+                    ) : (
+                        "Создать тест"
+                    )}
                 </button>
             </div>
         </div>
