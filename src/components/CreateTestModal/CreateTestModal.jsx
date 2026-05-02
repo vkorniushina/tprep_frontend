@@ -10,6 +10,8 @@ import {formatFileSize} from "../../utils/formatFileSize.js";
 import {validateFile, validateTestForm} from "../../utils/validateCreateTest.js";
 import classNames from "classnames";
 import InfoHint from "../InfoHint/InfoHint.jsx";
+import Tabs from "../Tabs/Tabs.jsx";
+import {CREATE_TEST_TABS} from "../../constants/testConstants.js";
 
 const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast}) => {
 
@@ -185,20 +187,11 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
 
                 <div>
                     <label className={styles.label}>Добавление вопросов</label>
-                    <div className={styles.tabs}>
-                        <button
-                            className={classNames(styles.tab, {[styles.tabActive]: activeTab === CREATE_TABS.FILE})}
-                            onClick={() => handleTabChange(CREATE_TABS.FILE)}
-                        >
-                            Из файла
-                        </button>
-                        <button
-                            className={classNames(styles.tab, {[styles.tabActive]: activeTab === CREATE_TABS.MANUAL})}
-                            onClick={() => handleTabChange(CREATE_TABS.MANUAL)}
-                        >
-                            Вручную
-                        </button>
-                    </div>
+                    <Tabs
+                        tabs={CREATE_TEST_TABS}
+                        activeTab={activeTab}
+                        onChange={handleTabChange}
+                    />
 
                     {activeTab === CREATE_TABS.FILE ? (
                         <>

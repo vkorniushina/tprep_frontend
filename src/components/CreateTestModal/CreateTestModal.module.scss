@@ -97,36 +97,6 @@ textarea {
   min-height: 100px;
 }
 
-.tabs {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.tab {
-  flex: 1;
-  padding: 18px;
-  background: $color-bg-gray;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  font-size: $font-sm;
-  font-weight: 500;
-  color: $color-text-secondary;
-  cursor: pointer;
-  transition: $transition-base, color $transition-speed;
-
-  &:hover {
-    border-color: $color-border-hover;
-    color: $color-text;
-  }
-}
-
-.tabActive {
-  background: $color-bg-base;
-  border-color: $color-dark;
-  color: $color-text;
-}
-
 .fileUploadContainer {
   margin-bottom: 20px;
 }
