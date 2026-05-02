@@ -9,6 +9,7 @@ import {ALLOWED_FILE_EXTENSIONS, CREATE_TABS, MAX_FILE_SIZE_MB} from "../../cons
 import {formatFileSize} from "../../utils/formatFileSize.js";
 import {validateFile, validateTestForm} from "../../utils/validateCreateTest.js";
 import classNames from "classnames";
+import InfoHint from "../InfoHint/InfoHint.jsx";
 
 const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast}) => {
 
@@ -255,29 +256,19 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                                 onChange={handleFileSelect}
                             />
 
-                            <div className={styles.hint}>
-                                <div className={styles.hintHeader}>
-                                    <Sparkles className={classNames(styles.hintIcon, styles.aiIcon)}/>
-                                    <p className={styles.hintTitle}>
-                                        Система автоматически распознает вопросы и ответы и создаст тест на их основе
-                                    </p>
-                                </div>
-                                <p className={styles.hintDescription}>
-                                    Вам останется только проверить результат и отредактировать его при необходимости
-                                </p>
-                            </div>
+                            <InfoHint
+                                Icon={Sparkles}
+                                iconClassName={styles.aiIcon}
+                                title="Система автоматически распознает вопросы и ответы и создаст тест на их основе"
+                                description="Вам останется только проверить результат и отредактировать его при необходимости"
+                            />
                         </>
                     ) : (
-                        <div className={styles.hint}>
-                            <div className={styles.hintHeader}>
-                                <EmptyFile className={styles.hintIcon}/>
-                                <p className={styles.hintTitle}>Вопросы будут добавлены позже</p>
-                            </div>
-                            <p className={styles.hintDescription}>
-                                После создания теста вы перейдете на страницу редактирования, где сможете добавить
-                                вопросы вручную
-                            </p>
-                        </div>
+                        <InfoHint
+                            Icon={EmptyFile}
+                            title="Вопросы будут добавлены позже"
+                            description="После создания теста вы перейдете на страницу редактирования, где сможете добавить вопросы вручную"
+                        />
                     )}
                 </div>
 
