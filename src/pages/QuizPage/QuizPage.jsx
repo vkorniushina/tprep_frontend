@@ -79,7 +79,7 @@ const QuizPage = () => {
 
     useEffect(() => {
         if (sessionStorage.getItem(LOCK_KEY)) {
-            navigate(basePath, { replace: true });
+            navigate(basePath, {replace: true});
         }
     }, [basePath, navigate]);
 
@@ -114,6 +114,12 @@ const QuizPage = () => {
 
     const handleExit = async () => {
         await exitSession();
+        sessionStorage.removeItem(STORAGE_KEY);
+        sessionStorage.setItem(LOCK_KEY, "true");
+        navigate(basePath);
+    };
+
+    const handleCloseResult = () => {
         sessionStorage.removeItem(STORAGE_KEY);
         sessionStorage.setItem(LOCK_KEY, "true");
         navigate(basePath);
@@ -178,7 +184,7 @@ const QuizPage = () => {
         sessionStorage.setItem(LOCK_KEY, "true");
 
         navigate("/profile", {
-            state: { tab: PROFILE_TABS.REMINDERS },
+            state: {tab: PROFILE_TABS.REMINDERS},
             replace: true
         });
     };
@@ -231,7 +237,7 @@ const QuizPage = () => {
                     result={resultData}
                     onRetry={handleRetry}
                     onFixErrors={handleFixErrors}
-                    onClose={handleExit}
+                    onClose={handleCloseResult}
                     onOpenReminders={!shareToken ? handleOpenReminders : undefined}
                 />
             )}
