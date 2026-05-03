@@ -1,17 +1,14 @@
 import React, {useRef, useState} from "react";
 import styles from "./CreateTestModal.module.scss";
 import CloseIcon from "../../assets/images/close.svg?react";
-import UploadIcon from "../../assets/images/upload.svg?react";
-import FileIcon from "../../assets/images/file.svg?react";
 import Sparkles from "../../assets/images/sparkles.svg?react";
 import EmptyFile from "../../assets/images/empty_file.svg?react";
-import {ALLOWED_FILE_EXTENSIONS, CREATE_TABS, MAX_FILE_SIZE_MB} from "../../constants/fileUpload.js";
-import {formatFileSize} from "../../utils/formatFileSize.js";
+import {CREATE_TABS} from "../../constants/fileUpload.js";
 import {validateFile, validateTestForm} from "../../utils/validateCreateTest.js";
-import classNames from "classnames";
 import InfoHint from "../InfoHint/InfoHint.jsx";
 import Tabs from "../Tabs/Tabs.jsx";
 import {CREATE_TEST_TABS} from "../../constants/testConstants.js";
+import FileDropzone from "../FileDropzone/FileDropzone.jsx";
 
 const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast}) => {
 
@@ -195,58 +192,19 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
 
                     {activeTab === CREATE_TABS.FILE ? (
                         <>
-                            <div className={styles.fileUploadContainer}>
-                                <div
-                                    className={classNames(
-                                        styles.dropzone,
-                                        {
-                                            [styles.dragging]: (isDragging || isHovered) && !file,
-                                            [styles.dropzoneError]: fileErrorMessage,
-                                            [styles.fileUploaded]: !!file
-                                        }
-                                    )}
-                                    onClick={!file ? () => fileInputRef.current.click() : undefined}
-                                    onDrop={handleDrop}
-                                    onDragEnter={handleDragEnter}
-                                    onDragOver={handleDragOver}
-                                    onDragLeave={handleDragLeave}
-                                    onMouseEnter={handleMouseEnter}
-                                    onMouseLeave={handleMouseLeave}
-                                >
-                                    {file ? (
-                                        <div className={styles.fileDisplay}>
-                                            <FileIcon className={styles.fileIcon}/>
-                                            <div className={styles.fileInfo}>
-                                                <p className={styles.fileName}>{file.name}</p>
-                                                <span className={styles.fileSize}>
-                                                {formatFileSize(file.size)}
-                                            </span>
-                                            </div>
-                                            <button
-                                                className={styles.removeFileBtn}
-                                                onClick={handleRemoveFile}
-                                            >
-                                                <CloseIcon className={styles.removeFileIcon}/>
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <div className={styles.fileText}>
-                                            <UploadIcon className={styles.uploadIcon}/>
-                                            <p>Перетащите файл сюда или нажмите, чтобы загрузить</p>
-                                            <p className={styles.supportText}>
-                                                {ALLOWED_FILE_EXTENSIONS.join(', ')} (до {MAX_FILE_SIZE_MB} Мб)
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                                {fileErrorMessage && <div className={styles.errorMessageFile}>{fileErrorMessage}</div>}
-                            </div>
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                className={styles.hiddenInput}
-                                accept={ALLOWED_FILE_EXTENSIONS.map(ext => `.${ext}`).join(',')}
-                                onChange={handleFileSelect}
+                            <FileDropzone
+                                file={file}
+                                onFileSelect={handleFileSelect}
+                                onFileRemove={handleRemoveFile}
+                                isDragging={isDragging}
+                                isHovered={isHovered}
+                                fileErrorMessage={fileErrorMessage}
+                                onDragEnter={handleDragEnter}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
                             />
 
                             <InfoHint
