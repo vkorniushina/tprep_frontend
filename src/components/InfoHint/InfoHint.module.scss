@@ -1,0 +1,33 @@
+@use '../../assets/styles/variables' as *;
+
+.hint {
+  background-color: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.hintHeader{
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.hintIcon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.hintTitle {
+  color: $color-text;
+  font-size: $font-sm;
+  font-weight: 400;
+}
+
+.hintDescription {
+  color: $color-text-secondary;
+  font-size: $font-sm;
+}

@@ -117,9 +117,8 @@ const MainPage = () => {
             formData.append("description", description);
             formData.append("file", file);
 
-            await createModuleByFile(formData);
-            await fetchTests();
-            showToast("success", "Тест успешно создан!");
+            const createdModule = await createModuleByFile(formData);
+            navigate(`/test/${createdModule.id}/edit`);
             return {success: true};
         } catch (err) {
             console.error(err);
