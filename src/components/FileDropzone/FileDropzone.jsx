@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React from "react";
 import classNames from "classnames";
 import CloseIcon from "../../assets/images/close.svg?react";
 import UploadIcon from "../../assets/images/upload.svg?react";
@@ -9,6 +9,7 @@ import styles from "./FileDropzone.module.scss";
 
 const FileDropzone = ({
                           file,
+                          inputRef,
                           onFileSelect,
                           onFileRemove,
                           isDragging,
@@ -21,11 +22,9 @@ const FileDropzone = ({
                           onMouseEnter,
                           onMouseLeave
                       }) => {
-    const fileInputRef = useRef(null);
-
     const handleClick = () => {
         if (!file) {
-            fileInputRef.current?.click();
+            inputRef.current?.click();
         }
     };
 
@@ -79,7 +78,7 @@ const FileDropzone = ({
             )}
             <input
                 type="file"
-                ref={fileInputRef}
+                ref={inputRef}
                 className={styles.hiddenInput}
                 accept={ALLOWED_FILE_EXTENSIONS.map(ext => `.${ext}`).join(',')}
                 onChange={onFileSelect}

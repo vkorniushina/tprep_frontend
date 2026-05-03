@@ -1,72 +1,40 @@
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import styles from "./CreateTestModal.module.scss";
 import CloseIcon from "../../assets/images/close.svg?react";
 import Sparkles from "../../assets/images/sparkles.svg?react";
 import EmptyFile from "../../assets/images/empty_file.svg?react";
 import {CREATE_TABS} from "../../constants/fileUpload.js";
-import {validateFile, validateTestForm} from "../../utils/validateCreateTest.js";
+import {validateTestForm} from "../../utils/validateCreateTest.js";
 import InfoHint from "../InfoHint/InfoHint.jsx";
 import Tabs from "../Tabs/Tabs.jsx";
-import {CREATE_TEST_TABS} from "../../constants/testConstants.js";
 import FileDropzone from "../FileDropzone/FileDropzone.jsx";
+import {CREATE_TEST_TABS} from "../../constants/testConstants.js";
+import {useFileUpload} from "../../hooks/useFileUpload.jsx";
 
 const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast}) => {
-
-    const fileInputRef = useRef(null);
-
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [file, setFile] = useState(null);
-
-    const [isDragging, setIsDragging] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
-
     const [formErrors, setFormErrors] = useState({});
-    const [fileErrorMessage, setFileErrorMessage] = useState(null);
-
     const [activeTab, setActiveTab] = useState(CREATE_TABS.FILE);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const processFile = (selectedFile, inputRef) => {
-        setFileErrorMessage(null);
-
-        if (!selectedFile) return;
-
-        const validation = validateFile(selectedFile);
-
-        if (validation.error) {
-            setFileErrorMessage(validation.error);
-            if (inputRef.current) inputRef.current.value = "";
-            setFile(null);
-            return;
-        }
-
-        setFile(selectedFile);
-    };
-
-    const handleDragEnter = (e) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
-
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
-
-    const handleDragLeave = () => {
-        setIsDragging(false);
-    };
-
-    const handleMouseEnter = () => {
-        if (!isDragging) {
-            setIsHovered(true);
-        }
-    };
-
-    const handleMouseLeave = () => {
-        setIsHovered(false);
-    };
+    const {
+        file,
+        inputRef,
+        isDragging,
+        isHovered,
+        fileErrorMessage,
+        handleFileSelect,
+        handleDrop,
+        handleRemoveFile,
+        handleDragEnter,
+        handleDragOver,
+        handleDragLeave,
+        handleMouseEnter,
+        handleMouseLeave,
+        clearFileError,
+        setFileErrorMessage
+    } = useFileUpload();
 
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -82,29 +50,10 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
         }
     };
 
-    const handleFileSelect = (e) => {
-        processFile(e.target.files[0], fileInputRef);
-    };
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        setIsDragging(false);
-        setIsHovered(false);
-        processFile(e.dataTransfer.files[0], fileInputRef);
-    };
-
-    const handleRemoveFile = (e) => {
-        e.stopPropagation();
-        setFile(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
-    };
-
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         if (tab === CREATE_TABS.MANUAL) {
-            setFileErrorMessage(null);
+            clearFileError();
         }
     };
 
@@ -194,6 +143,7 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                         <>
                             <FileDropzone
                                 file={file}
+                                inputRef={inputRef}
                                 onFileSelect={handleFileSelect}
                                 onFileRemove={handleRemoveFile}
                                 isDragging={isDragging}
