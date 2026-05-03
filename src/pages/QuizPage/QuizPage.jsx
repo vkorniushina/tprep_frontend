@@ -21,6 +21,7 @@ const QuizPage = () => {
 
     const identifier = id || shareToken;
     const basePath = shareToken ? `/share/${shareToken}` : `/test/${id}`;
+    const originPath = location.state?.originPath || basePath;
 
     const passedSession = location.state?.session;
 
@@ -116,13 +117,13 @@ const QuizPage = () => {
         await exitSession();
         sessionStorage.removeItem(STORAGE_KEY);
         sessionStorage.setItem(LOCK_KEY, "true");
-        navigate(basePath);
+        navigate(originPath);
     };
 
     const handleCloseResult = () => {
         sessionStorage.removeItem(STORAGE_KEY);
         sessionStorage.setItem(LOCK_KEY, "true");
-        navigate(basePath);
+        navigate(originPath);
     };
 
     const handleFinishTest = async () => {
@@ -157,10 +158,14 @@ const QuizPage = () => {
                 ? await startSharedWrongTestSession(shareToken, sessionId)
                 : await startWrongTestSession(sessionId);
 
-            navigate(`${basePath}/quiz`, {
+            const nextToken = newSession.shareToken || shareToken;
+            const nextBasePath = nextToken ? `/share/${nextToken}` : `/test/${id}`;
+
+            navigate(`${nextBasePath}/quiz`, {
                 replace: true,
                 state: {
-                    session: newSession
+                    session: newSession,
+                    originPath: originPath
                 }
             });
         } catch (err) {
