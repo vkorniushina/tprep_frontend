@@ -70,5 +70,5 @@ jobs:
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USER }} --password-stdin
             docker pull ${{ needs.build.outputs.image_name }}
             cd ${{ secrets.COMPOSE_DIR }}
-            FRONTEND_IMAGE=${{ needs.build.outputs.image_name }} docker compose up -d --no-deps --pull always frontend
+            FRONTEND_IMAGE=${{ needs.build.outputs.image_name }} docker compose up -d --force-recreate --no-deps --pull always frontend
           EOF
