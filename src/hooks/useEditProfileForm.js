@@ -10,7 +10,6 @@ import {PASSWORD_STRENGTH} from "../constants/passwordStrength.js";
 import {VALIDATION_MESSAGES} from "../constants/validationMessages.js";
 import {updateProfile, changePassword} from "../api/profile.js";
 import {sendVerificationCode} from "../api/auth.js";
-import {saveToken} from "../utils/tokenStorage.js";
 import {EDIT_STEPS} from "../constants/profileConstants.js";
 
 export const useEditProfileForm = (user) => {
@@ -155,11 +154,10 @@ export const useEditProfileForm = (user) => {
 
     const applyPasswordChange = async () => {
         try {
-            const data = await changePassword({
+            await changePassword({
                 currentPassword: passwords.current,
                 newPassword: passwords.new,
             });
-            if (data.token) saveToken(data.token);
             return true;
         } catch (err) {
             if (err.response?.status === 400) {
@@ -174,8 +172,7 @@ export const useEditProfileForm = (user) => {
 
     const applyProfileUpdate = async () => {
         try {
-            const data = await updateProfile({username: name, email});
-            if (data.token) saveToken(data.token);
+            await updateProfile({username: name, email});
             return true;
         } catch (err) {
             if (err.response?.status === 409) {

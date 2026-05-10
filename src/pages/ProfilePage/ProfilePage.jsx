@@ -3,7 +3,7 @@ import styles from "./ProfilePage.module.scss";
 import {useProfileData} from "../../hooks/useProfileData.js";
 import ProfileCard from "../../components/ProfileCard/ProfileCard.jsx";
 import HeaderProfile from "../../components/HeaderProfile/HeaderProfile.jsx";
-import {removeToken} from "../../utils/tokenStorage.js";
+import {removeTokens} from "../../utils/tokenStorage.js";
 import {useLocation, useNavigate} from "react-router-dom";
 import classNames from "classnames";
 import StatsCards from "../../components/StatsCards/StatsCards.jsx";
@@ -34,7 +34,7 @@ const ProfilePage = () => {
     const {toast, showToast, hideToast} = useToast();
 
     const handleLogout = () => {
-        removeToken();
+        removeTokens();
         navigate("/login");
     };
 

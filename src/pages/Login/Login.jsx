@@ -6,7 +6,6 @@ import { useLoginForm } from "../../hooks/useLoginForm";
 import FormInput from "../../components/FormInput/FormInput.jsx";
 import PasswordInput from "../../components/PasswordInput/PasswordInput.jsx";
 import { signIn } from "../../api/auth.js";
-import { saveToken } from "../../utils/tokenStorage.js";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -27,8 +26,7 @@ const Login = () => {
         setIsLoading(true);
 
         try {
-            const response = await signIn(form.email, form.password);
-            saveToken(response.token);
+            await signIn(form.email, form.password);
             navigate("/");
         } catch (error) {
             if (error.response?.status === 401) {
