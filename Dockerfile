@@ -7,7 +7,8 @@ RUN npm ci
 COPY . .
 ARG VITE_API_BASE_URL
 RUN rm -f .env .env.local .env.production .env.production.local && \
-    echo "VITE_API_BASE_URL=${VITE_API_BASE_URL}" > .env
+    echo "VITE_API_BASE_URL=${VITE_API_BASE_URL}" > .env && \
+    echo "---ENV FILE---" && cat .env && echo "---END---"
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 RUN npm run build
 
