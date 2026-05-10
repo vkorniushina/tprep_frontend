@@ -47,7 +47,6 @@ jobs:
     needs: build
     env:
       IMAGE: ${{ needs.build.outputs.image_name }}
-      DOCKER_HOST: ${{ secrets.DOCKER_HOST }}
     steps:
       - name: Configure SSH
         run: |
@@ -58,15 +57,11 @@ jobs:
           ssh-add ~/.ssh/id_rsa
           echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull and Rollout
+      - name: Deploy via SSH
         run: |
-          docker pull "${{ env.IMAGE }}"
-          docker rollout -f ~/docker-compose.yml -t 60 frontend || \
-          docker compose -f ~/docker-compose.yml up -d --no-deps frontend
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USER }} --password-stdin
+            docker pull ${{ needs.build.outputs.image_name }}
+            cd ${{ secrets.COMPOSE_DIR }}
+            FRONTEND_IMAGE=${{ needs.build.outputs.image_name }} docker compose up -d --no-deps --pull always frontend
+          EOF
