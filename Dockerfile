@@ -4,11 +4,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-ARG VITE_API_BASE_URL
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-RUN echo ">>> VITE_API_BASE_URL=${VITE_API_BASE_URL}"
-
 COPY . .
+ARG VITE_API_BASE_URL
+RUN rm -f .env .env.local .env.production .env.production.local && \
+    echo "VITE_API_BASE_URL=${VITE_API_BASE_URL}" > .env
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 RUN npm run build
 
 FROM nginx:1.29.3-alpine
