@@ -17,13 +17,13 @@
 
 .modal {
   background-color: $color-bg-base;
-  padding: 35px 40px 35px;
+  padding: 35px 40px;
   border-radius: $radius-lg;
   width: 100%;
   max-width: 700px;
   box-shadow: $shadow-base;
   position: relative;
-  max-height: 90vh;
+  max-height: 95vh;
   overflow-y: auto;
 }
 
@@ -134,4 +134,46 @@ textarea {
   position: absolute;
   left: 0;
   top: 100%;
+  margin-top: 2px;
+}
+
+@media (max-width: 1024px) {
+  .overlay {
+    padding: 16px;
+  }
+
+  .modal {
+    padding: 30px 35px;
+    max-width: 650px;
+  }
+
+  .title {
+    margin-bottom: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .overlay {
+    padding: 12px;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .modal {
+    padding: 30px 25px;
+    border-radius: 0;
+    max-height: 100vh;
+    margin: 0;
+  }
+
+  .closeButton {
+    right: 25px;
+    top: 25px;
+  }
 }
