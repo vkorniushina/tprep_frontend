@@ -131,6 +131,15 @@ const QuizPage = () => {
             const result = await finishSession();
             setResultData(result);
             setShowResultModal(true);
+
+            if (shareToken) {
+                const GUEST_RESULT_KEY = `guest_result_${shareToken}`;
+                const guestData = {
+                    progress: result.progress,
+                    lastUse: result.finished_at
+                };
+                sessionStorage.setItem(GUEST_RESULT_KEY, JSON.stringify(guestData));
+            }
         } catch (err) {
             console.error('Error finishing test', err);
             setError('Не удалось завершить тест');

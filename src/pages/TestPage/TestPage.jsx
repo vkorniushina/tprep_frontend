@@ -47,6 +47,15 @@ const TestPage = () => {
                 let data;
                 if (shareToken) {
                     data = await getModuleByToken(shareToken);
+
+                    const GUEST_RESULT_KEY = `guest_result_${shareToken}`;
+                    const savedGuestData = sessionStorage.getItem(GUEST_RESULT_KEY);
+
+                    if (savedGuestData) {
+                        const parsed = JSON.parse(savedGuestData);
+                        data.progress = parsed.progress;
+                        data.lastUse = parsed.lastUse;
+                    }
                 } else {
                     data = await getModuleById(Number(id));
                 }
