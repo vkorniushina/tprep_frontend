@@ -30,6 +30,10 @@ function App() {
                 <Route path="/profile" element={
                     <ProtectedRoute><ProfilePage /></ProtectedRoute>
                 } />
+
+                <Route path="/share/:shareToken" element={<TestPage />} />
+                <Route path="/share/:shareToken/quiz" element={<QuizPage />} />
+
                 <Route path="/register" element={
                     <PublicRoute><Register /></PublicRoute>
                 } />

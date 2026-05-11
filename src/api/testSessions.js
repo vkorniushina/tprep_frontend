@@ -49,3 +49,45 @@ export const startWrongTestSession = async (sessionId) => {
         throw error;
     }
 };
+
+export const createSharedTestSession = async (shareToken, testId) => {
+    try {
+        const response = await apiClient.post(`/test-sessions/share/${shareToken}`, {
+            testId: testId
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error creating shared session for token ${shareToken}:`, error);
+        throw error;
+    }
+};
+
+export const submitSharedAnswer = async (shareToken, sessionId, answerData) => {
+    try {
+        const response = await apiClient.post(`/test-sessions/share/${shareToken}/${sessionId}/answers`, answerData);
+        return response.data;
+    } catch (error) {
+        console.error(`Error submitting shared answer for session ${sessionId}:`, error);
+        throw error;
+    }
+};
+
+export const finishSharedTestSession = async (shareToken, sessionId) => {
+    try {
+        const response = await apiClient.post(`/test-sessions/share/${shareToken}/${sessionId}/finish`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error finishing shared session ${sessionId}:`, error);
+        throw error;
+    }
+};
+
+export const startSharedWrongTestSession = async (shareToken, sessionId) => {
+    try {
+        const response = await apiClient.post(`/test-sessions/share/${shareToken}/${sessionId}/start-wrong`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error starting shared wrong answers session ${sessionId}:`, error);
+        throw error;
+    }
+};

@@ -31,6 +31,22 @@ export const searchModules = async ({ keyword, page = 0, size = 6 }) => {
     }
 };
 
+export const getPublicModules = async ({ page = 0, size = 6, keyword }) => {
+    try {
+        const response = await apiClient.get('/modules/public', {
+            params: {
+                page,
+                size,
+                keyword: keyword
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching public modules:', error);
+        throw error;
+    }
+};
+
 export const getModuleById = async (id) => {
     try {
         const response = await apiClient.get(`/modules/${id}`);
@@ -102,3 +118,56 @@ export const deleteModule = async (id) => {
         throw error;
     }
 };
+
+export const updateModuleAccess = async (id, accessMode) => {
+    try {
+        const response = await apiClient.put(`/modules/${id}/access`, {accessMode});
+        return response.data;
+    } catch (error) {
+        console.error(`Error updating access for module ${id}:`, error);
+        throw error;
+    }
+};
+
+export const getModuleByToken = async (shareToken) => {
+    try {
+        const response = await apiClient.get(`/modules/share/${shareToken}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching module by token ${shareToken}:`, error);
+        throw error;
+    }
+};
+
+export const getModuleQuestionsByToken = async (shareToken) => {
+    try {
+        const response = await apiClient.get(`/modules/share/${shareToken}/questions`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching questions by token ${shareToken}:`, error);
+        throw error;
+    }
+};
+
+export const getModuleQuestionsLightByToken = async (shareToken) => {
+    try {
+        const response = await apiClient.get(`/modules/share/${shareToken}/questions`, {
+            params: { light: true }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching light questions by token ${shareToken}:`, error);
+        throw error;
+    }
+};
+
+export const getQuestionByToken = async (shareToken, questionId) => {
+    try {
+        const response = await apiClient.get(`/modules/share/${shareToken}/${questionId}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching question ${questionId} by token ${shareToken}:`, error);
+        throw error;
+    }
+};
+

@@ -1,0 +1,213 @@
+@use "../../assets/styles/variables" as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: $color-backdrop;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background-color: $color-bg-base;
+  border-radius: $radius-lg;
+  padding: 30px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.closeBtn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  .closeIcon {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5px;
+    color: $color-text-secondary;
+    transition: color $transition-speed;
+
+    &:hover {
+      color: $color-dark;
+    }
+  }
+}
+
+.title {
+  font-size: $font-lg;
+  font-weight: 500;
+  margin-bottom: 30px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    border-color: $color-border-hover;
+  }
+}
+
+.optionSelected {
+  background: $color-bg-gray;
+}
+
+.radioWrapper {
+  position: relative;
+  width: 24px;
+  height: 24px;
+
+  input {
+    opacity: 0;
+    position: absolute;
+  }
+}
+
+.radioCircle {
+  position: absolute;
+  inset: 0;
+  height: 24px;
+  width: 24px;
+  background-color: $color-bg-base;
+  border: 1px solid $color-border;
+  border-radius: 50px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50px;
+    background: $color-border-hover;
+    display: none;
+  }
+}
+
+input:checked + .radioCircle {
+  border-color: $color-border-hover;
+
+  &::after {
+    display: block;
+  }
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.optionTitle {
+  font-size: $font-sm;
+  font-weight: 400;
+}
+
+.optionSub {
+  font-size: $font-xxs;
+  color: $color-text-secondary;
+}
+
+.linkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.linkInput {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  font-size: $font-xs;
+  background: $color-bg-base;
+  outline: none;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+}
+
+.copyBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: $color-bg-gray;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: $transition-base, color $transition-speed;
+
+  &:hover {
+    background: $color-bg-gray;
+    border-color: $color-border-hover;
+  }
+}
+
+.copyIcon {
+  width: 16px;
+  height: 16px;
+  animation: iconAppear 0.3s ease-out;
+}
+
+@keyframes iconAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+.saveBtn {
+  width: 100%;
+  padding: 14px;
+  background: $color-primary;
+  border: none;
+  border-radius: $radius-md;
+  font-size: $font-sm;
+  font-weight: 500;
+  color: $color-dark;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: $transition-base;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
