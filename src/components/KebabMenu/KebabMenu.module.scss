@@ -72,3 +72,37 @@
   color: $color-text-secondary;
   flex-shrink: 0;
 }
+
+@media (max-width: 1024px) {
+  .wrapper {
+    top: 20px;
+    right: 20px;
+  }
+
+  .trigger {
+    width: 34px;
+    height: 34px;
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    top: 18px;
+    right: 18px;
+  }
+
+  .trigger {
+    width: 32px;
+    height: 32px;
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}

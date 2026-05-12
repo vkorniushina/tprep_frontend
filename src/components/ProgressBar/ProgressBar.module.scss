@@ -25,4 +25,29 @@
   font-weight: 500;
   font-size: $font-sm;
   color: $color-text-secondary;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wrapper {
+    gap: 10px;
+  }
+
+  .track {
+    height: 9px;
+  }
+
+  .fill {
+    height: 9px;
+  }
+
+  .text {
+    font-size: $font-xs;
+  }
 }
