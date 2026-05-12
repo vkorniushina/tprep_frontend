@@ -25,6 +25,7 @@
   cursor: pointer;
   color: $color-border-hover;
   transition: color $transition-speed;
+  text-wrap: nowrap;
 
   &:hover {
     color: $color-text-secondary;
@@ -84,14 +85,92 @@
   font-weight: 500;
   color: $color-text;
   margin-bottom: 25px;
+  text-align: center;
 }
 
 .emptySubMessage {
   font-size: $font-sm;
   color: $color-text-secondary;
+  text-align: center;
 }
 
 .loadingEmptyState {
   display: flex;
   justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .headerRow {
+    margin: 35px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding-bottom: 40px;
+  }
+
+  .headerRow {
+    margin: 25px 0;
+    gap: 10px;
+  }
+
+  .tab {
+    font-size: $font-lg;
+  }
+
+  .activeTab {
+    font-size: $font-xl;
+  }
+
+  .createBtn {
+    padding: 12px 22px 12px 12px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .emptyMessage {
+    font-size: $font-md;
+    margin-bottom: 18px;
+  }
+
+  .emptySubMessage {
+    font-size: $font-xs;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerRow {
+    margin: 20px 0;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .createBtn {
+    padding: 10px 20px 10px 10px;
+    font-size: $font-md;
+
+    img {
+      margin-right: 10px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .emptyMessage {
+    font-size: $font-sm;
+    margin-bottom: 15px;
+  }
+
+  .emptySubMessage {
+    font-size: $font-xxs;
+  }
 }

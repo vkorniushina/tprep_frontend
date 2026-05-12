@@ -3,7 +3,6 @@
 .header {
   display: flex;
   align-items: center;
-  padding: 0 20px;
   background-color: $color-white;
   border-bottom: 1px solid $color-border;
   height: 80px;
@@ -12,6 +11,8 @@
 .inner {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 30px;
   width: 100%;
 }
 
@@ -20,6 +21,7 @@
   font-size: $font-xxl;
   color: $color-text;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .search {
@@ -32,6 +34,7 @@
   padding: 11px;
   max-width: 565px;
   width: 100%;
+  overflow: hidden;
   transition: $transition-base;
 
   &:focus-within {
@@ -41,6 +44,7 @@
 
 .searchIcon {
   margin-right: 13px;
+  flex-shrink: 0;
 }
 
 .searchInput {
@@ -62,7 +66,7 @@
   color: #126df7;
   font-weight: 400;
   font-size: $font-xs;
-  padding: 12px 12px;
+  padding: 12px;
   border-radius: $radius-md;
   cursor: pointer;
   transition: $transition-base;
@@ -70,5 +74,74 @@
 
   &:hover {
     background-color: #ebeff3;
+  }
+}
+
+@media (max-width: 1024px) {
+  .header {
+    height: 70px;
+  }
+
+  .search {
+    max-width: 480px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo {
+    font-size: $font-xl;
+  }
+
+  .search {
+    padding: 9px;
+  }
+
+  .searchIcon {
+    margin-right: 10px;
+  }
+
+  .profileBtn {
+    padding: 10px;
+    font-size: $font-xxs;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    height: auto;
+    padding: 15px 0;
+  }
+
+  .inner {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  .logo {
+    order: 1;
+    font-size: $font-lg;
+  }
+
+  .profileBtn {
+    order: 2;
+    padding: 7px;
+    font-size: $font-xxs;
+  }
+
+  .search {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .searchInput {
+    font-size: $font-xxs;
+  }
+
+  .searchIcon {
+    margin-right: 8px;
+    width: 14px;
+    height: 14px;
   }
 }
