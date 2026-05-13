@@ -181,3 +181,23 @@
   margin: -15px 0 10px;
   text-align: center;
 }
+
+@media (max-width: 480px) {
+  .main {
+    align-items: flex-start;
+    padding: 50px 16px;
+  }
+
+  .card {
+    padding: 40px 20px;
+  }
+
+  .backButton {
+    top: 20px;
+    left: 15px;
+  }
+
+  .description {
+    margin-bottom: 25px;
+  }
+}

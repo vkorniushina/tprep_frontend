@@ -125,6 +125,7 @@
   background: $color-primary;
   border: none;
   font-size: $font-sm;
+  color: $color-text;
   cursor: pointer;
   transition: $transition-base;
 
@@ -208,4 +209,44 @@
   font-size: $font-xxs;
   margin-bottom: 20px;
   text-align: center;
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 15px;
+  }
+
+  .card {
+    padding: 40px 20px;
+  }
+
+  .title {
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 360px) {
+  .main {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 30px 15px;
+  }
+
+  .title {
+    font-size: $font-lg;
+  }
+
+  .fieldGroup {
+    margin-bottom: 15px;
+  }
+
+  .checkboxGroup {
+    margin: 20px 0;
+  }
+
+  .divider {
+    margin: 15px 0;
+  }
 }
