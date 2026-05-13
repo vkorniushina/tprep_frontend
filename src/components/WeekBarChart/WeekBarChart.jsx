@@ -7,6 +7,7 @@ import {formatPassings} from "../../utils/pluralize.js";
 
 const WeekBarChart = ({activity}) => {
     const containerRef = useRef(null);
+    const scrollRef = useRef(null);
 
     const data = useMemo(() => buildWeekData(activity), [activity]);
     const ticks = useMemo(() => computeTicks(data.map(d => d.count)), [data]);
@@ -45,56 +46,55 @@ const WeekBarChart = ({activity}) => {
                 <div>{tooltip.line2}</div>
             </div>
 
-            <div className={styles.wrap}>
-                <div className={styles.yAxis} style={{height: CHART_CONFIG.HEIGHT}}>
-                    {ticks.map(val => (
-                        <div key={val} className={styles.yTick}>{val}</div>
-                    ))}
-                </div>
+            <div className={styles.scrollArea} ref={scrollRef}>
+                <div className={styles.wrap}>
+                    <div className={styles.yAxis} style={{height: CHART_CONFIG.HEIGHT}}>
+                        {ticks.map(val => (
+                            <div key={val} className={styles.yTick}>{val}</div>
+                        ))}
+                    </div>
 
-                <div className={styles.right}>
-                    <div className={styles.plot} style={{height: CHART_CONFIG.HEIGHT}}>
-                        <div className={styles.grid}>
-                            {ticks.map(val => <div key={val} className={styles.gridLine}/>)}
+                    <div className={styles.right}>
+                        <div className={styles.plot} style={{height: CHART_CONFIG.HEIGHT}}>
+                            <div className={styles.grid}>
+                                {ticks.map(val => <div key={val} className={styles.gridLine}/>)}
+                            </div>
+
+                            <div className={styles.bars}>
+                                {data.map((item, i) => {
+                                    const isToday = i === data.length - 1;
+                                    const barH = item.count === 0 ? 8 : (item.count / yMax) * CHART_CONFIG.HEIGHT;
+
+                                    return (
+                                        <div key={item.date} className={styles.barCol}>
+                                            <div
+                                                className={classNames(styles.bar, {
+                                                    [styles.barEmpty]: item.count === 0,
+                                                    [styles.barToday]: isToday && item.count > 0,
+                                                    [styles.barFilled]: !isToday && item.count > 0
+                                                })}
+                                                style={{height: barH}}
+                                                onMouseEnter={e => handleMouseEnter(e, item)}
+                                                onMouseLeave={handleMouseLeave}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
 
-                        <div className={styles.bars}>
+                        <div className={styles.xAxis}>
                             {data.map((item, i) => {
                                 const isToday = i === data.length - 1;
-                                const barH = item.count === 0 ? 8 : (item.count / yMax) * CHART_CONFIG.HEIGHT;
-
+                                const label = `${item.rawDate.getDate()}.${String(item.rawDate.getMonth() + 1).padStart(2, "0")}`;
                                 return (
-                                    <div
-                                        key={item.date}
-                                        className={styles.barCol}
-                                    >
-                                        <div
-                                            className={classNames(styles.bar, {
-                                                [styles.barEmpty]: item.count === 0,
-                                                [styles.barToday]: isToday && item.count > 0,
-                                                [styles.barFilled]: !isToday && item.count > 0
-                                            })}
-                                            style={{height: barH}}
-                                            onMouseEnter={e => handleMouseEnter(e, item)}
-                                            onMouseLeave={handleMouseLeave}
-                                        />
+                                    <div key={item.date}
+                                         className={classNames(styles.xTick, {[styles.xTickToday]: isToday})}>
+                                        {label}
                                     </div>
                                 );
                             })}
                         </div>
-                    </div>
-
-                    <div className={styles.xAxis}>
-                        {data.map((item, i) => {
-                            const isToday = i === data.length - 1;
-                            const label = isToday ? "Сегодня" : `${item.rawDate.getDate()}.${String(item.rawDate.getMonth() + 1).padStart(2, "0")}`;
-                            return (
-                                <div key={item.date}
-                                     className={classNames(styles.xTick, {[styles.xTickToday]: isToday})}>
-                                    {label}
-                                </div>
-                            );
-                        })}
                     </div>
                 </div>
             </div>

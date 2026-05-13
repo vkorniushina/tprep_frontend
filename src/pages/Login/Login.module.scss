@@ -39,9 +39,9 @@
   margin-bottom: 35px;
 }
 
-.fieldGroup {
-  margin-bottom: 20px;
-}
+//.fieldGroup {
+//  margin-bottom: 20px;
+//}
 
 .primaryButton {
   width: 100%;
@@ -50,6 +50,7 @@
   background: $color-primary;
   border: none;
   font-size: $font-sm;
+  color: $color-text;
   cursor: pointer;
   transition: $transition-base;
 
@@ -114,6 +115,7 @@
   text-align: right;
   margin-bottom: 25px;
   margin-top: -5px;
+  visibility: hidden;
 
   span{
     color: $color-text-secondary;
@@ -137,4 +139,34 @@
   font-size: $font-xxs;
   margin-bottom: 20px;
   text-align: center;
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 40px 15px;
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  .main {
+    padding: 40px 10px;
+  }
+
+  .card {
+    padding: 40px 15px;
+  }
+
+  .title {
+    font-size: $font-lg;
+    margin-bottom: 30px;
+  }
+
+  .divider {
+    margin: 15px 0;
+  }
 }

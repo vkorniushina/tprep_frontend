@@ -1,6 +1,6 @@
 @use '../../assets/styles/variables' as *;
 
-.answerSection{
+.answerSection {
   padding-right: 50px;
 }
 
@@ -41,4 +41,54 @@
   color: $color-primary;
   font-weight: bold;
   font-size: $font-md;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .answerSection {
+    padding-right: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .answerSection {
+    padding-right: 10px;
+  }
+
+  .answer {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .check {
+    font-size: $font-sm;
+  }
+}
+
+@media (max-width: 480px) {
+  .answerSection {
+    padding-right: 0;
+  }
+
+  .label {
+    font-size: $font-xs;
+    margin-bottom: 10px;
+  }
+
+  .answers {
+    gap: 8px;
+  }
+
+  .answer {
+    font-size: $font-xs;
+    gap: 6px;
+  }
+
+  .correct {
+    border-left-width: 3px;
+  }
+
+  .check {
+    font-size: $font-xs;
+  }
 }

@@ -31,6 +31,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   background: rgba(255, 221, 45, 0.6);
   border-radius: $radius-sm;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cardContent {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .icon {
+    top: 0;
+    right: 0;
+  }
+
+  .value {
+    margin-bottom: 4px;
+  }
 }

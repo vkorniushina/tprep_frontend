@@ -49,3 +49,9 @@
   font-size: $font-xxs;
   margin-top: 5px;
 }
+
+@media (max-width: 360px) {
+  .fieldGroup {
+    margin-bottom: 15px;
+  }
+}

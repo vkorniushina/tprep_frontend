@@ -4,10 +4,17 @@
   position: relative;
 }
 
+.scrollArea {
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
 .wrap {
   display: flex;
-  max-width: 600px;
-  margin: 0 25px;
+  min-width: 360px;
+  margin-right: 25px;
 }
 
 .yAxis {
@@ -44,6 +51,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .plot {
@@ -160,5 +168,32 @@
     width: 1.5px;
     height: 6px;
     background: $color-dark;
+  }
+}
+
+.xTickToday {
+  font-weight: 600;
+  color: $color-text;
+}
+
+@media (max-width: 1024px) {
+  .yAxis {
+    width: 20px;
+  }
+
+  .wrap {
+    margin: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .bars {
+    gap: 8px;
+    padding: 0 8px;
+  }
+
+  .xAxis {
+    gap: 8px;
+    padding: 0 8px;
   }
 }

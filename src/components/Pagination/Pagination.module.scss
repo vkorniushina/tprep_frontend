@@ -61,3 +61,25 @@
 .dots {
   font-size: $font-md;
 }
+
+@media (max-width: 480px) {
+  .pagination {
+    gap: 3px;
+  }
+
+  .page {
+    width: 32px;
+    height: 32px;
+    font-size: $font-xxs;
+  }
+
+  .arrow {
+    width: 32px;
+    height: 32px;
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}

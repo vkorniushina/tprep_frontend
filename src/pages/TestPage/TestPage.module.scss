@@ -24,7 +24,7 @@
     margin-bottom: 60px;
     white-space: pre-wrap;
 
-    &Empty{
+    &Empty {
       color: $color-text-muted;
     }
   }
@@ -70,9 +70,102 @@
   }
 }
 
-.loadingState, .emptyState, .errorState {
+.loadingState,
+.emptyState,
+.errorState {
   text-align: center;
   padding: 30px;
   font-size: $font-md;
   color: $color-text-secondary;
+}
+
+@media (max-width: 1024px) {
+  .info {
+    padding: 35px 30px;
+
+    .description {
+      margin-bottom: 50px;
+    }
+  }
+
+  .questions {
+    padding: 35px 30px;
+  }
+
+  .toggle {
+    margin: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding-bottom: 50px;
+  }
+
+  .info {
+    padding: 30px 25px;
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .lastUse {
+      margin-bottom: 16px;
+    }
+  }
+
+  .toggle {
+    margin: 30px;
+
+    &Btn {
+      padding: 12px 25px;
+    }
+  }
+
+  .questions {
+    padding: 30px 25px;
+
+    h2 {
+      margin-bottom: 24px;
+    }
+  }
+
+  .loadingState,
+  .emptyState,
+  .errorState {
+    padding: 20px;
+    font-size: $font-sm;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding-bottom: 40px;
+  }
+
+  .info {
+    padding: 24px;
+
+    h2 {
+      font-size: $font-md;
+    }
+
+    .lastUse {
+      font-size: $font-xs;
+      margin-bottom: 10px;
+    }
+  }
+
+  .toggleBtn {
+      padding: 10px 25px;
+  }
+
+  .questions {
+    padding: 24px 18px;
+
+    h2 {
+      font-size: $font-md;
+      margin-bottom: 24px;
+    }
+  }
 }

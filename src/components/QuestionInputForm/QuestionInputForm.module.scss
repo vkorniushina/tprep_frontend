@@ -80,3 +80,28 @@
   border: 1px solid $color-success-border;
   background: $color-success-bg-light;
 }
+
+@media (max-width: 768px) {
+  .input, .correctAnswerBox {
+    padding: 18px;
+  }
+
+  .correctAnswerSection {
+    margin-top: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .input, .correctAnswerBox {
+    padding: 15px;
+    font-size: $font-sm;
+  }
+
+  .correctAnswerLabel {
+    margin-bottom: 15px;
+  }
+
+  .labelContainer {
+    margin-bottom: 15px;
+  }
+}

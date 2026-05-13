@@ -1,6 +1,6 @@
 @use "../../assets/styles/variables" as *;
 
-.title{
+.title {
   font-size: $font-xl;
   font-weight: 600;
   margin-bottom: 20px;
@@ -9,4 +9,23 @@
 .cards {
   display: flex;
   gap: 25px;
+}
+
+@media (max-width: 1024px) {
+  .cards {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cards {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cards {
+    flex-direction: column;
+    gap: 10px;
+  }
 }

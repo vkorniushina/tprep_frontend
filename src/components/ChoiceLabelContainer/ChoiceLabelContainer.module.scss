@@ -24,3 +24,9 @@
 .incorrectLabel {
   color: $color-error-base;
 }
+
+@media (max-width: 480px) {
+  .labelContainer {
+    margin-bottom: 15px;
+  }
+}

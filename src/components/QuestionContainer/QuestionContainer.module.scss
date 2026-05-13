@@ -8,6 +8,37 @@
 
 .questionText {
   font-weight: 500;
-  font-size: 24px;
+  font-size: $font-xl;
   margin-bottom: 80px;
+}
+
+@media (max-width: 1024px) {
+  .questionContainer {
+    padding: 45px 50px 50px;
+  }
+
+  .questionText {
+    margin-bottom: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  .questionContainer {
+    padding: 35px 30px 40px;
+  }
+
+  .questionText {
+    margin-bottom: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .questionContainer {
+    padding: 25px 20px 30px;
+  }
+
+  .questionText {
+    font-size: $font-lg;
+    margin-bottom: 40px;
+  }
 }

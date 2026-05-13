@@ -11,6 +11,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 0 10px;
 }
 
 .modal {
@@ -65,6 +66,7 @@
     padding-bottom: 20px;
     border-bottom: 1px solid $color-dark;
     font-weight: 400;
+    white-space: nowrap;
 
     p {
       font-size: $font-sm;
@@ -80,6 +82,7 @@
     justify-content: space-between;
     align-items: center;
     font-weight: 400;
+    white-space: nowrap;
 
     p {
       font-size: $font-sm;
@@ -102,6 +105,7 @@
     padding: 20px 0;
     font-weight: 400;
     font-size: $font-sm;
+    color: $color-text;
     border-radius: $radius-md;
     border: none;
     cursor: pointer;
@@ -155,6 +159,20 @@
 
     &:hover {
       background: $color-bg-gray;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 38px 20px 50px;
+  }
+
+  .actions {
+    gap: 12px;
+
+    button {
+      height: 48px;
     }
   }
 }

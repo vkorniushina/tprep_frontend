@@ -19,12 +19,27 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 15px;
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .initials {
   font-weight: 600;
   font-size: 40px;
   color: $color-white;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 37px;
 }
 
 .name {
@@ -38,7 +53,15 @@
   font-weight: 400;
   font-size: $font-sm;
   color: $color-text-secondary;
-  margin-bottom: 37px;
+  word-break: break-all;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+  white-space: nowrap;
 }
 
 .editBtn {
@@ -51,7 +74,6 @@
   font-size: $font-sm;
   font-weight: 500;
   cursor: pointer;
-  margin-bottom: 12px;
   transition: $transition-base;
 
   &:hover {
@@ -73,5 +95,53 @@
 
   &:hover {
     background-color: $color-bg-gray;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: left;
+    padding: 24px 28px;
+    gap: 16px 20px;
+  }
+
+  .avatar {
+    margin-bottom: 0;
+  }
+
+  .info {
+    flex: 1;
+    align-items: flex-start;
+    margin-bottom: 0;
+    min-width: 0;
+  }
+
+  .buttons {
+    width: 100%;
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 20px;
+    gap: 14px 16px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .initials {
+    font-size: 32px;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 10px;
   }
 }
