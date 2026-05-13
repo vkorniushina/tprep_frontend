@@ -59,3 +59,13 @@
   text-align: center;
   color: $color-text-secondary;
 }
+
+@media (max-width: 480px) {
+  .modeToggle {
+    gap: 10px;
+  }
+
+  .modeBtn {
+    padding: 12px 10px;
+  }
+}

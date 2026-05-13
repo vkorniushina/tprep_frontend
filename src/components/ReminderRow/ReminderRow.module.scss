@@ -14,6 +14,7 @@
   color: $color-text;
   flex: 1;
   min-width: 0;
+  white-space: nowrap;
 }
 
 .rowInputs {
@@ -43,5 +44,27 @@
 
   &:hover {
     background: $color-border;
+  }
+}
+
+@media (max-width: 480px) {
+  .hideMobile {
+    display: none;
+  }
+
+  .row {
+    padding: 10px;
+  }
+
+  .numberShift {
+    margin-left: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .intervalLabel {
+    font-size: $font-xxs;
+    white-space: normal;
+    padding-right: 3px;
   }
 }

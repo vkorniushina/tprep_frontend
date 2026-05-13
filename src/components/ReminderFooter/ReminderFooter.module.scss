@@ -15,6 +15,7 @@
   border-radius: $radius-md;
   font-weight: 500;
   font-size: $font-sm;
+  color: $color-text;
   cursor: pointer;
   transition: background $transition-speed;
 
@@ -30,6 +31,7 @@
   border-radius: $radius-md;
   font-size: $font-sm;
   font-weight: 500;
+  color: $color-text;
   cursor: pointer;
   transition: background $transition-speed;
 
