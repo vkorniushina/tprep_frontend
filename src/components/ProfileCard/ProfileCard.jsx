@@ -11,14 +11,18 @@ const ProfileCard = ({user, onEditClick, onLogout}) => {
                     : <span className={styles.initials}>{getInitials(user.username)}</span>
                 }
             </div>
-            <h2 className={styles.name}>{user.username}</h2>
-            <p className={styles.email}>{user.email}</p>
-            <button className={styles.editBtn} onClick={onEditClick}>
-                Редактировать профиль
-            </button>
-            <button className={styles.logoutBtn} onClick={onLogout}>
-                Выйти из аккаунта
-            </button>
+            <div className={styles.info}>
+                <h2 className={styles.name}>{user.username}</h2>
+                <p className={styles.email}>{user.email}</p>
+            </div>
+            <div className={styles.buttons}>
+                <button className={styles.editBtn} onClick={onEditClick}>
+                    Редактировать профиль
+                </button>
+                <button className={styles.logoutBtn} onClick={onLogout}>
+                    Выйти из аккаунта
+                </button>
+            </div>
         </div>
     );
 };

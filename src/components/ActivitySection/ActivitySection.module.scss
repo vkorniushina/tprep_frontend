@@ -9,6 +9,7 @@
 .header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 38px;
 }
 
@@ -23,6 +24,7 @@
   background-color: $color-bg-gray;
   border-radius: $radius-sm;
   padding: 5px;
+  flex-shrink: 0;
 }
 
 .toggleBtn {
@@ -41,5 +43,17 @@
     background-color: $color-bg-base;
     color: $color-text;
     box-shadow: 0 0 3px $color-border;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 25px 18px;
   }
 }

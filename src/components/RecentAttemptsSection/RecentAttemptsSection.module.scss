@@ -24,3 +24,20 @@
   padding: 18px 0;
   text-align: center;
 }
+
+@media (max-width: 768px) {
+  .card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 25px 18px;
+  }
+
+  .list {
+    gap: 12px;
+    margin-top: 20px;
+  }
+}
