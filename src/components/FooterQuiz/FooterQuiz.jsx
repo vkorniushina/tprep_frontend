@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import ArrowIcon from "../../assets/images/arrow_right.svg?react";
 import styles from './FooterQuiz.module.scss';
 
 const FooterQuiz = ({
@@ -22,7 +23,8 @@ const FooterQuiz = ({
                     }
                     onClick={onPrevious}
                 >
-                    Предыдущий вопрос
+                    <ArrowIcon className={`${styles.arrowIcon} ${styles.arrowLeft}`}/>
+                    <span className={styles.btnText}>Предыдущий вопрос</span>
                 </button>
 
                 {showCheckButton && (
@@ -30,7 +32,8 @@ const FooterQuiz = ({
                         className={`${styles.navButton} ${styles.checkButton}`}
                         onClick={onCheckAnswer}
                     >
-                        Проверить ответ
+                        <span>Проверить</span>
+                        <span className={styles.extraText}>&nbsp;ответ</span>
                     </button>
                 )}
 
@@ -43,7 +46,17 @@ const FooterQuiz = ({
                     )}
                     onClick={isLastQuestion ? onFinishTest : onNext}
                 >
-                    {isLastQuestion ? 'Завершить тест' : 'Следующий вопрос'}
+                    {isLastQuestion ? (
+                        <>
+                            <span>Завершить</span>
+                            <span className={styles.extraText}>&nbsp;тест</span>
+                        </>
+                    ) : (
+                        <>
+                            <span className={styles.btnText}>Следующий вопрос</span>
+                            <ArrowIcon className={styles.arrowIcon}/>
+                        </>
+                    )}
                 </button>
             </div>
         </footer>

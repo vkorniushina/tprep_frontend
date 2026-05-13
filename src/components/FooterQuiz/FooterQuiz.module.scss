@@ -4,8 +4,8 @@
   display: flex;
   align-items: center;
   background: $color-bg-base;
-  height: 80px;
-  padding: 20px 0;
+  min-height: 80px;
+  padding: 10px 0;
   border-top: 1px solid $color-border;
   position: fixed;
   bottom: 0;
@@ -17,12 +17,15 @@
 .inner {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
+  gap: 10px;
 }
 
 .navButton {
   display: flex;
   gap: 6px;
+  justify-content: center;
   align-items: center;
   padding: 10px 15px;
   border-radius: $radius-md;
@@ -31,6 +34,7 @@
   color: $color-text;
   cursor: pointer;
   transition: $transition-base;
+  flex-shrink: 0;
 
   &.prevButton {
     border: 1px solid $color-border;
@@ -81,5 +85,52 @@
 
   &:hover {
     background-color: $color-dark-hover;
+  }
+}
+
+.arrowIcon {
+  display: none;
+  width: 16px;
+  height: 16px;
+  color: $color-dark;
+}
+
+.arrowLeft {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 600px) {
+  .extraText {
+    display: none;
+  }
+
+  .inner {
+    gap: 8px;
+  }
+
+  .btnText {
+    display: none;
+  }
+
+  .arrowIcon {
+    display: block;
+  }
+
+  .prevButton, .nextButton {
+    padding: 0;
+    width: 70px;
+    height: 50px;
+  }
+
+  .checkButton,
+  .navButton.finishButton{
+    padding: 12px 30px;
+  }
+}
+
+@media (max-width: 400px) {
+  .checkButton,
+  .navButton.finishButton{
+    padding: 10px 20px;
   }
 }

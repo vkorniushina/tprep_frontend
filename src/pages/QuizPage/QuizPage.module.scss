@@ -2,3 +2,15 @@
   min-height: 100vh;
   padding-bottom: 180px;
 }
+
+@media (max-width: 768px) {
+  .quizContainer {
+    padding-bottom: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quizContainer {
+    padding-bottom: 140px;
+  }
+}
