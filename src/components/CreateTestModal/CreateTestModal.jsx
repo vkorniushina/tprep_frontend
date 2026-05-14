@@ -1,67 +1,40 @@
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import styles from "./CreateTestModal.module.scss";
 import CloseIcon from "../../assets/images/close.svg?react";
-import UploadIcon from "../../assets/images/upload.svg?react";
-import FileIcon from "../../assets/images/file.svg?react";
-import {ALLOWED_FILE_EXTENSIONS, MAX_FILE_SIZE_MB} from "../../constants/fileUpload.js";
-import {formatFileSize} from "../../utils/formatFileSize.js";
-import {validateFile, validateTestForm} from "../../utils/validateCreateTest.js";
-import classNames from "classnames";
+import Sparkles from "../../assets/images/sparkles.svg?react";
+import EmptyFile from "../../assets/images/empty_file.svg?react";
+import {CREATE_TABS} from "../../constants/fileUpload.js";
+import {validateTestForm} from "../../utils/validateCreateTest.js";
+import InfoHint from "../InfoHint/InfoHint.jsx";
+import Tabs from "../Tabs/Tabs.jsx";
+import FileDropzone from "../FileDropzone/FileDropzone.jsx";
+import {CREATE_TEST_TABS} from "../../constants/testConstants.js";
+import {useFileUpload} from "../../hooks/useFileUpload.jsx";
 
 const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast}) => {
-
-    const fileInputRef = useRef(null);
-
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [file, setFile] = useState(null);
-
-    const [isDragging, setIsDragging] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
-
     const [formErrors, setFormErrors] = useState({});
-    const [fileErrorMessage, setFileErrorMessage] = useState(null);
+    const [activeTab, setActiveTab] = useState(CREATE_TABS.FILE);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const processFile = (selectedFile, inputRef) => {
-        setFileErrorMessage(null);
-
-        if (!selectedFile) return;
-
-        const validation = validateFile(selectedFile);
-
-        if (validation.error) {
-            setFileErrorMessage(validation.error);
-            if (inputRef.current) inputRef.current.value = "";
-            setFile(null);
-            return;
-        }
-
-        setFile(selectedFile);
-    };
-
-    const handleDragEnter = (e) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
-
-    const handleDragOver = (e) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
-
-    const handleDragLeave = () => {
-        setIsDragging(false);
-    };
-
-    const handleMouseEnter = () => {
-        if (!isDragging) {
-            setIsHovered(true);
-        }
-    };
-
-    const handleMouseLeave = () => {
-        setIsHovered(false);
-    };
+    const {
+        file,
+        inputRef,
+        isDragging,
+        isHovered,
+        fileErrorMessage,
+        handleFileSelect,
+        handleDrop,
+        handleRemoveFile,
+        handleDragEnter,
+        handleDragOver,
+        handleDragLeave,
+        handleMouseEnter,
+        handleMouseLeave,
+        clearFileError,
+        setFileErrorMessage
+    } = useFileUpload();
 
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -77,64 +50,53 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
         }
     };
 
-    const handleFileSelect = (e) => {
-        processFile(e.target.files[0], fileInputRef);
-    };
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        setIsDragging(false);
-        setIsHovered(false);
-        processFile(e.dataTransfer.files[0], fileInputRef);
-    };
-
-    const handleRemoveFile = (e) => {
-        e.stopPropagation();
-        setFile(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        if (tab === CREATE_TABS.MANUAL) {
+            clearFileError();
         }
     };
 
-    const handleCreateFile = async () => {
+    const handleCreateTest = async () => {
         const {errors, isValid} = validateTestForm(name, description);
         setFormErrors(errors);
 
-        const fileIsPresent = !!file;
+        if (activeTab === CREATE_TABS.FILE) {
+            const fileIsPresent = !!file;
 
-        if (!fileIsPresent && !fileErrorMessage) {
-            setFileErrorMessage("Прикрепите файл для создания теста");
-        }
+            if (!fileIsPresent && !fileErrorMessage) {
+                setFileErrorMessage("Прикрепите файл для создания теста");
+            }
 
-        if (!isValid || !fileIsPresent || fileErrorMessage) {
-            showToast("error", "Проверьте правильность заполнения формы");
-            return;
-        }
+            if (!isValid || !fileIsPresent || fileErrorMessage) {
+                showToast("error", "Проверьте правильность заполнения формы");
+                return;
+            }
 
-        const result = await onCreateFromFile({name, description, file});
+            setIsSubmitting(true);
+            const result = await onCreateFromFile({name, description, file});
 
-        if (result.success) {
-            onClose();
+            if (result.success) {
+                onClose();
+            } else {
+                showToast("error", result.message);
+                setIsSubmitting(false);
+            }
         } else {
-            showToast("error", result.message);
-        }
-    };
+            if (!isValid) {
+                showToast("error", "Проверьте правильность заполнения формы");
+                return;
+            }
 
-    const handleCreateManual = async () => {
-        const {errors, isValid} = validateTestForm(name, description);
-        setFormErrors(errors);
+            setIsSubmitting(true);
+            const result = await onCreateManual({name, description});
 
-        if (!isValid) {
-            showToast("error", "Проверьте правильность заполнения формы");
-            return;
-        }
-
-        const result = await onCreateManual({name, description});
-
-        if (result.success) {
-            onClose();
-        } else {
-            showToast("error", result.message);
+            if (result.success) {
+                onClose();
+            } else {
+                showToast("error", result.message);
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -148,7 +110,7 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                 <h2 className={styles.title}>Создание теста</h2>
 
                 <div className={styles.inputGroup}>
-                    <label className={styles.label}>Шаг 1: Название</label>
+                    <label className={styles.label}>Название</label>
                     <input
                         className={formErrors.name && styles.inputError}
                         placeholder="Введите название теста"
@@ -159,7 +121,7 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                 </div>
 
                 <div className={styles.inputGroup}>
-                    <label className={styles.label}>Шаг 2: Описание (опционально)</label>
+                    <label className={styles.label}>Описание (опционально)</label>
                     <textarea
                         className={formErrors.description && styles.inputError}
                         placeholder="Введите краткое описание"
@@ -170,103 +132,57 @@ const CreateTestModal = ({onClose, onCreateManual, onCreateFromFile, showToast})
                 </div>
 
                 <div>
-                    <label className={styles.label}>Шаг 3: Загрузка файла</label>
-                    <div
-                        className={classNames(
-                            styles.dropzone,
-                            {
-                                [styles.dragging]: isDragging || isHovered || fileErrorMessage,
-                                [styles.dropzoneError]: fileErrorMessage
-                            }
-                        )}
-                        onClick={!file ? () => fileInputRef.current.click() : undefined}
-                        onDrop={handleDrop}
-                        onDragEnter={handleDragEnter}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        {file ? (
-                            <div className={styles.fileDisplay}>
-                                <FileIcon className={styles.fileIcon}/>
-                                <div className={styles.fileInfo}>
-                                    <p className={styles.fileName}>{file.name}</p>
-                                    <span className={styles.fileSize}>
-                                        {formatFileSize(file.size)}
-                                    </span>
-                                </div>
-                                <button
-                                    className={styles.removeFileBtn}
-                                    onClick={handleRemoveFile}
-                                >
-                                    <CloseIcon className={styles.removeFileIcon}/>
-                                </button>
-                            </div>
-                        ) : (
-                            <div className={styles.fileText}>
-                                <UploadIcon className={styles.uploadIcon}/>
-                                <p>Перетащите файл сюда или нажмите, чтобы загрузить</p>
-                                <p className={styles.supportText}>
-                                    {ALLOWED_FILE_EXTENSIONS.join(', ')} (до {MAX_FILE_SIZE_MB} Мб)
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                    {fileErrorMessage && <div className={styles.errorMessageFile}>{fileErrorMessage}</div>}
+                    <label className={styles.label}>Добавление вопросов</label>
+                    <Tabs
+                        tabs={CREATE_TEST_TABS}
+                        activeTab={activeTab}
+                        onChange={handleTabChange}
+                    />
+
+                    {activeTab === CREATE_TABS.FILE ? (
+                        <>
+                            <FileDropzone
+                                file={file}
+                                inputRef={inputRef}
+                                onFileSelect={handleFileSelect}
+                                onFileRemove={handleRemoveFile}
+                                isDragging={isDragging}
+                                isHovered={isHovered}
+                                fileErrorMessage={fileErrorMessage}
+                                onDragEnter={handleDragEnter}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                            />
+
+                            <InfoHint
+                                Icon={Sparkles}
+                                iconClassName={styles.aiIcon}
+                                title="Система автоматически распознает вопросы и ответы и создаст тест на их основе"
+                                description="Вам останется только проверить результат и отредактировать его при необходимости"
+                            />
+                        </>
+                    ) : (
+                        <InfoHint
+                            Icon={EmptyFile}
+                            title="Вопросы будут добавлены позже"
+                            description="После создания теста вы перейдете на страницу редактирования, где сможете добавить вопросы вручную"
+                        />
+                    )}
                 </div>
 
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    className={styles.hiddenInput}
-                    accept={ALLOWED_FILE_EXTENSIONS.map(ext => `.${ext}`).join(',')}
-                    onChange={handleFileSelect}
-                />
-
-                <div className={styles.howToPrepare}>
-                    <h3>Как подготовить файл?</h3>
-                    <p className={styles.howToPrepareIntro}>
-                        Используйте заглавные ключевые слова на новой строке, чтобы разделить элементы теста.
-                    </p>
-
-                    <div className={styles.instructionBlock}>
-                        <p className={styles.instructionHeader}>1. Вопрос с вводом ответа:</p>
-                        <span className={styles.instructionLine}>
-                        ВОПРОС: Текст вопроса
-                        </span>
-                        <span className={styles.instructionLine}>
-                        ОТВЕТ: Верный ответ
-                        </span>
-                    </div>
-
-                    <div className={styles.instructionBlock}>
-                        <p className={styles.instructionHeader}>2. Вопрос с выбором варианта:</p>
-                        <span className={styles.instructionLine}>
-                        ВОПРОС: Текст вопроса
-                        </span>
-                        <span className={styles.instructionLine}>
-                        ОТВЕТ: Правильный вариант
-                        </span>
-                        <span className={styles.instructionLine}>
-                        ВАРИАНТ: Неправильный вариант
-                        </span>
-                        <span className={styles.instructionLine}>
-                        ВАРИАНТ: Другой неправильный вариант
-                        </span>
-                    </div>
-
-                    <p className={styles.howToPrepareImportant}>
-                        Важно: Разделяйте каждый отдельный вопрос пустой строкой
-                    </p>
-                </div>
-
-                <button className={styles.createBtn} onClick={handleCreateFile}>
-                    Создать тест из файла
-                </button>
-
-                <button className={styles.manualBtn} onClick={handleCreateManual}>
-                    Создать вручную
+                <button
+                    className={styles.createBtn}
+                    onClick={handleCreateTest}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? (
+                        activeTab === CREATE_TABS.FILE ? "Обработка файла..." : "Создание..."
+                    ) : (
+                        "Создать тест"
+                    )}
                 </button>
             </div>
         </div>

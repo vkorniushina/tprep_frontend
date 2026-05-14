@@ -8,3 +8,8 @@ export const ALLOWED_FILE_TYPES = [
 ];
 
 export const ALLOWED_FILE_EXTENSIONS = ['txt', 'doc', 'docx'];
+
+export const CREATE_TABS = {
+    FILE: "file",
+    MANUAL: "manual"
+};
