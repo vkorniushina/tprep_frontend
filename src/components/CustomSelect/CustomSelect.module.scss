@@ -28,6 +28,7 @@
 }
 
 .triggerValue{
+  color: $color-text;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -73,6 +74,7 @@
   padding: 12px;
   font-size: $font-xs;
   font-weight: 400;
+  color: $color-text;
   border-radius: $radius-md;
   cursor: pointer;
   transition: $transition-base;
