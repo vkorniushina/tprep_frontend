@@ -18,6 +18,8 @@
   opacity: 0;
   transform: translateY(-20px) translateX(-50%);
   animation: fadeInDown 0.35s forwards;
+  max-width: 460px;
+  width: max-content;
 }
 
 .icon {
@@ -25,6 +27,7 @@
   height: 20px;
   background-size: contain;
   background-repeat: no-repeat;
+  flex-shrink: 0;
 }
 
 .success {
@@ -47,5 +50,11 @@
   to {
     opacity: 1;
     transform: translateY(0) translateX(-50%);
+  }
+}
+
+@media (max-width: 500px) {
+  .toast {
+    max-width: calc(100% - 32px);
   }
 }
