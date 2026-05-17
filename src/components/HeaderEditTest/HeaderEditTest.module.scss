@@ -3,10 +3,10 @@
 .header {
   display: flex;
   align-items: center;
-  padding: 0 20px;
   background-color: $color-bg-base;
   border-bottom: 1px solid $color-border;
-  height: 80px;
+  min-height: 80px;
+  height: auto;
   margin-bottom: 50px;
 }
 
@@ -25,11 +25,16 @@
 
 .backIcon {
   cursor: pointer;
+  flex-shrink: 0;
 }
 
-.title {
+.title, .titleShortText {
   font-weight: 500;
   font-size: $font-xl;
+}
+
+.titleShortText {
+  display: none;
 }
 
 .editBtn {
@@ -45,8 +50,65 @@
   color: $color-text;
   cursor: pointer;
   transition: $transition-base;
+  white-space: nowrap;
+  flex-shrink: 0;
 
   &:hover {
     background: $color-primary-hover;
+  }
+}
+
+.btnFullText {
+  display: inline;
+}
+
+.btnShortText {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .header {
+    min-height: 64px;
+    margin-bottom: 40px;
+  }
+
+  .title, .titleShortText {
+    font-size: $font-lg;
+  }
+
+  .btnFullText {
+    display: none;
+  }
+
+  .btnShortText {
+    display: inline;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    display: none;
+  }
+
+  .titleShortText {
+    display: inline;
+  }
+
+  .left {
+    gap: 5px;
+  }
+
+  .inner {
+    gap: 5px;
+  }
+
+  .backIcon {
+    margin-left: -5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .title, .titleShortText {
+    font-size: $font-md;
   }
 }

@@ -64,6 +64,7 @@
     font-weight: 500;
     font-size: $font-lg;
     color: $color-text;
+    white-space: nowrap;
   }
 }
 
@@ -80,20 +81,21 @@
   cursor: pointer;
   font-weight: 500;
   font-size: $font-sm;
+  white-space: nowrap;
   transition: $transition-base;
 
   &:hover {
     background: $color-dark-hover;
   }
 
-  .addIcon{
+  .addIcon {
     width: 15px;
     height: 15px;
     color: $color-white;
   }
 }
 
-.questionContainer{
+.questionContainer {
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -158,4 +160,63 @@
   left: 0;
   top: 100%;
   margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .form {
+    padding: 30px 40px 45px;
+    margin-bottom: 40px;
+  }
+
+  .block:not(:last-child) {
+    margin-bottom: 30px;
+  }
+
+  .form .block label {
+    margin-bottom: 15px;
+  }
+
+  .questionsHeader {
+    margin-bottom: 30px;
+    gap: 10px;
+  }
+
+  .questionContainer {
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .addQuestionBtnContainer {
+    margin-bottom: 50px;
+  }
+
+  .scrollTopButton {
+    bottom: 30px;
+    right: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form {
+    padding: 24px 24px 35px;
+
+    .block {
+      input,
+      textarea {
+        padding: 15px;
+      }
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .questionsHeader {
+    h2 {
+      font-size: $font-md;
+    }
+  }
+
+  .addQuestionBtn {
+    padding: 12px;
+  }
 }

@@ -3,7 +3,7 @@ import styles from "./HeaderEditTest.module.scss";
 import arrowLeft from "../../assets/images/arrow_left.svg";
 import saveIcon from "../../assets/images/save.svg";
 
-const HeaderEditTest = ({ onBack, onSave }) => {
+const HeaderEditTest = ({onBack, onSave}) => {
 
     return (
         <header className={styles.header}>
@@ -14,10 +14,13 @@ const HeaderEditTest = ({ onBack, onSave }) => {
                          onClick={onBack}
                     />
                     <h1 className={styles.title}>Редактирование теста</h1>
+                    <h1 className={styles.titleShortText}>Редактирование</h1>
                 </div>
 
                 <button className={styles.editBtn} onClick={onSave}>
-                    <img src={saveIcon}/> Сохранить изменения
+                    <img src={saveIcon}/>
+                    <span className={styles.btnFullText}>Сохранить изменения</span>
+                    <span className={styles.btnShortText}>Сохранить</span>
                 </button>
             </div>
         </header>

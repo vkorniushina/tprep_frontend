@@ -7,7 +7,7 @@
   position: relative;
 }
 
-.optionContentWrapper{
+.optionContentWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,7 +79,7 @@
   align-items: center;
   justify-content: center;
 
-  .cross{
+  .cross {
     width: 12px;
     height: 12px;
     color: $color-text-secondary;
@@ -103,4 +103,14 @@
   color: $color-error-base;
   font-size: $font-xxs;
   padding-left: 36px;
+}
+
+@media (max-width: 480px) {
+  .optionInput {
+    padding: 15px;
+  }
+
+  .optionContentWrapper {
+    gap: 8px;
+  }
 }
