@@ -32,7 +32,21 @@ const AccessModal = ({initialMode, shareLink, onClose, onSave}) => {
     const handleCopy = async () => {
         if (!shareLink) return;
         try {
-            await navigator.clipboard.writeText(shareLink);
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(shareLink);
+            } else {
+                const textarea = document.createElement("textarea");
+                textarea.value = shareLink;
+                textarea.style.position = "fixed";
+                textarea.style.width = "0";
+                textarea.style.height = "0";
+                textarea.style.opacity = "0";
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+            }
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
         } catch (err) {
