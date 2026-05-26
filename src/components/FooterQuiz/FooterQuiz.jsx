@@ -33,7 +33,7 @@ const FooterQuiz = ({
                         onClick={onCheckAnswer}
                     >
                         <span>Проверить</span>
-                        <span className={styles.extraText}>&nbsp;ответ</span>
+                        <span className={styles.extraText}>ответ</span>
                     </button>
                 )}
 
@@ -49,7 +49,7 @@ const FooterQuiz = ({
                     {isLastQuestion ? (
                         <>
                             <span>Завершить</span>
-                            <span className={styles.extraText}>&nbsp;тест</span>
+                            <span className={styles.extraText}>тест</span>
                         </>
                     ) : (
                         <>
