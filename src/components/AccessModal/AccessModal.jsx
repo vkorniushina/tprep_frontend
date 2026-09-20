@@ -57,7 +57,7 @@ const AccessModal = ({initialMode, shareLink, onClose, onSave}) => {
     return (
         <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
             <div className={styles.modal}>
-                <button className={styles.closeBtn} onClick={onClose}>
+                <button className={styles.closeBtn} onClick={onClose} aria-label="Закрыть">
                     <CloseIcon className={styles.closeIcon}/>
                 </button>
 
@@ -95,6 +95,7 @@ const AccessModal = ({initialMode, shareLink, onClose, onSave}) => {
                         <button
                             className={styles.copyBtn}
                             onClick={handleCopy}
+                            aria-label={copied ? "Ссылка скопирована" : "Скопировать ссылку"}
                         >
                             {copied ? (
                                 <CheckIcon className={styles.copyIcon} />
