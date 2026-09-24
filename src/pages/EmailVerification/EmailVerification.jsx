@@ -131,6 +131,7 @@ const EmailVerification = () => {
                     <button
                         className={styles.backButton}
                         onClick={handleGoBack}
+                        aria-label="Назад"
                     >
                         <ArrowLeftIcon/>
                     </button>
@@ -155,6 +156,7 @@ const EmailVerification = () => {
                                 maxLength={6}
                             />
                             <button
+                                aria-label="Подтвердить код"
                                 type="submit"
                                 className={styles.primaryButton}
                                 disabled={verificationCode.length !== 6 || isBlocked || isLoading}
