@@ -15,6 +15,7 @@ const HeaderProfile = () => {
             <div className={`container ${styles.inner}`}>
                 <div className={styles.left}>
                     <img src={arrowLeft}
+                         alt="Назад"
                          className={styles.backIcon}
                          onClick={handleBackClick}
                     />

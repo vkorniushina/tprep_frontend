@@ -10,6 +10,7 @@ const HeaderEditTest = ({onBack, onSave}) => {
             <div className={`container ${styles.inner}`}>
                 <div className={styles.left}>
                     <img src={arrowLeft}
+                         alt="Назад"
                          className={styles.backIcon}
                          onClick={onBack}
                     />

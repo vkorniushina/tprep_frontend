@@ -8,7 +8,11 @@ const ExitConfirmModal = ({ open, onCancel, onConfirm }) => {
     return (
         <div className={styles.confirmOverlay}>
             <div className={styles.confirmBox}>
-                <button className={styles.closeModalButton} onClick={onCancel}>
+                <button
+                    className={styles.closeModalButton}
+                    onClick={onCancel}
+                    aria-label="Закрыть"
+                >
                     <CloseIcon className={styles.closeIcon} />
                 </button>
 

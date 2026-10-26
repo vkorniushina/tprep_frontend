@@ -8,7 +8,7 @@ const UnsavedChangesModal = ({ isVisible, onSave, onDiscard, onCancel }) => {
     return (
         <div className={styles.confirmOverlay} onClick={onCancel}>
             <div className={styles.confirmBox} onClick={(e) => e.stopPropagation()}>
-                <button className={styles.closeModalButton} onClick={onCancel}>
+                <button className={styles.closeModalButton} onClick={onCancel} aria-label="Закрыть">
                     <CloseIcon className={styles.closeIcon} />
                 </button>
 

@@ -16,7 +16,7 @@ const ResultModal = ({result, onRetry, onFixErrors, onClose, onOpenReminders}) =
     return (
         <div className={styles.overlay}>
             <div className={styles.modal}>
-                <button className={styles.closeButton} onClick={onClose}>
+                <button className={styles.closeButton} onClick={onClose} aria-label="Закрыть">
                     <CloseIcon className={styles.closeIcon}/>
                 </button>
 

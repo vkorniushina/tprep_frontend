@@ -14,7 +14,7 @@ const HeaderQuiz = ({testName, currentQuestion, totalQuestions, onExitClick}) =>
                     </div>
                 </div>
 
-                <button className={styles.closeButton} onClick={onExitClick}>
+                <button className={styles.closeButton} onClick={onExitClick} aria-label="Выйти из теста">
                     <CloseIcon className={styles.closeIcon}/>
                 </button>
             </div>
